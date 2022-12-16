@@ -1,0 +1,17 @@
+__pycache__
+.vscode
+src-gen/
+.coverage
+.env
+**/*/*.alembic.ini
+htmlcov/
+logs.json
+tmp/
+deploy/keys/
+**/*/node_modules
+**/*/dist
+**/*.env*
+test/deployment-test/env/*
+test/deployment-test/keys/*
+test/deployment-test/persistance/*
+**/*/credentials
