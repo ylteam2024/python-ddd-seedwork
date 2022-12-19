@@ -15,3 +15,4 @@ test/deployment-test/env/*
 test/deployment-test/keys/*
 test/deployment-test/persistance/*
 **/*/credentials
+dist
