@@ -9,7 +9,7 @@ Faker.seed(0)  # This will raise a TypeError
 ElementType = TypeVar("ElementType")
 
 
-def randomElementsOrNone(elements: List[ElementType]) -> Optional[List[ElementType]]:
+def random_elements_or_none(elements: List[ElementType]) -> Optional[List[ElementType]]:
     return flow(
         tuple(elements),
         lambda elements: fake.random_elements(elements=elements, unique=True),
@@ -18,5 +18,5 @@ def randomElementsOrNone(elements: List[ElementType]) -> Optional[List[ElementTy
     )
 
 
-def randomElementOrNone(element: ElementType) -> Optional[ElementType]:
+def random_element_or_none(element: ElementType) -> Optional[ElementType]:
     return fake.random_element(elements=(element, None))

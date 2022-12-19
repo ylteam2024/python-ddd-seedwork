@@ -14,9 +14,9 @@ class ExceptionCode(enum.Enum):
 
 
 class MainException(Exception):
-    __code: Optional[str] = ExceptionCode.RAW_EXCEPTION.value
-    __message: Optional[str] = None
-    __loc: Optional[List[str]] = None
+    _code: Optional[str] = ExceptionCode.RAW_EXCEPTION.value
+    _message: Optional[str] = None
+    _loc: Optional[List[str]] = None
 
     def __init__(
         self,
@@ -25,24 +25,24 @@ class MainException(Exception):
         loc: Optional[List[str]] = None,
     ):
         super().__init__(f"[{code}]: {message} at {loc}")
-        self.__code = code
-        self.__message = message
-        self.__loc = loc
+        self._code = code
+        self._message = message
+        self._loc = loc
 
-    def getMessage(self) -> Maybe[str]:
-        return Maybe.from_optional(self.__message)
+    def message(self) -> Maybe[str]:
+        return Maybe.from_optional(self._message)
 
-    def setLoc(self, loc: List[str]):
-        self.__loc = loc
+    def set_loc(self, loc: List[str]):
+        self._loc = loc
 
-    def getLoc(self) -> Maybe[List[str]]:
-        return Maybe.from_optional(self.__loc)
+    def loc(self) -> Maybe[List[str]]:
+        return Maybe.from_optional(self._loc)
 
-    def getCode(self) -> Maybe[str]:
-        return Maybe.from_optional(self.__code)
+    def code(self) -> Maybe[str]:
+        return Maybe.from_optional(self._code)
 
     def where(self) -> Maybe[List[str]]:
-        return Maybe.from_optional(self.__loc)
+        return Maybe.from_optional(self._loc)
 
 
 class IllegalArgumentException(MainException):
@@ -77,14 +77,16 @@ def except_locs(locs: List[str]):
             try:
                 return function(*args, **kwargs)
             except MainException as error:
-                currentLocs = error.getLoc().value_or([])
-                if len(locs) <= len(currentLocs):
-                    isBeginSubArray = all([elem == currentLocs[idx] for idx, elem in enumerate(locs)])
-                    if isBeginSubArray:
-                        raise error 
-                error.setLoc([*locs, *currentLocs])
+                current_locs = error.loc().value_or([])
+                if len(locs) <= len(current_locs):
+                    is_begin_sub_array = all(
+                        [elem == current_locs[idx] for idx, elem in enumerate(locs)]
+                    )
+                    if is_begin_sub_array:
+                        raise error
+                error.set_loc([*locs, *current_locs])
                 raise error
+
         return wrapper
+
     return decor
-
-

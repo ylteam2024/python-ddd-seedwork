@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
 from uuid import uuid4
 
-from src.seedwork.domain.IdentifiedDomainObject import IdentifiedDomainObject
-from src.seedwork.domain.value_objects import ID, UUID_v4, ValueObject
+from dino_seedwork_be.domain.IdentifiedDomainObject import \
+    IdentifiedDomainObject
+from dino_seedwork_be.domain.value_objects import ID, ValueObject
 
 
 @dataclass(frozen=True, kw_only=True)

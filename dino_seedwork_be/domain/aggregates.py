@@ -1,5 +1,5 @@
-from src.seedwork.domain.assertion_concern import DomainAssertionConcern
-from src.seedwork.domain.entities import Entity
+from dino_seedwork_be.domain.assertion_concern import DomainAssertionConcern
+from dino_seedwork_be.domain.entities import Entity
 
 
 class Aggregate(Entity, DomainAssertionConcern):

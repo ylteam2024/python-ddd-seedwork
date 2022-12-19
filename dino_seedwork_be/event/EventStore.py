@@ -3,9 +3,9 @@ from typing import Any, List
 
 from returns.future import FutureResult
 
-from src.seedwork.domain.DomainEvent import DomainEvent
-from src.seedwork.event.StoredEvent import StoredEvent
-from src.seedwork.storage.uow import DBSessionUser
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
+from dino_seedwork_be.event.StoredEvent import StoredEvent
+from dino_seedwork_be.storage.uow import DBSessionUser
 
 
 class EventStore(ABC, DBSessionUser):

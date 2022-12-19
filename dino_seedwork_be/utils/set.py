@@ -1,7 +1,5 @@
 from functools import reduce
-from typing import Generic, Iterable, List, Set, TypeVar
-
-from sqlalchemy.dialects.postgresql import Any
+from typing import Generic, Iterable, List, TypeVar
 
 
 class DuplicateKeyError(Exception):
@@ -35,11 +33,11 @@ class ValidateSet(set[ItemType], Generic[ItemType]):
         return ValidateSet(super().copy())
 
 
-def setAdd(s, x):
+def set_add(s, x):
     return len(s) != (s.add(x) or len(s))
 
 
-def setRemove(s, x):
+def set_remove(s, x):
     try:
         s.remove(x)
         return True
@@ -47,10 +45,10 @@ def setRemove(s, x):
         return False
 
 
-def setFrom(listItem: List):
-    def reduceFunc(acc: ValidateSet, item):
-        newSet = acc.copy()
-        newSet.add(item)
-        return newSet
+def set_from(listItem: List):
+    def reduce_func(acc: ValidateSet, item):
+        new_set = acc.copy()
+        new_set.add(item)
+        return new_set
 
-    return reduce(reduceFunc, listItem, ValidateSet([]))
+    return reduce(reduce_func, listItem, ValidateSet([]))

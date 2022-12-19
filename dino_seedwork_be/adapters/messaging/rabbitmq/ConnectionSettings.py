@@ -1,10 +1,7 @@
 from typing import Optional
 
-from multimethod import multimethod
 from pika.credentials import PlainCredentials
 from returns.maybe import Maybe, Nothing, Some
-
-from src.seedwork.adapters.logger import SIMPLE_LOGGER
 
 
 class ConnectionSettings:

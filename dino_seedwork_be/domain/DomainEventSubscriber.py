@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Any, Generic, Type, TypeVar
+from typing import Any
 
 from returns.future import FutureResult
 
-from src.seedwork.domain.DomainEvent import DomainEvent
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
 
 
 class DomainEventSubscriber(ABC):

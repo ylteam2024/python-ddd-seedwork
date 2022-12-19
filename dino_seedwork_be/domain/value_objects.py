@@ -3,11 +3,12 @@ from typing import BinaryIO, List, Optional, Union
 
 import validators
 
-from src.seedwork.domain.assertion_concern import DomainAssertionConcern
-from src.seedwork.domain.exceptions import DomainException
-from src.seedwork.exceptions import IllegalArgumentException
-from src.seedwork.utils.image import getImageDimension, getImageFileSize
-from src.seedwork.utils.validator import isUrlImage
+from dino_seedwork_be.domain.assertion_concern import DomainAssertionConcern
+from dino_seedwork_be.domain.exceptions import DomainException
+from dino_seedwork_be.exceptions import IllegalArgumentException
+from dino_seedwork_be.utils.image import (get_image_dimension,
+                                          get_image_file_size)
+from dino_seedwork_be.utils.validator import is_url_image
 
 UUID = uuid.UUID
 UUID_v4 = uuid.uuid4
@@ -82,7 +83,7 @@ class ImageURL(ValueObject):
         self.assertArgumentNotEmpty(url, aMessage="url string cannot be None")
         validators.url(url)
         if validateUrl:
-            self.assertStateTrue(isUrlImage(url), "url is not a valid url image")
+            self.assertStateTrue(is_url_image(url), "url is not a valid url image")
         self.url = url
 
     def getUrl(self) -> str:
@@ -98,7 +99,12 @@ class URL(ValueObject):
             return self.getValue() == other.getValue()
         return False
 
-    def __init__(self, value: str, validationMessage: Optional[str] = None, loc: Optional[List[str]] = ["url"]):
+    def __init__(
+        self,
+        value: str,
+        validationMessage: Optional[str] = None,
+        loc: Optional[List[str]] = ["url"],
+    ):
         self.assertArgumentRegex(value, self.regex, aMessage=validationMessage, loc=loc)
         self.value = value
         super().__init__()
@@ -119,10 +125,10 @@ class File:
         super().__init__()
 
     def dimension(self):
-        return getImageDimension(self.file())
+        return get_image_dimension(self.file())
 
     def size(self) -> float:
-        return getImageFileSize(self.file())
+        return get_image_file_size(self.file())
 
     def name(self) -> str:
         return self.__name

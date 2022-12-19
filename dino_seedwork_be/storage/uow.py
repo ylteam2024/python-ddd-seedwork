@@ -4,7 +4,7 @@ from typing import Any, Generic, List, TypeVar
 
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from src.seedwork.utils.functional import forEach
+from dino_seedwork_be.utils.functional import for_each
 
 SessionType = TypeVar("SessionType")
 
@@ -14,42 +14,31 @@ class SessionUserAlreadyHaveSession(Exception):
 
 
 class DBSessionUser(Generic[SessionType]):
-    __session: SessionType
-    __sessionClosed = False
-    __sessionPreserved = False
-
-    def getSession(self) -> SessionType:
-        return self.__session
+    _session: SessionType
+    _session_preserved = False
 
     def session(self) -> SessionType:
-        return self.__session
+        return self._session
 
-    def setSessionPreserved(self, aBool: bool):
-        self.__sessionPreserved = aBool
+    def set_session_preserved(self, aBool: bool):
+        self._session_preserved = aBool
 
-    def __setSession(self, session: SessionType):
-        self.__session = session
-        self.setSessionClosedStatus(False)
+    def _set_ession(self, session: SessionType):
+        self._session = session
 
-    def setSession(self, session: SessionType):
+    def set_session(self, session: SessionType):
         try:
-            if self.getSession() is not None and not self.isCurrentSessionClosed():
-                if not self.__sessionPreserved:
+            if self.session() is not None and not self.is_current_session_closed():
+                if not self._session_preserved:
                     raise SessionUserAlreadyHaveSession(
                         f" {str(self)} already ocuppied by a session"
                     )
         except AttributeError:
-            self.__setSession(session)
-        self.__setSession(session)
+            self._set_ession(session)
+        self._set_ession(session)
 
-    def set_session(self, session: SessionType):
-        self.setSession(session)
-
-    def setSessionClosedStatus(self, closed: bool):
-        self.__sessionClosed = closed
-
-    def isCurrentSessionClosed(self) -> bool:
-        session = self.getSession()
+    def is_current_session_closed(self) -> bool:
+        session = self.session()
         return not (session.new or session.dirty or session.deleted)
 
 
@@ -58,50 +47,30 @@ class AsyncSessionUser(DBSessionUser[AsyncSession]):
 
 
 class SuperDBSessionUser(DBSessionUser):
-    __sessionUsers: List[DBSessionUser] = []
-    __session: AsyncSession
+    _sessionUsers: List[DBSessionUser] = []
+    _session: AsyncSession
 
-    def setSessionClosedStatus(self, closed: bool):
-        if self.getSessionUsers() is not None:
-            forEach(
-                lambda sessionUser, _: sessionUser.setSessionClosedStatus(closed),
-                self.getSessionUsers(),
-            )
-
-    def setSession(self, session):
-        if self.getSessionUsers() is not None:
-            forEach(
-                lambda sessionUser, _: sessionUser.setSession(session),
-                self.getSessionUsers(),
-            )
-
-    def set_session(self, session):
-        self.__session = session
-        if self.get_session_users() is not None:
-            forEach(
+    def set_session(self, session: AsyncSession):
+        self._session = session
+        if self.session_users() is not None:
+            for_each(
                 lambda sessionUser, _: sessionUser.set_session(session),
-                self.get_session_users(),
+                self.session_users(),
             )
 
     def session(self):
-        return self.__session
+        return self._session
 
-    def getSessionUsers(self) -> List[DBSessionUser]:
-        return self.__sessionUsers
-
-    def get_session_users(self) -> List[DBSessionUser]:
-        return self.__sessionUsers
-
-    def setSessionUsers(self, sessionUsers: List[DBSessionUser]):
-        self.__sessionUsers = sessionUsers
+    def session_users(self) -> List[DBSessionUser]:
+        return self._sessionUsers
 
     def set_session_users(self, session_users: List[DBSessionUser]):
-        self.__sessionUsers = session_users
+        self._sessionUsers = session_users
 
 
 class AbstractUnitOfWork(ABC, AsyncContextDecorator):
     def __init__(
-        self, sessionUsers: List[DBSessionUser], session_factory: None | Any = None
+        self, session_users: List[DBSessionUser], session_factory: None | Any = None
     ):
         super().__init__()
 
@@ -116,18 +85,13 @@ class AbstractUnitOfWork(ABC, AsyncContextDecorator):
             await self.rollback()
         else:
             await self.commit()
-        self.clearSession()
 
     async def aexit(self, *args):
         return self.__aexit__(*args)
 
     @abstractmethod
-    def getSession(self) -> Any:
+    def session(self) -> Any:
         pass
-
-    @abstractmethod
-    def clearSession(self):
-        raise NotImplementedError
 
     async def commit(self):
         await self._commit()

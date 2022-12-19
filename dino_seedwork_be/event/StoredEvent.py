@@ -1,12 +1,12 @@
 from datetime import datetime
-from typing import Any, Optional, Type, TypeVar
+from typing import Any, Optional
 
 from returns.maybe import Maybe
 from returns.result import Result
 
-from src.seedwork.domain.DomainEvent import DomainEvent
-from src.seedwork.event.EventSerializer import EventSerializer
-from src.seedwork.logic.assertion_concern import AssertionConcern
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
+from dino_seedwork_be.event.EventSerializer import EventSerializer
+from dino_seedwork_be.logic.assertion_concern import AssertionConcern
 
 
 class StoredEvent(AssertionConcern):

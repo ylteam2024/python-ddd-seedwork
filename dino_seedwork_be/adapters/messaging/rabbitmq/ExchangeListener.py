@@ -9,20 +9,15 @@ from returns.pipeline import flow
 from returns.pointfree import bind, map_
 from returns.result import Result, safe
 
-from src.modules.ai_market.infrastructure.config import (broker_host,
-                                                         broker_port,
-                                                         broker_user_name,
-                                                         broker_user_password,
-                                                         broker_virtual_host)
-from src.seedwork.adapters.messaging.rabbitmq.ConnectionSettings import \
+from dino_seedwork_be.adapters.messaging.rabbitmq.ConnectionSettings import \
     ConnectionSettings
-from src.seedwork.adapters.messaging.rabbitmq.Exchange import Exchange
-from src.seedwork.adapters.messaging.rabbitmq.MessageConsumer import \
+from dino_seedwork_be.adapters.messaging.rabbitmq.Exchange import Exchange
+from dino_seedwork_be.adapters.messaging.rabbitmq.MessageConsumer import \
     MessageConsumer
-from src.seedwork.adapters.messaging.rabbitmq.MessageListener import (
+from dino_seedwork_be.adapters.messaging.rabbitmq.MessageListener import (
     MessageListener, Type)
-from src.seedwork.adapters.messaging.rabbitmq.Queue import Queue
-from src.seedwork.utils.functional import feed_args
+from dino_seedwork_be.adapters.messaging.rabbitmq.Queue import Queue
+from dino_seedwork_be.utils.functional import feed_args
 
 
 class ExchangeListener(ABC):
@@ -36,8 +31,21 @@ class ExchangeListener(ABC):
     is_retry: bool = False
     is_exclusive: bool = True
 
-    def __init__(self) -> None:
-        self.attach_to_queue()
+    def __init__(
+        self,
+        broker_host: str,
+        broker_port: int,
+        broker_virtual_host: str,
+        broker_user_name: Maybe[str],
+        broker_user_password: Maybe[str],
+    ) -> None:
+        self.attach_to_queue(
+            broker_host,
+            broker_port,
+            broker_virtual_host,
+            broker_user_name,
+            broker_user_password,
+        )
 
     def message_consumer(self) -> Maybe[MessageConsumer]:
         return Maybe.from_optional(self._message_consumer)
@@ -91,7 +99,14 @@ class ExchangeListener(ABC):
     def set_queue(self, a_queue: Queue):
         self._queue = a_queue
 
-    def attach_to_queue(self) -> Result:
+    def attach_to_queue(
+        self,
+        broker_host: str,
+        broker_port: int,
+        broker_virtual_host: str,
+        broker_user_name: Maybe[str],
+        broker_user_password: Maybe[str],
+    ) -> Result:
 
         """
         " Attaches to the queues I listen to for messages.
@@ -99,11 +114,11 @@ class ExchangeListener(ABC):
         return flow(
             [
                 ConnectionSettings.factory(
-                    broker_host(),
-                    broker_port(),
-                    broker_virtual_host(),
-                    broker_user_name().value_or(None),
-                    broker_user_password().value_or(None),
+                    broker_host,
+                    broker_port,
+                    broker_virtual_host,
+                    broker_user_name.value_or(None),
+                    broker_user_password.value_or(None),
                 ),
                 self.exchange_name(),
                 self.is_durable,

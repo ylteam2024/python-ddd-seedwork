@@ -1,12 +1,13 @@
 import json
-from typing import Any, List, TypeVar, TypedDict
-from src.seedwork.adapters.rest import Filter
+from typing import Any, List, TypedDict, TypeVar
 
-from src.seedwork.utils.dict import extract
+from dino_seedwork_be.adapters.rest import Filter
+from dino_seedwork_be.utils.dict import extract
 
 FilterType = TypeVar("FilterType", bound=TypedDict)
 
-class Filters():
+
+class Filters:
     def __init__(self, keys: List[str]) -> None:
         self.keys = keys
 
@@ -19,6 +20,4 @@ class Filters():
                     print("error parse filter json", error)
                     filters = {}
         plainFilter = extract(filters, self.keys)
-        return Filter(plainFilter).parsedFilter
-
-        
+        return Filter(plainFilter).parsed_filter

@@ -5,8 +5,8 @@ from returns.pipeline import flow
 from returns.pointfree import bind, map_
 from returns.result import Failure, Result, Success
 
-from src.seedwork.logic.assertion_concern import AssertionConcern
-from src.seedwork.utils.functional import apply, return_v
+from dino_seedwork_be.logic.assertion_concern import AssertionConcern
+from dino_seedwork_be.utils.functional import apply, return_v
 
 
 class PublishedNotificationTracker(AssertionConcern):

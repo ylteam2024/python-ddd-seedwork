@@ -1,11 +1,11 @@
 from abc import abstractmethod
 from datetime import datetime
+from enum import Enum
 
 from multimethod import multimethod
-from pika.channel import Enum
 from returns.future import FutureFailure, FutureResult
 
-from src.seedwork.exceptions import MainException
+from dino_seedwork_be.exceptions import MainException
 
 
 class Type(Enum):

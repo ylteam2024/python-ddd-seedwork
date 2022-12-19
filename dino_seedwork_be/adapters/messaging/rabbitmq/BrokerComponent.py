@@ -10,7 +10,7 @@ from returns.functions import tap
 from returns.maybe import Maybe, Nothing, Some
 from returns.result import Result
 
-from src.seedwork.adapters.messaging.rabbitmq.ConnectionSettings import \
+from dino_seedwork_be.adapters.messaging.rabbitmq.ConnectionSettings import \
     ConnectionSettings
 
 # I am an abstract class for all Brocker Component, i include an channel

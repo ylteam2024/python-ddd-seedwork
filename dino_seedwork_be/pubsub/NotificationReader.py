@@ -5,7 +5,8 @@ from typing import Generic, TypeVar
 
 from returns.maybe import Maybe
 
-from src.seedwork.media.AbstractJsonMediaReader import AbstractJSONMediaReader
+from dino_seedwork_be.media.AbstractJsonMediaReader import \
+    AbstractJSONMediaReader
 
 ValueType = TypeVar("ValueType")
 DomainEventT = TypeVar("DomainEventT")

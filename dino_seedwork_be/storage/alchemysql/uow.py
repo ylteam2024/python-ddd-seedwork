@@ -6,14 +6,17 @@ from returns.pipeline import flow
 from returns.pointfree import bind, lash
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from src.seedwork.storage.uow import AbstractUnitOfWork, DBSessionUser
-from src.seedwork.utils.functional import passTo
+from dino_seedwork_be.storage.uow import AbstractUnitOfWork, DBSessionUser
+from dino_seedwork_be.utils.functional import pass_to
 
 ResultType = TypeVar("ResultType")
 ExceptionType = TypeVar("ExceptionType", bound=Exception)
 
 
 class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
+
+    _session: AsyncSession
+
     def __init__(
         self,
         session_factory: Callable[[], AsyncSession],
@@ -23,14 +26,17 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
         self.session_users = session_users
         super().__init__(session_users)
 
-    def getSession(self) -> AsyncSession:
-        return self.session
+    def session(self) -> AsyncSession:
+        return self._session
+
+    def set_session(self, session: AsyncSession):
+        self._session = session
 
     async def __aenter__(
         self,
     ):
-        self.session = self.session_factory()
-        [session_user.setSession(self.session) for session_user in self.session_users]
+        self.set_session(self.session_factory())
+        [session_user.set_session(self.session) for session_user in self.session_users]
         result = await super().__aenter__()
         return result
 
@@ -44,21 +50,15 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
         await self.session.close()
 
     @future_safe
-    async def futureAExitWithFailure(self, result: ExceptionType) -> ExceptionType:
+    async def future__aexit_with_failure(self, result: ExceptionType) -> ExceptionType:
         await self.__aexit__(result)
         print("result failure", result)
         raise result
 
     @future_safe
-    async def futureAExitWithSuccess(self, result: ResultType) -> ResultType:
+    async def future__aexit__with_success(self, result: ResultType) -> ResultType:
         await self.__aexit__(None)
         return result
-
-    def clearSession(self):
-        [
-            session_user.setSessionClosedStatus(True)
-            for session_user in self.session_users
-        ]
 
     async def _commit(self):
         await self.session.commit()
@@ -72,15 +72,15 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
         def enter(_):
             return self.futureAEnter()
 
-        def catchFutureResult(
+        def catch_future_result(
             result: FutureResult[ResultType, ExceptionType]
         ) -> FutureResult[ResultType, ExceptionType]:
             return flow(
                 True,
                 enter,
-                bind(passTo(result)),
-                bind(self.futureAExitWithSuccess),
-                lash(self.futureAExitWithFailure),
+                bind(pass_to(result)),
+                bind(self.future__aexit__with_success),
+                lash(self.future__aexit_with_failure),
             )
 
-        return catchFutureResult
+        return catch_future_result

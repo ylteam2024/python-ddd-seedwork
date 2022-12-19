@@ -1,16 +1,16 @@
 import re
 from enum import Enum
-from typing import Any, List, Optional, Union, overload
+from typing import List, Optional, Union, overload
 
 from returns.future import FutureFailure, FutureResult, FutureSuccess
-from returns.maybe import Maybe, Nothing, Some
+from returns.maybe import Maybe, Some
 from returns.result import Result, Success
 
-from src.seedwork.domain.exceptions import (DomainIllegalArgumentException,
-                                            DomainIllegalStateException)
-from src.seedwork.exceptions import (IllegalArgumentException,
-                                     IllegalStateException, MainException)
-from src.seedwork.utils.functional import returnV
+from dino_seedwork_be.domain.exceptions import (DomainIllegalArgumentException,
+                                                DomainIllegalStateException)
+from dino_seedwork_be.exceptions import (IllegalArgumentException,
+                                         IllegalStateException)
+from dino_seedwork_be.utils.functional import returnV
 
 
 class AssertionErrorCode(Enum):

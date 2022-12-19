@@ -3,9 +3,9 @@ from typing import Any, Type
 
 from returns.future import FutureResult, FutureSuccess
 
-from src.seedwork.domain.DomainEventPublisher import DomainEventPublisher
-from src.seedwork.domain.DomainEventSubscriber import DomainEventSubscriber
-from src.seedwork.utils.functional import returnV, throwException
+from dino_seedwork_be.domain.DomainEventPublisher import DomainEventPublisher
+from dino_seedwork_be.domain.DomainEventSubscriber import DomainEventSubscriber
+from dino_seedwork_be.utils.functional import returnV, throw_exception
 
 from .TestableDomainEvent import (AnotherTestableDomainEvent,
                                   TestableDomainEvent)
@@ -17,7 +17,7 @@ class TestDomainEventPublisher:
     event_handled = False
     another_event_handled = False
 
-    class TestDomainEventSubscriber(DomainEventSubscriber[TestableDomainEvent]):
+    class TestDomainEventSubscriber(DomainEventSubscriber):
         def handle_event(
             self, an_event: TestableDomainEvent
         ) -> FutureResult[Any, Exception]:
@@ -36,7 +36,7 @@ class TestDomainEventPublisher:
         assert TestDomainEventPublisher.event_handled == False
 
         await DomainEventPublisher.instance().publish(test_event).lash(
-            throwException
+            throw_exception
         ).awaitable()
 
         assert TestDomainEventPublisher.event_handled == True
@@ -46,7 +46,7 @@ class TestDomainEventPublisher:
         TestDomainEventPublisher.event_handled = False
         TestDomainEventPublisher.another_event_handled = False
 
-        class TestDomainEventSubscriber(DomainEventSubscriber[TestableDomainEvent]):
+        class TestDomainEventSubscriber(DomainEventSubscriber):
             def handle_event(
                 self, an_event: TestableDomainEvent
             ) -> FutureResult[Any, Exception]:

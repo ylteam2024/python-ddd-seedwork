@@ -5,10 +5,10 @@ from returns.pipeline import flow
 from returns.pointfree import bind
 from returns.result import Failure, Result, Success, safe
 
-from src.seedwork.domain.DomainEvent import DomainEvent
-from src.seedwork.logic.assertion_concern import AssertionConcern
-from src.seedwork.serializer.Serializable import JSONSerializable
-from src.seedwork.utils.functional import returnV
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
+from dino_seedwork_be.logic.assertion_concern import AssertionConcern
+from dino_seedwork_be.serializer.Serializable import JSONSerializable
+from dino_seedwork_be.utils.functional import returnV
 
 
 class DomainEventSerializable(DomainEvent, JSONSerializable):

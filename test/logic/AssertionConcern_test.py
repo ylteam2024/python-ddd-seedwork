@@ -1,6 +1,6 @@
 from returns.result import Failure
 
-from src.seedwork.logic.assertion_concern import AssertionConcern
+from dino_seedwork_be.logic.assertion_concern import AssertionConcern
 
 aAssertionConcern = AssertionConcern()
 
@@ -13,16 +13,16 @@ class TestAssertionConcern:
             return cN + 1
 
         result = (
-            aAssertionConcern.assertArgumentEquals(1, 1, "correct")
+            aAssertionConcern.assert_argument_equals(1, 1, "correct")
             .map(lambda _: increase(checkingNum))
             .bind(
-                lambda value: aAssertionConcern.assertArgumentFalse(False).map(
+                lambda value: aAssertionConcern.assert_argument_false(False).map(
                     lambda _: value
                 )
             )
             .map(lambda cN: increase(cN))
             .bind(
-                lambda value: aAssertionConcern.assertArgumentNotNull("Oke").map(
+                lambda value: aAssertionConcern.assert_argument_not_null("Oke").map(
                     lambda _: value
                 )
             )

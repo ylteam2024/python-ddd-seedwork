@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 
-def castBoolFromStr(value):
+def cast_bool_from_str(value):
     if value.lower() in ["true", "yes", "on", "1"]:
         value = True
     elif value.lower() in ["false", "no", "not", "off", "0"]:
@@ -21,11 +21,7 @@ def get_env(name, default=None, is_bool=False):
     value = os.environ.get(name)
     if value is not None:
         if is_bool:
-            return castBoolFromStr(value)
+            return cast_bool_from_str(value)
         else:
             return value
     return default
-
-
-def getEnv(name, default=None, is_bool=False):
-    return get_env(name, default, is_bool)

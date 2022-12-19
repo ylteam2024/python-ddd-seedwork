@@ -8,10 +8,10 @@ from returns.maybe import Maybe
 from returns.pipeline import flow, pipe
 from returns.pointfree import bind, lash
 
-from src.seedwork.domain.value_objects import ID
-from src.seedwork.exceptions import NotImplementError
-from src.seedwork.storage.uow import DBSessionUser
-from src.seedwork.utils.functional import return_v
+from dino_seedwork_be.domain.value_objects import ID
+from dino_seedwork_be.exceptions import NotImplementError
+from dino_seedwork_be.storage.uow import DBSessionUser
+from dino_seedwork_be.utils.functional import return_v
 
 EntityType = TypeVar("EntityType")
 DTOType = TypeVar("DTOType")

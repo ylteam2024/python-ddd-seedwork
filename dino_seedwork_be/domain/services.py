@@ -1,4 +1,4 @@
-from src.seedwork.storage.uow import SuperDBSessionUser
+from dino_seedwork_be.storage.uow import SuperDBSessionUser
 
 from .mixins import BusinessRuleValidationMixin
 

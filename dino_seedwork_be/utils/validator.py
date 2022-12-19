@@ -4,16 +4,16 @@ import xml.etree.ElementTree as elementTree
 import httpx
 import validators
 
-validatorUtils = validators
+validator_utils = validators
 
 
 class Validator:
     @staticmethod
-    def email(aValue: str):
-        return validators.email(aValue)
+    def email(a_value: str):
+        return validators.email(a_value)
 
 
-def isInJsonFormat(aText: str):
+def is_in_json_format(aText: str):
     try:
         json.loads(aText)
         return True
@@ -21,7 +21,7 @@ def isInJsonFormat(aText: str):
         return False
 
 
-def isXml(value):
+def is_xml(value):
     try:
         elementTree.fromstring(value)
     except elementTree.ParseError:
@@ -29,7 +29,7 @@ def isXml(value):
     return True
 
 
-def isUrlImage(image_url):
+def is_url_image(image_url):
     image_formats = ("image/png", "image/jpeg", "image/jpg")
     r = httpx.head(image_url)
     if r.headers["content-type"] in image_formats:

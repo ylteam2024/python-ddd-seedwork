@@ -4,8 +4,9 @@ from typing import Generic, Optional, TypeVar, cast
 
 from returns.result import Result, Success
 
-from src.seedwork.domain.assertion_concern import AssertionConcern
-from src.seedwork.domain.IdentifiedDomainObject import IdentifiedDomainObject
+from dino_seedwork_be.domain.assertion_concern import AssertionConcern
+from dino_seedwork_be.domain.IdentifiedDomainObject import \
+    IdentifiedDomainObject
 
 from .mixins import BusinessRuleValidationMixin
 from .value_objects import ID, UUID

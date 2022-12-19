@@ -4,7 +4,7 @@ import zlib
 from typing import BinaryIO
 
 
-def getImageDimension(file_or_path, close=False):
+def get_image_dimension(file_or_path, close=False):
     """
     Return the (width, height) of an image, given an open file or a path.  Set
     'close' to True to close the file at the end if it is initially in an open
@@ -58,6 +58,6 @@ def getImageDimension(file_or_path, close=False):
             file.seek(file_pos)
 
 
-def getImageFileSize(file: BinaryIO) -> float:
+def get_image_file_size(file: BinaryIO) -> float:
     file.seek(0, os.SEEK_END)
     return file.tell()

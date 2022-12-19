@@ -1,4 +1,4 @@
-from src.seedwork.exceptions import MainException
+from dino_seedwork_be.exceptions import MainException
 
 
 class MessageException(MainException):

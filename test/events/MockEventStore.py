@@ -1,5 +1,5 @@
 from random import randrange
-from test.seedwork.events.TestableDomainEvent import TestableDomainEvent
+from test.events.TestableDomainEvent import TestableDomainEvent
 from typing import Any, List, cast
 
 from returns.curry import partial
@@ -10,12 +10,12 @@ from returns.pipeline import flow
 from returns.pointfree import bind, map_
 from returns.result import Success
 
-from src.seedwork.domain.DomainEvent import DomainEvent
-from src.seedwork.event.EventSerializer import EventSerializer
-from src.seedwork.event.EventStore import EventStore
-from src.seedwork.event.StoredEvent import StoredEvent
-from src.seedwork.utils.functional import feedKwargs, forEach
-from src.seedwork.utils.meta import get_class_name
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
+from dino_seedwork_be.event.EventSerializer import EventSerializer
+from dino_seedwork_be.event.EventStore import EventStore
+from dino_seedwork_be.event.StoredEvent import StoredEvent
+from dino_seedwork_be.utils.functional import feedKwargs, for_each
+from dino_seedwork_be.utils.meta import get_class_name
 
 
 class MockEventStore(EventStore):
@@ -44,7 +44,7 @@ class MockEventStore(EventStore):
             map_(
                 tap(
                     partial(
-                        forEach,
+                        for_each,
                         lambda stored_event, _: self._stored_events.append(
                             stored_event
                         ),

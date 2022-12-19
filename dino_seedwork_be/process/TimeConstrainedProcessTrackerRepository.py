@@ -4,10 +4,10 @@ from typing import Any, List
 from returns.future import FutureResult
 from returns.maybe import Maybe
 
-from src.seedwork.process.ProcessId import ProcessId
-from src.seedwork.process.TimeConstrainedProcessTracker import \
+from dino_seedwork_be.process.ProcessId import ProcessId
+from dino_seedwork_be.process.TimeConstrainedProcessTracker import \
     TimeConstrainedProcessTracker
-from src.seedwork.storage.uow import DBSessionUser
+from dino_seedwork_be.storage.uow import DBSessionUser
 
 from .timeout_event_factory import timeout_factory_type
 

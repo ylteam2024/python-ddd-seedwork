@@ -2,9 +2,9 @@ from dataclasses import field
 
 from returns.result import safe
 
-from src.seedwork.domain.assertion_concern import DomainAssertionConcern
-from src.seedwork.domain.value_objects import ID, UUID
-from src.seedwork.exceptions import IllegalArgumentException
+from dino_seedwork_be.domain.assertion_concern import DomainAssertionConcern
+from dino_seedwork_be.domain.value_objects import ID, UUID
+from dino_seedwork_be.exceptions import IllegalArgumentException
 
 
 class IdentifiedDomainObject(DomainAssertionConcern):

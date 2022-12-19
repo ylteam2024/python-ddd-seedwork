@@ -1,12 +1,12 @@
 import json
-from typing import Generic, Optional, Type, TypeVar
+from typing import Optional
 
 from returns.maybe import Maybe, Some
 from returns.pipeline import pipe
 from returns.result import safe
 
-from src.seedwork.domain.DomainEvent import DomainEvent
-from src.seedwork.serializer.AbstractSerializer import AbstractSerializer
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
+from dino_seedwork_be.serializer.AbstractSerializer import AbstractSerializer
 
 
 class EventSerializer(AbstractSerializer):

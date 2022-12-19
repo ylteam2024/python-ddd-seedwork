@@ -2,9 +2,7 @@ from typing import Any, Dict, Type
 
 from returns.maybe import Maybe, Nothing, Some
 
-from src.seedwork.domain.DomainEvent import DomainEvent
-from src.seedwork.domain.exceptions import DomainException
-from src.seedwork.utils.functional import throwException
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
 
 
 class AbstractDomainEventDict:

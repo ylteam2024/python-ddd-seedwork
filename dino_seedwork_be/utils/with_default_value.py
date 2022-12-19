@@ -3,5 +3,5 @@ from typing import Optional, TypeVar
 T = TypeVar("T")
 
 
-def withDefaultValue(original: Optional[T], defaultValue: T) -> T:
+def with_default_value(original: Optional[T], defaultValue: T) -> T:
     return original or defaultValue

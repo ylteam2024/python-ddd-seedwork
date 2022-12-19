@@ -1,8 +1,8 @@
 import re
 from typing import Optional
 
-from src.seedwork.domain.assertion_concern import DomainAssertionConcern
-from src.seedwork.domain.value_objects import ValueObject
+from dino_seedwork_be.domain.assertion_concern import DomainAssertionConcern
+from dino_seedwork_be.domain.value_objects import ValueObject
 
 
 class StringWithRegex(ValueObject, DomainAssertionConcern):

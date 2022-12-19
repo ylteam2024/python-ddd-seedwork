@@ -1,6 +1,6 @@
 from typing import Callable, List
 
-from src.seedwork.storage.uow import AbstractUnitOfWork, DBSessionUser
+from dino_seedwork_be.storage.uow import AbstractUnitOfWork, DBSessionUser
 
 UowFactory = Callable[[List[DBSessionUser]], AbstractUnitOfWork]
 

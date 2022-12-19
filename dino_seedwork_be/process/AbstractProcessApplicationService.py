@@ -2,18 +2,16 @@ from abc import abstractmethod
 from typing import List
 
 from returns.curry import partial
-from returns.functions import tap
 from returns.future import FutureResult, FutureSuccess
 from returns.iterables import Fold
 from returns.pipeline import flow, pipe
-from returns.pointfree import bind, map_
+from returns.pointfree import bind
 
-from src.seedwork.application.ApplicationLifeCycleUseCase import \
+from dino_seedwork_be.application.ApplicationLifeCycleUseCase import \
     ApplicationLifeCycleUsecase
-from src.seedwork.process.TimeConstrainedProcessTrackerRepository import \
+from dino_seedwork_be.process.TimeConstrainedProcessTrackerRepository import \
     TimeConstrainedProcessTrackerRepository
-from src.seedwork.storage.uow import DBSessionUser
-from src.seedwork.utils.functional import print_result_with_text
+from dino_seedwork_be.storage.uow import DBSessionUser
 
 
 class AbstractProcessApplicationService(ApplicationLifeCycleUsecase):

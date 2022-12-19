@@ -1,16 +1,14 @@
 from typing import Any, Callable, Optional
 
-from pika.channel import ExchangeType
-from returns.curry import partial
-from returns.pipeline import pipe
+from pika.exchange_type import ExchangeType
 from returns.result import Result, safe
 
-from src.seedwork.adapters.logger import SIMPLE_LOGGER
-from src.seedwork.adapters.messaging.rabbitmq.BrokerComponent import \
+from dino_seedwork_be.adapters.logger import SIMPLE_LOGGER
+from dino_seedwork_be.adapters.messaging.rabbitmq.BrokerComponent import \
     BrokerComponent
-from src.seedwork.adapters.messaging.rabbitmq.ConnectionSettings import \
+from dino_seedwork_be.adapters.messaging.rabbitmq.ConnectionSettings import \
     ConnectionSettings
-from src.seedwork.utils.functional import execute
+from dino_seedwork_be.utils.functional import execute
 
 
 class Exchange(BrokerComponent):

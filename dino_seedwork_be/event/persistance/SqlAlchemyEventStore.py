@@ -10,13 +10,14 @@ from sqlalchemy import Column, DateTime, Integer, String, select
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql.functions import count
 
-from src.seedwork.domain.DomainEvent import DomainEvent
-from src.seedwork.event.EventSerializer import EventSerializer
-from src.seedwork.event.EventStore import EventStore
-from src.seedwork.event.StoredEvent import StoredEvent
-from src.seedwork.storage.uow import DBSessionUser
-from src.seedwork.utils.functional import (async_to_future_result, feedKwargs,
-                                           print_result_with_text, returnV)
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
+from dino_seedwork_be.event.EventSerializer import EventSerializer
+from dino_seedwork_be.event.EventStore import EventStore
+from dino_seedwork_be.event.StoredEvent import StoredEvent
+from dino_seedwork_be.storage.uow import DBSessionUser
+from dino_seedwork_be.utils.functional import (async_to_future_result,
+                                               feedKwargs,
+                                               print_result_with_text, returnV)
 
 Base = declarative_base()
 

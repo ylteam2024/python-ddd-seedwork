@@ -3,7 +3,7 @@ from uuid import UUID, uuid4
 
 from returns.result import Failure, Result, Success, safe
 
-from src.seedwork.domain.AbstractIdentity import AbstractIdentity
+from dino_seedwork_be.domain.AbstractIdentity import AbstractIdentity
 
 
 class ProcessId(AbstractIdentity[str]):

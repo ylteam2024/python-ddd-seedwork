@@ -1,4 +1,4 @@
-def getLocalClassname(instance):
+def get_local_classname(instance):
     return get_class_name(instance)
 
 

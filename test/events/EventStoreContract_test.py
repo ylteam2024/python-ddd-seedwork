@@ -3,8 +3,9 @@ from returns.functions import tap
 from returns.pipeline import flow
 from returns.pointfree import bind, map_
 
-from src.seedwork.event.EventStore import EventStore
-from src.seedwork.utils.functional import assert_equal, unwrap_future_result_io
+from dino_seedwork_be.event.EventStore import EventStore
+from dino_seedwork_be.utils.functional import (assert_equal,
+                                               unwrap_future_result_io)
 
 from .MockEventStore import MockEventStore
 

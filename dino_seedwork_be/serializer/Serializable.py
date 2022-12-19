@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
 
 
 class JSONSerializable(ABC):
@@ -15,5 +14,5 @@ class JSONSerializable(ABC):
     def restore(a_dict: dict):
         ...
 
-    def getValue(self):
+    def get_value(self):
         return self.__getstate__()

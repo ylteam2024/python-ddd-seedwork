@@ -1,6 +1,6 @@
 from returns.result import safe
-from src.seedwork.domain.assertion_concern import AssertionConcern
-from src.seedwork.utils.functional import setPrivateAttr
+
+from dino_seedwork_be.domain.assertion_concern import AssertionConcern
 
 from .exceptions import BusinessRuleValidationException
 from .rules import BusinessRule
@@ -18,7 +18,7 @@ class OrderItemMixin(AssertionConcern):
     def getOrder(self) -> int:
         return self.__order
 
-    @safe 
+    @safe
     def setOrder(self, anIntValue: int):
         self.assertArgumentLargerThan(
             anIntValue, -1, "Order need to a positive number or 0"

@@ -7,7 +7,7 @@ from typing import Optional
 import jsonpickle
 import toolz
 
-from src.seedwork.exceptions import IllegalArgumentException
+from dino_seedwork_be.exceptions import IllegalArgumentException
 
 
 class JSONReader:

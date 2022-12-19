@@ -1,9 +1,9 @@
 from celery.utils.log import traceback
 from fastapi import HTTPException, status
 
-from src.seedwork.adapters.logger import SIMPLE_LOGGER
-from src.seedwork.adapters.rest import error_detail_with_code
-from src.seedwork.exceptions import MainException
+from dino_seedwork_be.adapters.logger import SIMPLE_LOGGER
+from dino_seedwork_be.adapters.rest import error_detail_with_code
+from dino_seedwork_be.exceptions import MainException
 
 
 def basic_handle_exception(exception):

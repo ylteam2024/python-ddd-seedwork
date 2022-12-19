@@ -5,10 +5,10 @@ from returns.future import FutureFailure, FutureResult, FutureSuccess
 from returns.iterables import Fold
 from returns.pipeline import flow, managed
 
-from src.seedwork.domain.DomainEvent import DomainEvent
-from src.seedwork.domain.DomainEventSubscriber import DomainEventSubscriber
-from src.seedwork.exceptions import MainException
-from src.seedwork.utils.process.ThreadLocal import ThreadLocal
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
+from dino_seedwork_be.domain.DomainEventSubscriber import DomainEventSubscriber
+from dino_seedwork_be.exceptions import MainException
+from dino_seedwork_be.utils.process.ThreadLocal import ThreadLocal
 
 EventType = TypeVar("EventType", bound=DomainEvent)
 

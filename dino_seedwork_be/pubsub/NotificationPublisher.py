@@ -5,7 +5,7 @@ from returns.future import FutureResult
 from returns.maybe import Maybe
 from returns.result import Result
 
-from src.seedwork.storage.uow import DBSessionUser
+from dino_seedwork_be.storage.uow import DBSessionUser
 
 
 class NotificationPublisher(ABC, DBSessionUser):

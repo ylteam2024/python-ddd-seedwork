@@ -11,16 +11,16 @@ from pika import BasicProperties, DeliveryMode
 from returns.maybe import Maybe, Nothing, Some
 from returns.result import Failure, Result, Success, safe
 
-from src.seedwork.adapters.logger import SIMPLE_LOGGER
-from src.seedwork.adapters.messaging.rabbitmq.BrokerComponent import \
+from dino_seedwork_be.adapters.logger import SIMPLE_LOGGER
+from dino_seedwork_be.adapters.messaging.rabbitmq.BrokerComponent import \
     BrokerComponent
-from src.seedwork.adapters.messaging.rabbitmq.Exchange import Exchange
-from src.seedwork.adapters.messaging.rabbitmq.MessageListener import \
+from dino_seedwork_be.adapters.messaging.rabbitmq.Exchange import Exchange
+from dino_seedwork_be.adapters.messaging.rabbitmq.MessageListener import \
     MessageException
-from src.seedwork.adapters.messaging.rabbitmq.MessageParameters import \
+from dino_seedwork_be.adapters.messaging.rabbitmq.MessageParameters import \
     MessageParameters
-from src.seedwork.adapters.messaging.rabbitmq.Queue import Queue
-from src.seedwork.logic.assertion_concern import AssertionConcern
+from dino_seedwork_be.adapters.messaging.rabbitmq.Queue import Queue
+from dino_seedwork_be.logic.assertion_concern import AssertionConcern
 
 
 class MessageProducer(AssertionConcern):

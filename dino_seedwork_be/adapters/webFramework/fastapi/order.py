@@ -1,8 +1,8 @@
 import json
 from typing import Any, List
 
-from src.seedwork.adapters.rest import toParamOrders
-from src.seedwork.utils.dict import extract
+from dino_seedwork_be.adapters.rest import to_param_orders
+from dino_seedwork_be.utils.dict import extract
 
 
 class Orders:
@@ -18,4 +18,4 @@ class Orders:
                     orders = {}
 
         plainOrders = extract(orders, self.keys)
-        return toParamOrders(plainOrders)
+        return to_param_orders(plainOrders)

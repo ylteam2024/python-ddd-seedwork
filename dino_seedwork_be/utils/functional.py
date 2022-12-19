@@ -3,7 +3,6 @@ import traceback
 from collections.abc import Callable, Iterable
 from typing import Any, Coroutine, List, Optional, TypeVar
 
-from alembic.context import execute
 from returns.converters import maybe_to_result
 from returns.curry import curry, partial
 from returns.future import (Future, FutureFailure, FutureResult, FutureResultE,
@@ -21,28 +20,28 @@ T = TypeVar("T")
 ExceptionType = TypeVar("ExceptionType", bound=Exception)
 
 
-def forEach(function: Callable[[T, int], Any], iterable: Iterable[T]):
+def for_each(function: Callable[[T, int], Any], iterable: Iterable[T]):
     for idx, element in enumerate(iterable):
         function(element, idx)
 
 
-def mapToList(fn: Callable[[T], Any], items: List[T]) -> List[Any]:
+def map_to_list(fn: Callable[[T], Any], items: List[T]) -> List[Any]:
     return flow(items, partial(map, fn), list)
 
 
-def feedIdentity(obj):
+def feed_identity(obj):
     return lambda _: obj
 
 
-def getClassName(obj):
+def get_class_name(obj):
     return obj.__class__.__name__
 
 
-def setPrivateAttr(obj, field, value):
-    setattr(obj, f"_{getClassName(obj)}__{field}", value)
+def set_private_attr(obj, field, value):
+    setattr(obj, f"_{get_class_name(obj)}__{field}", value)
 
 
-def setPublicAttr(obj, field, value):
+def set_public_attr(obj, field, value):
     setattr(obj, field, value)
 
 
@@ -53,7 +52,7 @@ def set_protected_attr(obj, field, value):
 InnerValueType = TypeVar("InnerValueType")
 
 
-def maybeToFuture(v: InnerValueType) -> Future[Result[InnerValueType, Any]]:
+def maybe_to_future(v: InnerValueType) -> Future[Result[InnerValueType, Any]]:
     return flow(
         v,
         Maybe.from_optional,
@@ -63,7 +62,9 @@ def maybeToFuture(v: InnerValueType) -> Future[Result[InnerValueType, Any]]:
     )
 
 
-def resultToFuture(v: Result[InnerValueType, Any]) -> FutureResult[InnerValueType, Any]:
+def result_to_future(
+    v: Result[InnerValueType, Any]
+) -> FutureResult[InnerValueType, Any]:
     result = flow(v, FutureResult.from_result)
     return result
 
@@ -77,20 +78,14 @@ def check_none_with_future_with_exception(
         return flow(
             v,
             Maybe.from_optional,
-            lash(returnFutureFailure(exception)),
+            lash(return_future_failure(exception)),
             bind(FutureResult.from_value),
         )
 
     return checkNone
 
 
-def checkNoneWithFutureWithException(
-    exception: ExceptionType,
-) -> Callable[[InnerValueType], FutureResult[InnerValueType, ExceptionType]]:
-    return check_none_with_future_with_exception(exception)
-
-
-def unwrapMaybe(v: Maybe[InnerValueType]) -> InnerValueType | None:
+def unwrap_maybe(v: Maybe[InnerValueType]) -> InnerValueType | None:
     return v.value_or(None)
 
 
@@ -98,28 +93,23 @@ def unwrap(v):
     return v.unwrap()
 
 
-def assertFalse(exception):
+def assert_false(exception):
     assert False
 
 
-def assertTrue(value):
+def assert_true(value):
     assert True
 
 
 @curry
-def assertFalseWithDesc(desc, exception):
+def assert_false_with_desc(desc, exception):
     assert False, desc or ""
 
 
 @curry
-def assertTrueWithDes(desc, value):
+def assert_true_with_des(desc, value):
     assert True, desc or ""
     return True
-
-
-@curry
-def assertEqual(value, variable):
-    assert variable == value
 
 
 @curry
@@ -127,7 +117,7 @@ def assert_equal(value, variable):
     assert variable == value
 
 
-def throwException(error):
+def throw_exception(error):
     match error:
         case Exception():
             raise error
@@ -136,9 +126,8 @@ def throwException(error):
 
 
 @future_safe
-async def assertFutureResultSuccesful(result: FutureResult):
+async def assert_future_result_succesful(result: FutureResult):
     ioResult = await result.awaitable()
-    print("assertFutureResultSuccesful ", ioResult)
     assert is_successful(ioResult)
     result = flow(
         ioResult.unwrap(),
@@ -148,12 +137,12 @@ async def assertFutureResultSuccesful(result: FutureResult):
     return result
 
 
-def raiseException(ex: Exception):
+def raise_exception(ex: Exception):
     traceback.print_exc()
     raise ex
 
 
-def passTo(v: InnerValueType) -> Callable[[Any], InnerValueType]:
+def pass_to(v: InnerValueType) -> Callable[[Any], InnerValueType]:
     return lambda _: v
 
 
@@ -165,24 +154,9 @@ def print_result_with_text(text: str):
     return printResult
 
 
-def printResultWithText(text: str):
-    return print_result_with_text(text)
-
-
-def identityFactory(v: InnerValueType) -> Callable[[], InnerValueType]:
+def identity_factory(v: InnerValueType) -> Callable[[], InnerValueType]:
     def execute():
         return v
-
-    return execute
-
-
-def asyncToFutureResult(
-    fnc: Callable[..., Coroutine[InnerValueType, Any, Any]],
-) -> Callable[..., FutureResult[InnerValueType, Any]]:
-    @future_safe
-    async def execute(*args, **kwargs):
-        result = await fnc(*args, **kwargs)
-        return result
 
     return execute
 
@@ -198,42 +172,34 @@ def async_to_future_result(
     return execute
 
 
-def returnFutureFailure(
+def return_future_failure(
     e: ExceptionType,
 ) -> Callable[[Any], FutureResultE[ExceptionType]]:
     return lambda _: FutureResult.from_failure(e)
-
-
-def unwrapFutureResultIO(result: IOResult[InnerValueType, Any]) -> InnerValueType:
-    return unsafe_perform_io(unwrap(result))
 
 
 def unwrap_future_result_io(result: IOResult[InnerValueType, Any]) -> InnerValueType:
     return unsafe_perform_io(unwrap(result))
 
 
-def collectContainer(init):
-    def withItems(items):
+def collect_container(init):
+    def with_items(items):
         return Fold.collect(items, init)
 
-    return withItems
+    return with_items
 
 
-def filterNotNone(items: List[InnerValueType | None]) -> List[InnerValueType]:
+def filter_not_none(items: List[InnerValueType | None]) -> List[InnerValueType]:
     return list(filter(lambda item: item is not None, items))
 
 
-def assertNotNone(v):
+def assert_not_none(v):
     print("assertNotNone", v)
     assert v is not None
 
 
-def assertStateTrue(v):
+def assert_state_true(v):
     assert v
-
-
-def feedArgs(func):
-    return feed_args(func)
 
 
 def feed_args(func):
@@ -250,11 +216,7 @@ def feed_kwargs(func):
     return execute
 
 
-def feedKwargs(func):
-    return feed_kwargs(func)
-
-
-def throwFutureFailed(exception: Exception):
+def throw_future_failed(exception: Exception):
     return lambda _: FutureFailure(exception)
 
 
@@ -266,23 +228,17 @@ def not_nothing_or_throw_future_failed(
     ) -> FutureResult[InnerValueType, ExceptionType]:
         return flow(
             value,
-            lash(throwFutureFailed(exception)),
+            lash(throw_future_failed(exception)),
             bind(lambda v: FutureResult.from_value(v)),
         )
 
     return execute
 
 
-def notNoneOrThrowFutureFailed(
-    exception: ExceptionType,
-) -> Callable[[Maybe[InnerValueType]], FutureResult[InnerValueType, ExceptionType]]:
-    return not_nothing_or_throw_future_failed(exception)
-
-
-def unwrapFutureIOMaybe(
+def unwrap_future_io_maybe(
     value: IOResult[Maybe[InnerValueType], Any]
 ) -> InnerValueType | None:
-    return unwrapMaybe(unsafe_perform_io(unwrap(value)))
+    return unwrap_maybe(unsafe_perform_io(unwrap(value)))
 
 
 def returnV(v: InnerValueType) -> Callable[[Any], InnerValueType]:
@@ -323,15 +279,19 @@ def async_execute(fn: Callable[..., FutureResult]):
     return _
 
 
-def tap_excute_future(fn: Callable[[T], FutureResult]):
-    def execute(input: T) -> FutureResult:
+def tap_excute_future(
+    fn: Callable[[T], FutureResult]
+) -> Callable[[T], FutureResult[T, Any]]:
+    def execute(input: T) -> FutureResult[T, Any]:
         return fn(input).map(return_v(input))
 
     return execute
 
 
-def tap_failure_execute_future(fn: Callable[[T], FutureResult]):
-    def execute(input: T) -> FutureResult:
+def tap_failure_execute_future(
+    fn: Callable[[T], FutureResultE]
+) -> Callable[[T], FutureResultE]:
+    def execute(input: T) -> FutureResultE:
         return fn(input).bind(return_v(FutureFailure(input)))
 
     return execute

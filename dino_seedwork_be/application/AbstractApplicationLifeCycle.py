@@ -2,17 +2,16 @@ from abc import ABC, abstractmethod
 from typing import Callable, Dict, List, Optional
 from uuid import uuid4
 
-from returns.curry import partial
-from returns.future import FutureFailure, FutureResult
+from returns.future import FutureResult
 from returns.pipeline import flow, managed
 from returns.pointfree import bind, lash
 
-from src.seedwork.application.ApplicationLifeCycleUseCase import \
+from dino_seedwork_be.application.ApplicationLifeCycleUseCase import \
     ApplicationLifeCycleUsecase
-from src.seedwork.event.EventStore import EventStore
-from src.seedwork.storage.uow import DBSessionUser
-from src.seedwork.utils.functional import (apply, return_v, tap_excute_future,
-                                           tap_failure_execute_future)
+from dino_seedwork_be.event.EventStore import EventStore
+from dino_seedwork_be.storage.uow import DBSessionUser
+from dino_seedwork_be.utils.functional import (apply, tap_excute_future,
+                                               tap_failure_execute_future)
 
 
 class AbstractApplicationServiceLifeCycle(ABC):

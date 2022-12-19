@@ -4,12 +4,12 @@ from returns.future import future_safe
 from returns.maybe import Maybe, Nothing, Some
 from sqlalchemy import Column, Integer, String, select, update
 
-from src.seedwork.pubsub.Notification import Notification
-from src.seedwork.pubsub.PublishedNotificationTracker import \
+from dino_seedwork_be.pubsub.Notification import Notification
+from dino_seedwork_be.pubsub.PublishedNotificationTracker import \
     PublishedNotificationTracker
-from src.seedwork.pubsub.PublishedNotificationTrackerStore import \
+from dino_seedwork_be.pubsub.PublishedNotificationTrackerStore import \
     PublishedNotificationTrackerStore
-from src.seedwork.storage.alchemysql.Repository import AlchemyRepository
+from dino_seedwork_be.storage.alchemysql.Repository import AlchemyRepository
 
 
 class SqlAlchemyBasePublishedNotifTracker:

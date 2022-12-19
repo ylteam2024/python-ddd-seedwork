@@ -4,11 +4,10 @@ from typing import Any, List
 from returns.future import FutureResult
 from returns.maybe import Maybe
 
-from src.seedwork.adapters.repository import Repository
-from src.seedwork.pubsub.Notification import Notification
-from src.seedwork.pubsub.PublishedNotificationTracker import \
+from dino_seedwork_be.pubsub.Notification import Notification
+from dino_seedwork_be.pubsub.PublishedNotificationTracker import \
     PublishedNotificationTracker
-from src.seedwork.storage.uow import DBSessionUser
+from dino_seedwork_be.storage.uow import DBSessionUser
 
 
 class PublishedNotificationTrackerStore(DBSessionUser):

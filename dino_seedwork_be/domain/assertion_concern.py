@@ -1,8 +1,8 @@
 import re
 from typing import Optional, Union, overload
 
-from src.seedwork.domain.exceptions import (DomainIllegalArgumentException,
-                                            DomainIllegalStateException)
+from dino_seedwork_be.domain.exceptions import (DomainIllegalArgumentException,
+                                                DomainIllegalStateException)
 
 
 class AssertionConcern:

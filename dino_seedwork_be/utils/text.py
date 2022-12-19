@@ -1,14 +1,14 @@
 import base64
 
 
-def censoredText(aText: str):
-    if aText is None or len(aText.strip()) == 0:
-        return aText
+def censored_text(a_text: str):
+    if a_text is None or len(a_text.strip()) == 0:
+        return a_text
 
-    return aText[0:2] + "******" + aText[-3:]
+    return a_text[0:2] + "******" + a_text[-3:]
 
 
-def parseNumOrKeeping(v: str):
+def parse_num_or_keeping(v: str):
     try:
         num = float(v)
         if num.is_integer():

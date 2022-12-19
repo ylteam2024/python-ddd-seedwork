@@ -1,35 +1,31 @@
 from functools import reduce
 from typing import Any, List, Optional
 
-from sqlalchemy import (CHAR, TEXT, VARCHAR, Column, Integer, Text, and_, cast,
-                        func, or_)
+from sqlalchemy import TEXT, Column, and_, cast, func, or_
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from src.seedwork.adapters.rest import (FilterElement, FilterSet, OrderParam,
-                                        ParamOperators, ParamWithComparing)
-from src.seedwork.application.query import BaseQuerier
-from src.seedwork.exceptions import MainException
-from src.seedwork.storage.uow import DBSessionUser
-from src.seedwork.utils.list import removeNone
+from dino_seedwork_be.adapters.rest import (FilterElement, OrderParam,
+                                            ParamOperators, ParamWithComparing)
+from dino_seedwork_be.application.query import BaseQuerier
+from dino_seedwork_be.exceptions import MainException
+from dino_seedwork_be.storage.uow import DBSessionUser
+from dino_seedwork_be.utils.list import remove_none
 
 
 class AlchemyQuerier(BaseQuerier):
-    __querySession: AsyncSession
+    _query_session: AsyncSession
 
-    def setSession(self, session: AsyncSession):
-        self.__querySession = session
+    def set_session(self, session: AsyncSession):
+        self._query_session = session
 
-    def applySession(self, sessionUsers: List[DBSessionUser]):
+    def apply_session(self, sessionUsers: List[DBSessionUser]):
         for user in sessionUsers:
-            user.setSession(self.getSession())
-
-    def getSession(self) -> AsyncSession:
-        return self.__querySession
+            user.set_session(self.session())
 
     def session(self) -> AsyncSession:
-        return self.__querySession
+        return self._query_session
 
-    def isAllowedPrimitive(self, v: Any):
+    def is_allowed_primitive(self, v: Any):
         return (
             isinstance(v, bool)
             or isinstance(v, str)
@@ -37,8 +33,8 @@ class AlchemyQuerier(BaseQuerier):
             or isinstance(v, float)
         )
 
-    def aParamToColumFilter(
-        self, param: Any | ParamWithComparing, column: Column, isCollection: bool
+    def a_param_to_colum_filter(
+        self, param: Any | ParamWithComparing, column: Column, is_collection: bool
     ):
         match param:
             case ParamWithComparing():
@@ -55,8 +51,8 @@ class AlchemyQuerier(BaseQuerier):
                         return column == param.value
                     case _:
                         raise MainException(code="UNKNOWN_PARAM_COMPARATOR")
-            case p if self.isAllowedPrimitive(p):
-                match isCollection:
+            case p if self.is_allowed_primitive(p):
+                match is_collection:
                     case False:
                         return column == param
                     case True:
@@ -64,65 +60,71 @@ class AlchemyQuerier(BaseQuerier):
             case _:
                 return None
 
-    def paramListToColumnFilter(
+    def param_list_to_column_filter(
         self,
         param: List[Any] | List[ParamWithComparing],
         column: Column,
-        isCollection: bool,
+        is_collection: bool,
     ):
         match param:
             case [*elems] if all(isinstance(e, ParamWithComparing) for e in elems):
                 return and_(
-                    *[self.aParamToColumFilter(p, column, isCollection) for p in param]
+                    *[
+                        self.a_param_to_colum_filter(p, column, is_collection)
+                        for p in param
+                    ]
                 )
-            case [*elems] if all(self.isAllowedPrimitive(e) for e in elems):
+            case [*elems] if all(self.is_allowed_primitive(e) for e in elems):
                 return or_(
-                    *[self.aParamToColumFilter(p, column, isCollection) for p in param]
+                    *[
+                        self.a_param_to_colum_filter(p, column, is_collection)
+                        for p in param
+                    ]
                 )
             case _:
                 return None
 
-    def paramToColumnFilter(
-        self, param: FilterElement, column: Column, isCollection: bool = False
+    def param_to_column_filter(
+        self, param: FilterElement, column: Column, is_collection: bool = False
     ):
         match param:
             case list():
-                return removeNone(
-                    [self.paramListToColumnFilter(param, column, isCollection)]
+                return remove_none(
+                    [self.param_list_to_column_filter(param, column, is_collection)]
                 )
             case _:
-                return removeNone(
-                    [self.aParamToColumFilter(param, column, isCollection)]
+                return remove_none(
+                    [self.a_param_to_colum_filter(param, column, is_collection)]
                 )
 
     @staticmethod
-    def genSpaceInterwineColumns(columns: List[Column]):
-        def reduceInterwineWithSpace(acc, value):
+    def gen_space_interwine_columns(columns: List[Column]):
+        def reduce_interwine_with_space(acc, value):
             match value[0]:
                 case int() as index if index == len(columns) - 1:
                     return [*acc, value[1]]
                 case _:
                     return [*acc, value[1], " "]
 
-        return func.concat(*reduce(reduceInterwineWithSpace, enumerate(columns), []))
+        return func.concat(*reduce(reduce_interwine_with_space, enumerate(columns), []))
 
-    def fuzzySearch(self, columns: List[Column], q: Optional[str] = None):
-        distanceScore = (
-            AlchemyQuerier.genSpaceInterwineColumns(columns)
+    def fuzzy_search(self, columns: List[Column], q: Optional[str] = None):
+        distance_score = (
+            AlchemyQuerier.gen_space_interwine_columns(columns)
             .op("<->")(cast(q, TEXT))
             .label("distance_score")
         )
         match q:
             case str(text) if text.strip() != "":
                 return {
-                    "select": [distanceScore],
-                    "filter": [distanceScore < 0.95],
-                    "order": [distanceScore],
+                    "select": [distance_score],
+                    "filter": [distance_score < 0.95],
+                    "order": [distance_score],
                 }
             case _:
                 return {"select": [], "filter": [], "order": []}
 
-    def getOrderQuery(self, column: Column, order: Optional[OrderParam]):
+    def get_order_query(self, column: Column, order: Optional[OrderParam]):
         match order:
             case OrderParam.ASC:
                 return [column.asc()]
@@ -131,12 +133,12 @@ class AlchemyQuerier(BaseQuerier):
             case None:
                 return []
 
-    def getOrderQueryList(self, orders: List[tuple[Column, OrderParam]]):
-        def orderToDbQuery(order: tuple[Column, OrderParam]):
+    def get_order_query_list(self, orders: List[tuple[Column, OrderParam]]):
+        def order_to_db_query(order: tuple[Column, OrderParam]):
             match order[1]:
                 case OrderParam.ASC:
                     return order[0].asc()
                 case OrderParam.DESC:
                     return order[0].desc()
 
-        return map(orderToDbQuery, orders)
+        return map(order_to_db_query, orders)

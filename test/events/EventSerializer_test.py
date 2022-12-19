@@ -1,5 +1,5 @@
-from src.seedwork.domain.DomainEvent import DomainEvent
-from src.seedwork.event.EventSerializer import EventSerializer
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
+from dino_seedwork_be.event.EventSerializer import EventSerializer
 
 from .TestableDomainEvent import TestableDomainEvent
 

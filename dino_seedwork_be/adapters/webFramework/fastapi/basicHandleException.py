@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 
-from src.seedwork.adapters.rest import errorDetailWithCode
-from src.seedwork.domain.exceptions import DomainException
+from dino_seedwork_be.adapters.rest import error_detail_with_code
+from dino_seedwork_be.domain.exceptions import DomainException
 
 
 def basicHandleException(exception):
@@ -9,7 +9,7 @@ def basicHandleException(exception):
         case DomainException():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=errorDetailWithCode(exception, detail=str(exception)),
+                detail=error_detail_with_code(exception, detail=str(exception)),
             )
         case _:
             raise HTTPException(

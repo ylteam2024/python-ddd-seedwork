@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from pika import BasicProperties, DeliveryMode
 
 

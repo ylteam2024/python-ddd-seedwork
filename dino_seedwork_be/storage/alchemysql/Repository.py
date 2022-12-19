@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from src.seedwork.storage.uow import DBSessionUser
+from dino_seedwork_be.storage.uow import DBSessionUser
 
 
 class AlchemyRepository(DBSessionUser[AsyncSession]):

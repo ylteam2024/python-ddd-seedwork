@@ -7,15 +7,13 @@ from functools import reduce
 from typing import (Any, Dict, Generic, List, Literal, Optional, TypedDict,
                     TypeVar)
 
-import jsonpickle
 from pydantic import BaseModel
 from returns.maybe import Maybe, Nothing, Some
 from toolz.dicttoolz import assoc
 
-from src.seedwork.domain.value_objects import ValueObject
-from src.seedwork.exceptions import MainException
-from src.seedwork.utils.meta import getLocalClassname
-from src.seedwork.utils.text import parseNumOrKeeping
+from dino_seedwork_be.domain.value_objects import ValueObject
+from dino_seedwork_be.exceptions import MainException
+from dino_seedwork_be.utils.text import parse_num_or_keeping
 
 DataType = TypeVar("DataType")
 
@@ -23,18 +21,6 @@ DataType = TypeVar("DataType")
 class RestPayload(Generic[DataType], BaseModel):
     data: DataType
     _link: dict
-
-
-def toJSONRestPayload(data: str | dict, link: dict = {}):
-    match data:
-        case str():
-            return json.dumps({"data": jsonpickle.decode(data), "_link": link})
-        case dict():
-            return json.dumps({"data": data, "_link": link})
-
-
-def toRestPayload(data: object | str = "OK", link: dict = {}):
-    return to_rest_payload(data, link)
 
 
 def to_rest_payload(data: object | str = "OK", link: dict = {}):
@@ -50,62 +36,44 @@ def pagination(total: int, offset: int, limit: int, items: list):
     }
 
 
-def fieldrrrorValition(loc: List[str], msg: str, type: Optional[str]):
+def field_error_valition(loc: List[str], msg: str, type: Optional[str]):
     return {"loc": loc, msg: str, type: type}
 
 
-def errorValidation(detail: dict | List):
+def error_validation(detail: dict | List):
     return {"validation": detail}
 
 
-def errorValidationStandard(exception: MainException):
+def error_validation_standard(exception: MainException):
     return {
         "validation": [
             {
-                "loc": exception.getLoc().value_or(None),
-                "code": exception.getCode().value_or(None),
-                "message": exception.getMessage().value_or(None),
+                "loc": exception.loc().value_or(None),
+                "code": exception.code().value_or(None),
+                "message": exception.message().value_or(None),
             }
         ]
     }
 
 
-def errorDetailWithCodeStandard(exception: MainException):
+def error_detail_with_code_standard(exception: MainException):
     return {
         "origin": "DINO_MARKET_BACKEND",
-        "code": exception.getCode(),
-        "message": exception.getMessage(),
-        "loc": exception.getLoc(),
-    }
-
-
-def errorDetailWithCode(
-    exception: Exception,
-    detail: str,
-    code: Optional[str] = None,
-    isValidation: bool = False,
-):
-    message = detail
-    try:
-        message = json.loads(detail)
-    except Exception:
-        pass
-    return {
-        "origin": "DINO_MARKET_BACKEND",
-        "code": code or getLocalClassname(exception),
-        "validation" if isValidation else "message": message,
+        "code": exception.code(),
+        "message": exception.message(),
+        "loc": exception.loc(),
     }
 
 
 def error_detail_with_code(exception: MainException, is_validation: bool = False):
     message = {}
     try:
-        message = json.loads(exception.getMessage().value_or("{}"))
+        message = json.loads(exception.message().value_or("{}"))
     except Exception:
         pass
     return {
         "origin": "DINO_MARKET_BACKEND",
-        "code": exception.getCode(),
+        "code": exception.code(),
         "validation" if is_validation else "message": message,
     }
 
@@ -134,19 +102,19 @@ class ParamOperator(ValueObject):
     def __hash__(self) -> int:
         return hash(self.symbol)
 
-    def isLt(self):
+    def is_lt(self):
         return self.symbol == "lt"
 
-    def isLte(self):
+    def is_lte(self):
         return self.symbol == "lte"
 
-    def isGt(self):
+    def is_gt(self):
         return self.symbol == "gt"
 
-    def isGte(self):
+    def is_gte(self):
         return self.symbol == "gte"
 
-    def isEq(self):
+    def is_eq(self):
         return self.symbol == "eq"
 
 
@@ -177,40 +145,39 @@ FilterSet = Dict[str, FilterElement]
 
 
 class Filter:
-    parsedFilter: FilterSet
+    parsed_filter: FilterSet
     filters: PlainFilterSet
     order: Dict[str, Literal["ASC", "DESC"]]
     q: Optional[str]
 
     def __init__(self, plainFilter: Dict[str, Any]) -> None:
         self.filters = plainFilter
-        self.parsedFilter = self.parseFilters()
+        self.parsed_filter = self.parse_filters()
         super().__init__()
 
-    def parseFilter(self, paramValue: Any):
-        def parseAInstance(paramElem: Any):
+    def parse_filter(self, param_value: Any):
+        def parse_a_instance(param_elem: Any):
             pattern = "~(.*?)~"
-            print("param Elem ", paramElem)
-            pop_opr = (re.search(pattern, paramElem) or re.Match()).group(1)
-            pop_no_str = re.sub(r"^~.*?~", "", paramElem)
+            pop_opr = (re.search(pattern, param_elem) or re.Match()).group(1)
+            pop_no_str = re.sub(r"^~.*?~", "", param_elem)
             return ParamWithComparing(
                 operator=ParamOperators(ParamOperator(pop_opr)),
-                value=parseNumOrKeeping(pop_no_str),
+                value=parse_num_or_keeping(pop_no_str),
             )
 
         try:
-            match paramValue:
+            match param_value:
                 case list():
-                    return list(map(lambda v: parseAInstance(v), paramValue))
+                    return list(map(lambda v: parse_a_instance(v), param_value))
                 case _:
-                    return parseAInstance(paramValue)
+                    return parse_a_instance(param_value)
         except Exception as error:
             print("cannot parse ", error)
-            return paramValue
+            return param_value
 
-    def parseFilters(self):
+    def parse_filters(self):
         return reduce(
-            lambda acc, key: assoc(acc, key, self.parseFilter(self.filters[key])),
+            lambda acc, key: assoc(acc, key, self.parse_filter(self.filters[key])),
             self.filters.keys(),
             {},
         )
@@ -221,7 +188,7 @@ class OrderParam(Enum):
     DESC = "DESC"
 
 
-def plainOrderToParamOrder(plainOrder: Optional[str]) -> Maybe[OrderParam]:
+def plain_order_to_param_order(plainOrder: Optional[str]) -> Maybe[OrderParam]:
     match plainOrder:
         case "asc":
             return Some(OrderParam.ASC)
@@ -231,10 +198,10 @@ def plainOrderToParamOrder(plainOrder: Optional[str]) -> Maybe[OrderParam]:
             return Nothing
 
 
-def toParamOrders(plainOrders: dict[str, Optional[str]]):
+def to_param_orders(plainOrders: dict[str, Optional[str]]):
     return reduce(
         lambda acc, key: assoc(
-            acc, key, plainOrderToParamOrder(plainOrders[key]).value_or(None)
+            acc, key, plain_order_to_param_order(plainOrders[key]).value_or(None)
         ),
         plainOrders.keys(),
         {},

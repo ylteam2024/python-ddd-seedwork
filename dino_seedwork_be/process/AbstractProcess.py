@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 
-from src.seedwork.process.ProcessId import ProcessId
+from dino_seedwork_be.process.ProcessId import ProcessId
 
 
 class ProcessCompletionType(Enum):

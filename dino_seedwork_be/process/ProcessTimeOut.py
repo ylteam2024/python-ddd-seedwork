@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from src.seedwork.domain.DomainEvent import DomainEvent
-from src.seedwork.process.ProcessId import ProcessId
-from src.seedwork.utils.date import now_utc
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
+from dino_seedwork_be.process.ProcessId import ProcessId
+from dino_seedwork_be.utils.date import now_utc
 
 
 class ProcessTimedOut(DomainEvent):

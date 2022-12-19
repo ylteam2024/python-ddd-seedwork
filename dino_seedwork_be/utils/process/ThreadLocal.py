@@ -16,5 +16,5 @@ class ThreadLocal(Generic[InnerValue]):
     def value(self) -> InnerValue:
         return getattr(self._storage, self._key)
 
-    def setValue(self, aValue: InnerValue):
+    def set_value(self, aValue: InnerValue):
         setattr(self._storage, self._key, aValue)

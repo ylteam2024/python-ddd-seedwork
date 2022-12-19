@@ -8,32 +8,34 @@ from returns.maybe import Maybe
 from returns.pipeline import flow, managed, pipe
 from returns.pointfree import bind, map_
 from returns.result import Result, Success
-
 from src.modules.ai_market.infrastructure.config import (broker_host,
                                                          broker_port,
                                                          broker_user_name,
                                                          broker_user_password,
                                                          broker_virtual_host,
                                                          get_posgres_uri)
-from src.seedwork.adapters.messaging.rabbitmq.ConnectionSettings import \
+
+from dino_seedwork_be.adapters.messaging.rabbitmq.ConnectionSettings import \
     ConnectionSettings
-from src.seedwork.adapters.messaging.rabbitmq.Exchange import Exchange
-from src.seedwork.adapters.messaging.rabbitmq.MessageParameters import \
+from dino_seedwork_be.adapters.messaging.rabbitmq.Exchange import Exchange
+from dino_seedwork_be.adapters.messaging.rabbitmq.MessageParameters import \
     MessageParameters
-from src.seedwork.adapters.messaging.rabbitmq.MessageProducer import \
+from dino_seedwork_be.adapters.messaging.rabbitmq.MessageProducer import \
     MessageProducer
-from src.seedwork.event.EventSerializer import EventSerializer
-from src.seedwork.event.EventStore import EventStore
-from src.seedwork.event.StoredEvent import StoredEvent
-from src.seedwork.exceptions import MainException
-from src.seedwork.pubsub.Notification import Notification
-from src.seedwork.pubsub.NotificationPublisher import NotificationPublisher
-from src.seedwork.pubsub.NotificationSerializer import NotificationSerializer
-from src.seedwork.pubsub.PublishedNotificationTrackerStore import \
+from dino_seedwork_be.event.EventSerializer import EventSerializer
+from dino_seedwork_be.event.EventStore import EventStore
+from dino_seedwork_be.event.StoredEvent import StoredEvent
+from dino_seedwork_be.exceptions import MainException
+from dino_seedwork_be.pubsub.Notification import Notification
+from dino_seedwork_be.pubsub.NotificationPublisher import NotificationPublisher
+from dino_seedwork_be.pubsub.NotificationSerializer import \
+    NotificationSerializer
+from dino_seedwork_be.pubsub.PublishedNotificationTrackerStore import \
     PublishedNotificationTrackerStore
-from src.seedwork.storage.uow import SuperDBSessionUser
-from src.seedwork.utils.functional import (feedArgs, feedKwargs,
-                                           print_result_with_text, return_v)
+from dino_seedwork_be.storage.uow import SuperDBSessionUser
+from dino_seedwork_be.utils.functional import (feedArgs, feedKwargs,
+                                               print_result_with_text,
+                                               return_v)
 
 
 class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):

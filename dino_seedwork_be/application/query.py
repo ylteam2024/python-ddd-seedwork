@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Generic, List, TypeVar
+from typing import Generic, List, TypeVar
 
 ItemType = TypeVar("ItemType")
 

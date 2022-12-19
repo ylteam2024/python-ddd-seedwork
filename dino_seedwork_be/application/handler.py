@@ -3,7 +3,7 @@ from typing import Any, Generic, TypeVar
 
 from returns.future import FutureResult
 
-from src.seedwork.application.service import AbstractUOWApplicationService
+from dino_seedwork_be.application.service import AbstractUOWApplicationService
 
 InputType = TypeVar("InputType")
 ReturnType = TypeVar("ReturnType")

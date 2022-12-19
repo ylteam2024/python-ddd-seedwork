@@ -1,7 +1,6 @@
 from typing import List, Optional
 
-from src.seedwork.exceptions import ExceptionCode, MainException
-from src.seedwork.utils.noneOrInstance import noneOrTransform
+from dino_seedwork_be.exceptions import MainException
 
 
 class DomainException(MainException):

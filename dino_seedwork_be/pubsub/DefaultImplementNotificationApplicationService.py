@@ -4,9 +4,9 @@ from typing import Any
 from returns.future import FutureResult
 from returns.maybe import Maybe
 
-from src.seedwork.application.ApplicationLifeCycleUseCase import \
+from dino_seedwork_be.application.ApplicationLifeCycleUseCase import \
     ApplicationLifeCycleUsecase
-from src.seedwork.pubsub.NotificationPublisher import NotificationPublisher
+from dino_seedwork_be.pubsub.NotificationPublisher import NotificationPublisher
 
 
 class DefaultImplementNotificationApplicationService(ApplicationLifeCycleUsecase):

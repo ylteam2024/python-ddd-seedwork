@@ -1,9 +1,7 @@
-from typing import Callable
-
 from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
                                     create_async_engine)
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import NullPool, SingletonThreadPool
+from sqlalchemy.pool import NullPool
 
 
 def engine_factory(uri: str, pool_size: int = 20, max_overflow: int = 20):

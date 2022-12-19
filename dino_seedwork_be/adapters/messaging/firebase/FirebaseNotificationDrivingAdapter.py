@@ -3,7 +3,7 @@ import json
 from firebase_admin import messaging
 from returns.future import FutureFailure, FutureResult, FutureSuccess
 
-from src.modules.ai_market.domain.port.UserNotificationPushDrivingAdapter import \
+from dino_seedwork_be.adapters.messaging.firebase.AbstractUserNotificationPushDrivingAdapter import \
     UserNotificationPushDrivingAdapter
 
 app = messaging.firebase_admin.initialize_app()

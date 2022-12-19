@@ -9,17 +9,17 @@ from returns.curry import partial
 from returns.functions import tap
 from returns.future import FutureResult, FutureSuccess
 from returns.pipeline import flow
-from returns.pointfree import alt, bind, map_
+from returns.pointfree import alt, bind
 from returns.result import Failure, Result, Success, safe
 
-from src.seedwork.adapters.logger import SIMPLE_LOGGER
-from src.seedwork.adapters.messaging.rabbitmq.MessageListener import (
+from dino_seedwork_be.adapters.logger import SIMPLE_LOGGER
+from dino_seedwork_be.adapters.messaging.rabbitmq.MessageListener import (
     MessageException, MessageListener)
-from src.seedwork.adapters.messaging.rabbitmq.Queue import Queue
-from src.seedwork.exceptions import MainException
-from src.seedwork.utils.functional import (apply, async_execute, feed_kwargs,
-                                           print_result_with_text, return_v,
-                                           returnV, tap_excute_future)
+from dino_seedwork_be.adapters.messaging.rabbitmq.Queue import Queue
+from dino_seedwork_be.exceptions import MainException
+from dino_seedwork_be.utils.functional import (apply, async_execute,
+                                               feed_kwargs, return_v,
+                                               tap_excute_future)
 
 
 class MessageConsumer:
@@ -49,7 +49,7 @@ class MessageConsumer:
         self,
         a_queue: Queue,
         is_auto_acknowledged: bool,
-        is_retry: Optional[bool] = False,
+        is_retry: bool = False,
     ) -> None:
         super().__init__()
         self.set_queue(a_queue)
