@@ -5,13 +5,14 @@ from types import FunctionType
 # Will be used as an abstract class for Whole Entity Validating Class
 # it will be instantiated inside validate method of entity
 class Validator:
-    notificationHandler: FunctionType
+
+    notification_handler: FunctionType
 
     def __init__(self, notificationHandler: FunctionType):
-        self.setNofiticationHandler(notificationHandler)
+        self.set_nofitication_handler(notificationHandler)
 
-    def setNofiticationHandler(self, handler: FunctionType):
-        self.notificationHandler = handler
+    def set_nofitication_handler(self, handler: FunctionType):
+        self.notification_handler = handler
 
     @abstractmethod
     def validate(self):

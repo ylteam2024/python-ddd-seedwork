@@ -6,10 +6,11 @@ UowFactory = Callable[[List[DBSessionUser]], AbstractUnitOfWork]
 
 
 class AbstractUOWApplicationService:
-    __uow: UowFactory
 
-    def uow(self, userSession: List[DBSessionUser]) -> AbstractUnitOfWork:
-        return self.__uow(userSession)
+    _uow: UowFactory
 
-    def setUow(self, uow: UowFactory):
-        self.__uow = uow
+    def uow(self, user_session: List[DBSessionUser]) -> AbstractUnitOfWork:
+        return self._uow(user_session)
+
+    def set_uow(self, uow: UowFactory):
+        self._uow = uow

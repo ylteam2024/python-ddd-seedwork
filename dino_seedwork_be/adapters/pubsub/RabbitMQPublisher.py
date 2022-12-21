@@ -8,34 +8,19 @@ from returns.maybe import Maybe
 from returns.pipeline import flow, managed, pipe
 from returns.pointfree import bind, map_
 from returns.result import Result, Success
-from src.modules.ai_market.infrastructure.config import (broker_host,
-                                                         broker_port,
-                                                         broker_user_name,
-                                                         broker_user_password,
-                                                         broker_virtual_host,
-                                                         get_posgres_uri)
 
-from dino_seedwork_be.adapters.messaging.rabbitmq.ConnectionSettings import \
-    ConnectionSettings
-from dino_seedwork_be.adapters.messaging.rabbitmq.Exchange import Exchange
-from dino_seedwork_be.adapters.messaging.rabbitmq.MessageParameters import \
-    MessageParameters
-from dino_seedwork_be.adapters.messaging.rabbitmq.MessageProducer import \
-    MessageProducer
-from dino_seedwork_be.event.EventSerializer import EventSerializer
-from dino_seedwork_be.event.EventStore import EventStore
-from dino_seedwork_be.event.StoredEvent import StoredEvent
+from dino_seedwork_be.adapters.messaging.rabbitmq import (ConnectionSettings,
+                                                          Exchange,
+                                                          MessageParameters,
+                                                          MessageProducer)
+from dino_seedwork_be.event import EventSerializer, EventStore, StoredEvent
 from dino_seedwork_be.exceptions import MainException
-from dino_seedwork_be.pubsub.Notification import Notification
-from dino_seedwork_be.pubsub.NotificationPublisher import NotificationPublisher
-from dino_seedwork_be.pubsub.NotificationSerializer import \
-    NotificationSerializer
-from dino_seedwork_be.pubsub.PublishedNotificationTrackerStore import \
-    PublishedNotificationTrackerStore
-from dino_seedwork_be.storage.uow import SuperDBSessionUser
-from dino_seedwork_be.utils.functional import (feedArgs, feedKwargs,
-                                               print_result_with_text,
-                                               return_v)
+from dino_seedwork_be.pubsub import (Notification, NotificationPublisher,
+                                     NotificationSerializer,
+                                     PublishedNotificationTrackerStore)
+from dino_seedwork_be.storage import SuperDBSessionUser
+from dino_seedwork_be.utils import (feed_args, feed_kwargs,
+                                    print_result_with_text, return_v)
 
 
 class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
@@ -44,6 +29,7 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
     _published_notif_tracker_store: PublishedNotificationTrackerStore
     _message_producer_ins: Optional[MessageProducer] = None
     _event_serializer: EventSerializer
+    _connection_settings: ConnectionSettings
 
     def __init__(
         self,
@@ -51,12 +37,13 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
         exchange_name: str,
         published_notif_tracker_store: PublishedNotificationTrackerStore,
         event_serializer: EventSerializer,
-        session_factory: Callable,
+        connection_settings: ConnectionSettings,
     ) -> None:
         # session = session_factory()
         self.set_exchange_name(exchange_name)
         self.set_event_store(event_store)
         # self._event_store.set_session(session)
+        self._connection_settings = connection_settings
         self._message_producer()
         self.set_published_notif_tracker_store(published_notif_tracker_store)
         # self._published_notif_tracker_store.set_session(session)
@@ -95,7 +82,7 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
                                 ]
                             )
                         ),
-                        bind(feedArgs(Notification.factory)),
+                        bind(feed_args(Notification.factory)),
                     ),
                 ),
                 list,
@@ -168,7 +155,7 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
                 "a_message_id": str(a_notification.id()),
                 "a_timestamp": int(a_notification.occurred_on().timestamp()),
             },
-            feedKwargs(MessageParameters.durable_text_parameters),
+            feed_kwargs(MessageParameters.durable_text_parameters),
             lambda text_parameters: flow(
                 a_notification,
                 NotificationSerializer.instance().serialize,
@@ -204,17 +191,11 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
             case None:
                 return flow(
                     [
-                        ConnectionSettings.factory(
-                            broker_host(),
-                            broker_port(),
-                            broker_virtual_host(),
-                            broker_user_name().value_or(None),
-                            broker_user_password().value_or(None),
-                        ),
+                        self._connection_settings,
                         self.exchange_name(),
                         True,
                     ],
-                    feedArgs(Exchange.fanout_instance),
+                    feed_args(Exchange.fanout_instance),
                     map_(MessageProducer.factory),
                     map_(tap(self._set_message_producer)),
                 )

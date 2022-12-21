@@ -10,7 +10,7 @@ from dino_seedwork_be.domain.exceptions import (DomainIllegalArgumentException,
                                                 DomainIllegalStateException)
 from dino_seedwork_be.exceptions import (IllegalArgumentException,
                                          IllegalStateException)
-from dino_seedwork_be.utils.functional import returnV
+from dino_seedwork_be.utils.functional import return_v
 
 
 class AssertionErrorCode(Enum):
@@ -153,7 +153,7 @@ class AssertionConcern:
                 code=code or AssertionErrorCode.ARG_STRING_CANNOT_EMPTY.value,
                 loc=loc,
             ),
-        ).map(returnV(a_string))
+        ).map(return_v(a_string))
 
     def assert_argument_not_equals(
         self,
@@ -190,7 +190,7 @@ class AssertionConcern:
                 code=code or AssertionErrorCode.ARG_CANNOT_BE_NONE.value,
                 loc=loc,
             ),
-        ).map(returnV(an_object))
+        ).map(return_v(an_object))
 
     def assert_argument_larger_than(
         self,
@@ -211,7 +211,7 @@ class AssertionConcern:
                 code=code or AssertionErrorCode.ARG_NOT_LARGER_THAN.value,
                 loc=loc,
             ),
-        ).map(returnV(a_value))
+        ).map(return_v(a_value))
 
     def assert_argument_smaller_than(
         self,
@@ -231,7 +231,7 @@ class AssertionConcern:
                 code=code or AssertionErrorCode.ARG_NOT_SMALLER_THAN.value,
                 loc=loc,
             ),
-        ).map(returnV(a_value))
+        ).map(return_v(a_value))
 
     @overload
     def assert_argument_range(
@@ -276,7 +276,7 @@ class AssertionConcern:
                 code=code or AssertionErrorCode.ARG_NOT_IN_RANGE.value,
                 loc=loc,
             ),
-        ).map(returnV(a_value))
+        ).map(return_v(a_value))
 
     def assert_argument_regex(
         self,
@@ -295,7 +295,7 @@ class AssertionConcern:
                 code=code or AssertionErrorCode.ARG_NOT_REGEX_MATCHED.value,
                 loc=loc,
             ),
-        ).map(returnV(a_value))
+        ).map(return_v(a_value))
 
     def assert_state_true(
         self,

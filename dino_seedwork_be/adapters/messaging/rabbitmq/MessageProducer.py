@@ -12,14 +12,11 @@ from returns.maybe import Maybe, Nothing, Some
 from returns.result import Failure, Result, Success, safe
 
 from dino_seedwork_be.adapters.logger import SIMPLE_LOGGER
-from dino_seedwork_be.adapters.messaging.rabbitmq.BrokerComponent import \
-    BrokerComponent
-from dino_seedwork_be.adapters.messaging.rabbitmq.Exchange import Exchange
-from dino_seedwork_be.adapters.messaging.rabbitmq.MessageListener import \
-    MessageException
-from dino_seedwork_be.adapters.messaging.rabbitmq.MessageParameters import \
-    MessageParameters
-from dino_seedwork_be.adapters.messaging.rabbitmq.Queue import Queue
+from dino_seedwork_be.adapters.messaging.rabbitmq import (BrokerComponent,
+                                                          Exchange,
+                                                          MessageException,
+                                                          MessageParameters,
+                                                          Queue)
 from dino_seedwork_be.logic.assertion_concern import AssertionConcern
 
 

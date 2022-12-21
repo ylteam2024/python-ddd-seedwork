@@ -1,41 +1,43 @@
 import re
 from typing import Optional
 
-from dino_seedwork_be.domain.assertion_concern import DomainAssertionConcern
-from dino_seedwork_be.domain.value_objects import ValueObject
+from dino_seedwork_be.domain import ValueObject
+from dino_seedwork_be.logic import DomainAssertionConcern
 
 
 class StringWithRegex(ValueObject, DomainAssertionConcern):
-    pattern: str
-    value: str | None = None
-    errorMessage: str = "Value does not path the pattern: "
+    _pattern: str
+    _value: str | None = None
+    _error_message: str = "Value does not path the pattern: "
 
-    def __init__(self, aRegex: str, anErrorMessage: Optional[str] = None):
-        self.setPattern(aRegex)
-        if anErrorMessage is not None:
-            self.errorMessage = anErrorMessage
+    def __init__(self, a_regex: str, an_error_message: Optional[str] = None):
+        self.set_pattern(a_regex)
+        if an_error_message is not None:
+            self._error_message = an_error_message
 
-    def setValue(
+    def set_value(
         self,
-        aValue: Optional[str],
-        exceptionCode: Optional[str] = None,
+        a_value: Optional[str],
+        exception_code: Optional[str] = None,
         loc: Optional[list[str]] = None,
     ):
-        match aValue:
+        match a_value:
             case str():
-                self.assertStateTrue(
-                    re.match(self.pattern, aValue) is not None,
-                    f"{self.errorMessage} {aValue}",
-                    code=exceptionCode,
+                self.assert_state_true(
+                    re.match(self._pattern, a_value) is not None,
+                    f"{self._error_message} {a_value}",
+                    code=exception_code,
                     loc=loc,
-                )
-                self.value = aValue
+                ).unwrap()
+                self._value = a_value
             case None:
-                self.value = None
+                self._value = None
 
-    def setPattern(self, aRegex: str):
-        self.assertArgumentNotEmpty(aRegex, "Pattern for a StringRegex cannot be empty")
-        self.pattern = aRegex
+    def set_pattern(self, aRegex: str):
+        self.assert_argument_not_empty(
+            aRegex, "Pattern for a StringRegex cannot be empty"
+        ).unwrap()
+        self._pattern = aRegex
 
-    def getValue(self) -> str | None:
-        return self.value
+    def value(self) -> str | None:
+        return self._value

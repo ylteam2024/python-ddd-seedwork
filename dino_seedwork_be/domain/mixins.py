@@ -1,6 +1,6 @@
 from returns.result import safe
 
-from dino_seedwork_be.domain.assertion_concern import AssertionConcern
+from dino_seedwork_be.logic import AssertionConcern
 
 from .exceptions import BusinessRuleValidationException
 from .rules import BusinessRule
@@ -20,8 +20,8 @@ class OrderItemMixin(AssertionConcern):
 
     @safe
     def setOrder(self, anIntValue: int):
-        self.assertArgumentLargerThan(
+        self.assert_argument_larger_than(
             anIntValue, -1, "Order need to a positive number or 0"
-        )
+        ).unwrap()
         self.__order = anIntValue
         return "OK"

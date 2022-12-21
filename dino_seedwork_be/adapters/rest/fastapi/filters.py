@@ -17,7 +17,6 @@ class Filters:
                 try:
                     filters = json.loads(filters)
                 except Exception as error:
-                    print("error parse filter json", error)
                     filters = {}
-        plainFilter = extract(filters, self.keys)
-        return Filter(plainFilter).parsed_filter
+        plain_filter = extract(filters, self.keys)
+        return Filter(plain_filter).parsed_filter

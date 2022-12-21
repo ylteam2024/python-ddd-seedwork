@@ -8,10 +8,9 @@ from returns.pointfree import map_
 from returns.result import Result, Success, safe
 from toolz.dicttoolz import get_in
 
-from dino_seedwork_be.logic.assertion_concern import AssertionConcern
-from dino_seedwork_be.serializer.Serializable import JSONSerializable
-from dino_seedwork_be.utils.date import now_utc
-from dino_seedwork_be.utils.functional import set_protected_attr, unwrap
+from dino_seedwork_be.logic import AssertionConcern
+from dino_seedwork_be.serializer import JSONSerializable
+from dino_seedwork_be.utils import now_utc, set_protected_attr, unwrap
 
 
 class DomainEvent(AssertionConcern, JSONSerializable):

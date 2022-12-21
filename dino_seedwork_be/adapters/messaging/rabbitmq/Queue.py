@@ -7,14 +7,12 @@ from returns.iterables import Fold
 from returns.maybe import Maybe
 from returns.result import Failure, Result, Success, safe
 
-from dino_seedwork_be.adapters.logger import SIMPLE_LOGGER
-from dino_seedwork_be.adapters.messaging.rabbitmq.BrokerComponent import \
-    BrokerComponent
-from dino_seedwork_be.adapters.messaging.rabbitmq.ConnectionSettings import \
-    ConnectionSettings
-from dino_seedwork_be.adapters.messaging.rabbitmq.Exchange import Exchange
+from dino_seedwork_be.adapters import SIMPLE_LOGGER
+from dino_seedwork_be.adapters.messaging.rabbitmq import (BrokerComponent,
+                                                          ConnectionSettings,
+                                                          Exchange)
 from dino_seedwork_be.exceptions import MainException
-from dino_seedwork_be.utils.functional import execute, unsafe_panic
+from dino_seedwork_be.utils import execute, unsafe_panic
 
 LOGGER = logging.getLogger(__name__)
 

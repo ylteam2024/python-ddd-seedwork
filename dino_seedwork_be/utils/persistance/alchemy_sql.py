@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from dino_seedwork_be.adapters.repository import Repository
+from dino_seedwork_be.adapters import Repository
 
 
 def alchemy_execute_query_on_repostory(repository: Repository):

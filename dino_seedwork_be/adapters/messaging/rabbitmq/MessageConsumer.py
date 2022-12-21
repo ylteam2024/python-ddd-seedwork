@@ -12,10 +12,10 @@ from returns.pipeline import flow
 from returns.pointfree import alt, bind
 from returns.result import Failure, Result, Success, safe
 
-from dino_seedwork_be.adapters.logger import SIMPLE_LOGGER
-from dino_seedwork_be.adapters.messaging.rabbitmq.MessageListener import (
-    MessageException, MessageListener)
-from dino_seedwork_be.adapters.messaging.rabbitmq.Queue import Queue
+from dino_seedwork_be.adapters import SIMPLE_LOGGER
+from dino_seedwork_be.adapters.messaging.rabbitmq import (MessageException,
+                                                          MessageListener,
+                                                          Queue)
 from dino_seedwork_be.exceptions import MainException
 from dino_seedwork_be.utils.functional import (apply, async_execute,
                                                feed_kwargs, return_v,

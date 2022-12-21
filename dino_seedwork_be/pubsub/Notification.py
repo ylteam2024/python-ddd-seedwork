@@ -8,7 +8,7 @@ from returns.result import Failure, Result, Success, safe
 from dino_seedwork_be.domain.DomainEvent import DomainEvent
 from dino_seedwork_be.logic.assertion_concern import AssertionConcern
 from dino_seedwork_be.serializer.Serializable import JSONSerializable
-from dino_seedwork_be.utils.functional import returnV
+from dino_seedwork_be.utils.functional import return_v
 
 
 class DomainEventSerializable(DomainEvent, JSONSerializable):
@@ -56,7 +56,7 @@ class Notification(Generic[DomainEventT], JSONSerializable, AssertionConcern):
                 a_type_name, a_message="The type name cannot be empty"
             ),
             bind(
-                returnV(
+                return_v(
                     self.assert_argument_length(
                         a_type_name,
                         a_maximum=100,

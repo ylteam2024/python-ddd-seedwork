@@ -1,4 +1,5 @@
-from celery.utils.log import traceback
+import traceback
+
 from fastapi import HTTPException, status
 
 from dino_seedwork_be.adapters.logger import SIMPLE_LOGGER

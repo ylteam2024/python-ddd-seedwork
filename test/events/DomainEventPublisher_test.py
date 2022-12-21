@@ -5,7 +5,7 @@ from returns.future import FutureResult, FutureSuccess
 
 from dino_seedwork_be.domain.DomainEventPublisher import DomainEventPublisher
 from dino_seedwork_be.domain.DomainEventSubscriber import DomainEventSubscriber
-from dino_seedwork_be.utils.functional import returnV, throw_exception
+from dino_seedwork_be.utils.functional import return_v, throw_exception
 
 from .TestableDomainEvent import (AnotherTestableDomainEvent,
                                   TestableDomainEvent)
@@ -55,7 +55,7 @@ class TestDomainEventPublisher:
                 return (
                     DomainEventPublisher.instance()
                     .publish(another_test_event)
-                    .map(returnV("OK"))
+                    .map(return_v("OK"))
                 )
 
             def event_type_subscribed(self) -> Type[TestableDomainEvent]:

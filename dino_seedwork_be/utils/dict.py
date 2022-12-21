@@ -4,7 +4,7 @@ from returns._internal.pipeline.flow import flow
 from toolz.dicttoolz import assoc
 from toolz.functoolz import reduce
 
-from dino_seedwork_be.utils.functional import feed_kwargs
+from dino_seedwork_be.utils import feed_kwargs
 
 
 def keys(v: dict):

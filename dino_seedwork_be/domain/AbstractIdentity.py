@@ -5,9 +5,8 @@ from returns.pipeline import flow
 from returns.pointfree import map_
 from sqlalchemy.engine import Result
 
-from dino_seedwork_be.logic.assertion_concern import AssertionConcern
-from dino_seedwork_be.utils.functional import set_protected_attr, unwrap
-from dino_seedwork_be.utils.meta import get_class_name
+from dino_seedwork_be.logic import AssertionConcern
+from dino_seedwork_be.utils import get_class_name, set_protected_attr, unwrap
 
 IdRawType = TypeVar("IdRawType")
 

@@ -3,7 +3,7 @@ from typing import Any
 
 from returns.future import FutureResult
 
-from dino_seedwork_be.domain.DomainEvent import DomainEvent
+from dino_seedwork_be.domain import DomainEvent
 
 
 class DomainEventSubscriber(ABC):

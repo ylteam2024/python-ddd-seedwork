@@ -15,9 +15,8 @@ from dino_seedwork_be.event.EventSerializer import EventSerializer
 from dino_seedwork_be.event.EventStore import EventStore
 from dino_seedwork_be.event.StoredEvent import StoredEvent
 from dino_seedwork_be.storage.uow import DBSessionUser
-from dino_seedwork_be.utils.functional import (async_to_future_result,
-                                               feedKwargs,
-                                               print_result_with_text, returnV)
+from dino_seedwork_be.utils import (async_to_future_result, feed_kwargs,
+                                    print_result_with_text, return_v)
 
 Base = declarative_base()
 
@@ -70,7 +69,7 @@ class SqlAlchemyEventStore(EventStore, DBSessionUser):
                     "type_name": an_domain_event.type(),
                 }
             ),
-            map_(feedKwargs(StoredEvent)),
+            map_(feed_kwargs(StoredEvent)),
         )
         return flow(
             stored_event_result.map(
@@ -80,11 +79,11 @@ class SqlAlchemyEventStore(EventStore, DBSessionUser):
                     "body": v.body(),
                 }
             ),
-            map_(feedKwargs(self._db_model)),
+            map_(feed_kwargs(self._db_model)),
             map_(tap(self.session().add)),
             bind(lambda _: async_to_future_result(self.session().commit)()),
             map_(print_result_with_text("Commit event to event store")),
-            bind(returnV(FutureResult.from_result(stored_event_result))),
+            bind(return_v(FutureResult.from_result(stored_event_result))),
             alt(tap(lambda _: async_to_future_result(self.session().rollback)())),
         )
 

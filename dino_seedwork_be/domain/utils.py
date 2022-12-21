@@ -1,10 +1,9 @@
-from dino_seedwork_be.domain.entities import Entity
-from dino_seedwork_be.domain.value_objects import ID
+from dino_seedwork_be.domain import ID, Entity
 
 
-def getIdentity(aEntity: Entity) -> ID:
-    return aEntity.getIdentity()
+def get_identity(aEntity: Entity) -> ID:
+    return aEntity.identity()
 
 
-def getRawIdentity(aEntity: Entity) -> str:
-    return aEntity.getRawId()
+def get_raw_identity(aEntity: Entity) -> str:
+    return aEntity.raw_id()

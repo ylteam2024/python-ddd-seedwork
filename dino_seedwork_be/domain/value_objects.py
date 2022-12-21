@@ -3,12 +3,11 @@ from typing import BinaryIO, List, Optional, Union
 
 import validators
 
-from dino_seedwork_be.domain.assertion_concern import DomainAssertionConcern
-from dino_seedwork_be.domain.exceptions import DomainException
+from dino_seedwork_be.domain import DomainException
 from dino_seedwork_be.exceptions import IllegalArgumentException
-from dino_seedwork_be.utils.image import (get_image_dimension,
-                                          get_image_file_size)
-from dino_seedwork_be.utils.validator import is_url_image
+from dino_seedwork_be.logic import DomainAssertionConcern
+from dino_seedwork_be.utils import (get_image_dimension, get_image_file_size,
+                                    is_url_image)
 
 UUID = uuid.UUID
 UUID_v4 = uuid.uuid4
@@ -26,9 +25,9 @@ class ID(ValueObject):
     def __init__(self, id: Union[UUID, str]):
 
         if isinstance(id, UUID):
-            self.setID(id)
+            self.set_id(id)
         elif isinstance(id, str):
-            self.setID(UUID(id))
+            self.set_id(UUID(id))
         else:
             raise IllegalArgumentException("id should be UUID or UUID string")
         super().__init__()
@@ -42,26 +41,26 @@ class ID(ValueObject):
             isEqual = self.__id == obj.__id
         return isEqual
 
-    def setID(self, id: UUID | str):
-        self.assertArgumentNotEmpty(str(id), "The id must be provided")
-        self.assertArgumentLength(
+    def set_id(self, id: UUID | str):
+        self.assert_argument_not_empty(str(id), "The id must be provided").unwrap()
+        self.assert_argument_length(
             str(id),
-            aMinimum=0,
-            aMaximum=36,
-            aMessage="The id must be 36 characters or less.",
-        )
+            a_minimum=0,
+            a_maximum=36,
+            a_message="The id must be 36 characters or less.",
+        ).unwrap()
         match id:
             case str() as id:
                 self.__id = UUID(id)
             case UUID() as id:
                 self.__id = id
 
-    def getRaw(self) -> str:
+    def get_raw(self) -> str:
         return str(self.__id)
 
     @staticmethod
-    def getRawString(id: "ID"):
-        return id.getRaw()
+    def get_raw_string(id: "ID"):
+        return id.get_raw()
 
 
 def idFromString(id: str | ID) -> ID:
@@ -80,10 +79,14 @@ class ImageURL(ValueObject):
         super().__init__()
 
     def setUrl(self, url: str, validateUrl: Optional[bool] = False):
-        self.assertArgumentNotEmpty(url, aMessage="url string cannot be None")
+        self.assert_argument_not_empty(
+            url, a_message="url string cannot be None"
+        ).unwrap()
         validators.url(url)
         if validateUrl:
-            self.assertStateTrue(is_url_image(url), "url is not a valid url image")
+            self.assert_state_true(
+                is_url_image(url), "url is not a valid url image"
+            ).unwrap()
         self.url = url
 
     def getUrl(self) -> str:
@@ -105,7 +108,9 @@ class URL(ValueObject):
         validationMessage: Optional[str] = None,
         loc: Optional[List[str]] = ["url"],
     ):
-        self.assertArgumentRegex(value, self.regex, aMessage=validationMessage, loc=loc)
+        self.assert_argument_regex(
+            value, self.regex, a_message=validationMessage, loc=loc
+        ).unwrap()
         self.value = value
         super().__init__()
 
@@ -114,14 +119,14 @@ class URL(ValueObject):
 
 
 class File:
-    __file: BinaryIO
-    __contentType: str
-    __name: str
+    _file: BinaryIO
+    _content_type: str
+    _name: str
 
     def __init__(self, file: BinaryIO, contentType: str, name: str):
-        self.__file = file
-        self.__contentType = contentType
-        self.__name = name
+        self._file = file
+        self._content_type = contentType
+        self._name = name
         super().__init__()
 
     def dimension(self):
@@ -131,13 +136,13 @@ class File:
         return get_image_file_size(self.file())
 
     def name(self) -> str:
-        return self.__name
+        return self._name
 
     def contentType(self):
-        return self.__contentType
+        return self._content_type
 
     def file(self):
-        return self.__file
+        return self._file
 
 
 class FirstNameValidationFailed(DomainException):
@@ -149,72 +154,72 @@ class LastNameValidationFailed(DomainException):
 
 
 class FullName(ValueObject):
-    __firstName: str | None = None
-    __lastName: str | None = None
+    _first_name: str | None = None
+    _last_name: str | None = None
 
-    def __init__(self, firstName: str | None, lastName: str | None):
+    def __init__(self, first_name: str | None, last_name: str | None):
         super().__init__()
-        if firstName is not None:
-            self.__setFirstName(firstName)
-        if lastName is not None:
-            self.__setLastName(lastName)
+        if first_name is not None:
+            self._set_first_name(first_name)
+        if last_name is not None:
+            self._set_last_name(last_name)
 
     def __eq__(self, obj):
         if isinstance(obj, FullName):
             return (
-                self.getFirstName() == obj.getFirstName()
-                and self.getLastName() == obj.getLastName()
+                self.first_name() == obj.first_name()
+                and self.last_name() == obj.last_name()
             )
         return False
 
-    def getFirstName(self) -> str | None:
-        return self.__firstName
+    def first_name(self) -> str | None:
+        return self._first_name
 
-    def getLastName(self) -> str | None:
-        return self.__lastName
+    def last_name(self) -> str | None:
+        return self._last_name
 
-    def asFormattedName(self):
-        return f"{self.__lastName} {self.__firstName}"
+    def as_formatted_name(self):
+        return f"{self._last_name} {self._first_name}"
 
-    def withChangedFirstName(self, aFirstName: str):
-        return FullName(firstName=aFirstName, lastName=self.__lastName)
+    def with_changed_first_name(self, aFirstName: str):
+        return FullName(first_name=aFirstName, last_name=self._last_name)
 
-    def withChangedLastName(self, aSecondName: str):
-        return FullName(lastName=aSecondName, firstName=self.__firstName)
+    def with_changed_last_name(self, aSecondName: str):
+        return FullName(last_name=aSecondName, first_name=self._first_name)
 
-    def __setFirstName(self, aValue: str):
+    def _set_first_name(self, a_value: str):
         try:
-            self.assertArgumentNotEmpty(aValue, "First name is required")
-            self.assertArgumentLength(
-                aValue,
-                aMinimum=1,
-                aMaximum=50,
-                aMessage="First name must be 50 characters or less",
-            )
-            self.assertArgumentRegex(
-                aValue,
+            self.assert_argument_not_empty(a_value, "First name is required").unwrap()
+            self.assert_argument_length(
+                a_value,
+                a_minimum=1,
+                a_maximum=50,
+                a_message="First name must be 50 characters or less",
+            ).unwrap()
+            self.assert_argument_regex(
+                a_value,
                 r"^[A-Z\s](?:[A-Za-z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s])+$",
                 "First name must be at least one character in length, \
                 starting with a capital letter.",
-            )
-            self.__firstName = aValue
+            ).unwrap()
+            self._first_name = a_value
         except Exception as error:
             raise FirstNameValidationFailed(str(error))
 
-    def __setLastName(self, aValue: str):
+    def _set_last_name(self, a_value: str):
         try:
-            self.assertArgumentNotEmpty(aValue, "Last name is required")
-            self.assertArgumentLength(
-                aValue,
-                aMinimum=1,
-                aMaximum=50,
-                aMessage="last name must be 50 characters or less",
-            )
-            self.assertArgumentRegex(
-                aValue,
+            self.assert_argument_not_empty(a_value, "Last name is required").unwrap()
+            self.assert_argument_length(
+                a_value,
+                a_minimum=1,
+                a_maximum=50,
+                a_message="last name must be 50 characters or less",
+            ).unwrap()
+            self.assert_argument_regex(
+                a_value,
                 r"^[A-Z\s](?:[A-Za-z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s])+$",
                 "Last name must be at least one character in length.",
-            )
-            self.__lastName = aValue
+            ).unwrap()
+            self._last_name = a_value
         except Exception as error:
             raise LastNameValidationFailed(str(error))

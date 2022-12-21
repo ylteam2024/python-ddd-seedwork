@@ -241,10 +241,6 @@ def unwrap_future_io_maybe(
     return unwrap_maybe(unsafe_perform_io(unwrap(value)))
 
 
-def returnV(v: InnerValueType) -> Callable[[Any], InnerValueType]:
-    return lambda _: v
-
-
 def return_v(v: InnerValueType) -> Callable[[Any], InnerValueType]:
     return lambda _: v
 

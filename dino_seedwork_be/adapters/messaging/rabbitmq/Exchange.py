@@ -4,10 +4,8 @@ from pika.exchange_type import ExchangeType
 from returns.result import Result, safe
 
 from dino_seedwork_be.adapters.logger import SIMPLE_LOGGER
-from dino_seedwork_be.adapters.messaging.rabbitmq.BrokerComponent import \
-    BrokerComponent
-from dino_seedwork_be.adapters.messaging.rabbitmq.ConnectionSettings import \
-    ConnectionSettings
+from dino_seedwork_be.adapters.messaging.rabbitmq import (BrokerComponent,
+                                                          ConnectionSettings)
 from dino_seedwork_be.utils.functional import execute
 
 

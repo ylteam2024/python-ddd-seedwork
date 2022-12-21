@@ -8,13 +8,11 @@ from returns.pipeline import flow
 from returns.pointfree import bind, map_
 from returns.result import Result, Success
 
-from dino_seedwork_be.domain.DomainEvent import DomainEvent
-from dino_seedwork_be.domain.DomainEventPublisher import DomainEventPublisher
-from dino_seedwork_be.logic.assertion_concern import AssertionConcern
-from dino_seedwork_be.process.ProcessId import ProcessId
-from dino_seedwork_be.utils.date import now_utc
-from dino_seedwork_be.utils.functional import (apply, feed_kwargs, returnV,
-                                               set_protected_attr)
+from dino_seedwork_be.domain import DomainEvent, DomainEventPublisher
+from dino_seedwork_be.logic import AssertionConcern
+from dino_seedwork_be.process import ProcessId
+from dino_seedwork_be.utils import (apply, feed_kwargs, now_utc, return_v,
+                                    set_protected_attr)
 
 from .timeout_event_factory import timeout_factory_type
 
@@ -105,7 +103,7 @@ class TimeConstrainedProcessTracker(AssertionConcern):
                 )
             ),
             bind(lambda _: a_new_tracker.set_allowable_duration(an_allowable_duration)),
-            map_(returnV(a_new_tracker)),
+            map_(return_v(a_new_tracker)),
         )
 
     def allowable_duration(self) -> int:

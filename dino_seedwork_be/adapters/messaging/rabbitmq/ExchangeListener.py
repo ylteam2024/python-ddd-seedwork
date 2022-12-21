@@ -9,14 +9,11 @@ from returns.pipeline import flow
 from returns.pointfree import bind, map_
 from returns.result import Result, safe
 
-from dino_seedwork_be.adapters.messaging.rabbitmq.ConnectionSettings import \
-    ConnectionSettings
-from dino_seedwork_be.adapters.messaging.rabbitmq.Exchange import Exchange
-from dino_seedwork_be.adapters.messaging.rabbitmq.MessageConsumer import \
-    MessageConsumer
-from dino_seedwork_be.adapters.messaging.rabbitmq.MessageListener import (
-    MessageListener, Type)
-from dino_seedwork_be.adapters.messaging.rabbitmq.Queue import Queue
+from dino_seedwork_be.adapters.messaging.rabbitmq import (ConnectionSettings,
+                                                          Exchange,
+                                                          MessageConsumer,
+                                                          MessageListener,
+                                                          Queue, Type)
 from dino_seedwork_be.utils.functional import feed_args
 
 
