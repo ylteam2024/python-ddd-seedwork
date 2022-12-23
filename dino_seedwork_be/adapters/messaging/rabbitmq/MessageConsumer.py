@@ -13,13 +13,16 @@ from returns.pointfree import alt, bind
 from returns.result import Failure, Result, Success, safe
 
 from dino_seedwork_be.adapters import SIMPLE_LOGGER
-from dino_seedwork_be.adapters.messaging.rabbitmq import (MessageException,
-                                                          MessageListener,
-                                                          Queue)
 from dino_seedwork_be.exceptions import MainException
 from dino_seedwork_be.utils.functional import (apply, async_execute,
                                                feed_kwargs, return_v,
                                                tap_excute_future)
+
+from .exceptions import MessageException
+from .MessageListener import MessageListener
+from .Queue import Queue
+
+__all__ = ["MessageConsumer"]
 
 
 class MessageConsumer:

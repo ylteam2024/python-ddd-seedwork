@@ -9,12 +9,16 @@ from returns.pipeline import flow
 from returns.pointfree import bind, map_
 from returns.result import Result, safe
 
-from dino_seedwork_be.adapters.messaging.rabbitmq import (ConnectionSettings,
-                                                          Exchange,
-                                                          MessageConsumer,
-                                                          MessageListener,
-                                                          Queue, Type)
 from dino_seedwork_be.utils.functional import feed_args
+
+from .ConnectionSettings import ConnectionSettings
+from .Exchange import Exchange
+from .MessageConsumer import MessageConsumer
+from .MessageListener import MessageListener
+from .MessageType import MessageType as Type
+from .Queue import Queue
+
+__all__ = ["ExchangeListener"]
 
 
 class ExchangeListener(ABC):

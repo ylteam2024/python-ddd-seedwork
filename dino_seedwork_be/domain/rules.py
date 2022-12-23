@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+__all__ = ["BusinessRule"]
+
 
 class BusinessRule(BaseModel):
     """This is a base class for implementing domain rules"""

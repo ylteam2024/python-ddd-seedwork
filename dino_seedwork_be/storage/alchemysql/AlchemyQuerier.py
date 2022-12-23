@@ -11,6 +11,8 @@ from dino_seedwork_be.exceptions import MainException
 from dino_seedwork_be.storage.uow import DBSessionUser
 from dino_seedwork_be.utils.list import remove_none
 
+__all__ = ["AlchemyQuerier"]
+
 
 class AlchemyQuerier(BaseQuerier):
     _query_session: AsyncSession

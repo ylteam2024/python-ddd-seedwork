@@ -11,6 +11,8 @@ from dino_seedwork_be.storage.uow import DBSessionUser
 
 from .timeout_event_factory import timeout_factory_type
 
+__all__ = ["TimeConstrainedProcessTrackerRepository"]
+
 
 class TimeConstrainedProcessTrackerRepository(ABC, DBSessionUser):
     @abstractmethod

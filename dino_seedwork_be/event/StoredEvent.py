@@ -8,6 +8,8 @@ from dino_seedwork_be.domain.DomainEvent import DomainEvent
 from dino_seedwork_be.event.EventSerializer import EventSerializer
 from dino_seedwork_be.logic.assertion_concern import AssertionConcern
 
+__all__ = ["StoredEvent"]
+
 
 class StoredEvent(AssertionConcern):
     _body: str

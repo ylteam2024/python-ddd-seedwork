@@ -4,6 +4,8 @@ from dino_seedwork_be.storage.uow import AbstractUnitOfWork, DBSessionUser
 
 UowFactory = Callable[[List[DBSessionUser]], AbstractUnitOfWork]
 
+__all__ = ["AbstractUOWApplicationService"]
+
 
 class AbstractUOWApplicationService:
 

@@ -7,7 +7,6 @@ from returns.future import FutureResult, FutureSuccess, future_safe
 from returns.pipeline import flow
 from returns.pointfree import alt, bind, map_
 from sqlalchemy import Column, DateTime, Integer, String, select
-from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql.functions import count
 
 from dino_seedwork_be.domain.DomainEvent import DomainEvent
@@ -18,7 +17,7 @@ from dino_seedwork_be.storage.uow import DBSessionUser
 from dino_seedwork_be.utils import (async_to_future_result, feed_kwargs,
                                     print_result_with_text, return_v)
 
-Base = declarative_base()
+__all__ = ["SqlAlchemyBaseEvent", "SqlAlchemyEventStore"]
 
 
 class SqlAlchemyBaseEvent:

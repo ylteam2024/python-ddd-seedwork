@@ -12,6 +12,8 @@ from dino_seedwork_be.utils.functional import pass_to
 ResultType = TypeVar("ResultType")
 ExceptionType = TypeVar("ExceptionType", bound=Exception)
 
+__all__ = ["SqlAlchemyUnitOfWork"]
+
 
 class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
 

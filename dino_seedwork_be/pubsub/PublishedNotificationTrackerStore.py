@@ -9,6 +9,8 @@ from dino_seedwork_be.pubsub.PublishedNotificationTracker import \
     PublishedNotificationTracker
 from dino_seedwork_be.storage.uow import DBSessionUser
 
+__all__ = ["PublishedNotificationTrackerStore"]
+
 
 class PublishedNotificationTrackerStore(DBSessionUser):
     @abstractmethod

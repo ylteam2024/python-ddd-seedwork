@@ -10,6 +10,8 @@ from dino_seedwork_be.utils import get_class_name, set_protected_attr, unwrap
 
 IdRawType = TypeVar("IdRawType")
 
+__all__ = ["AbstractIdentity"]
+
 
 class AbstractIdentity(ABC, AssertionConcern, Generic[IdRawType]):
 

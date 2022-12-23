@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 
 from returns.future import FutureResult
 
+all = ["UserNotificationPushDrivingAdapter"]
+
 
 class UserNotificationPushDrivingAdapter(ABC):
     @abstractmethod

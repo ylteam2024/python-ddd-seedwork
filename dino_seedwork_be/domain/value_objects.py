@@ -12,6 +12,17 @@ from dino_seedwork_be.utils import (get_image_dimension, get_image_file_size,
 UUID = uuid.UUID
 UUID_v4 = uuid.uuid4
 
+__all__ = [
+    "ValueObject",
+    "ID",
+    "ImageURL",
+    "URL",
+    "FullName",
+    "File",
+    "FirstNameValidationFailed",
+    "LastNameValidationFailed",
+]
+
 
 class ValueObject(DomainAssertionConcern):
     """
@@ -62,40 +73,40 @@ class ID(ValueObject):
     def get_raw_string(id: "ID"):
         return id.get_raw()
 
-
-def idFromString(id: str | ID) -> ID:
-    match id:
-        case str():
-            return ID(id)
-        case ID():
-            return id
+    @staticmethod
+    def from_string(id: str | "ID") -> "ID":
+        match id:
+            case str():
+                return ID(id)
+            case ID():
+                return id
 
 
 class ImageURL(ValueObject):
-    url: str
+    _url: str
 
-    def __init__(self, url: str, validateUrl: Optional[bool] = False):
-        self.setUrl(url, validateUrl)
+    def __init__(self, url: str, validate_url: Optional[bool] = False):
+        self.set_url(url, validate_url)
         super().__init__()
 
-    def setUrl(self, url: str, validateUrl: Optional[bool] = False):
+    def set_url(self, url: str, validate_url: Optional[bool] = False):
         self.assert_argument_not_empty(
             url, a_message="url string cannot be None"
         ).unwrap()
         validators.url(url)
-        if validateUrl:
+        if validate_url:
             self.assert_state_true(
                 is_url_image(url), "url is not a valid url image"
             ).unwrap()
-        self.url = url
+        self._url = url
 
-    def getUrl(self) -> str:
-        return self.url
+    def url(self) -> str:
+        return self._url
 
 
 class URL(ValueObject):
-    value: str
-    regex: str = r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
+    _value: str
+    _regex: str = r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
 
     def __eq__(self, other):
         if isinstance(other, URL):
@@ -105,17 +116,17 @@ class URL(ValueObject):
     def __init__(
         self,
         value: str,
-        validationMessage: Optional[str] = None,
+        validation_message: Optional[str] = None,
         loc: Optional[List[str]] = ["url"],
     ):
         self.assert_argument_regex(
-            value, self.regex, a_message=validationMessage, loc=loc
+            value, self._regex, a_message=validation_message, loc=loc
         ).unwrap()
-        self.value = value
+        self._value = value
         super().__init__()
 
     def getValue(self):
-        return self.value
+        return self._value
 
 
 class File:

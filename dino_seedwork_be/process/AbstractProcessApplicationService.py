@@ -11,6 +11,8 @@ from dino_seedwork_be.application import ApplicationLifeCycleUsecase
 from dino_seedwork_be.process import TimeConstrainedProcessTrackerRepository
 from dino_seedwork_be.storage import DBSessionUser
 
+__all__ = ["AbstractProcessApplicationService"]
+
 
 class AbstractProcessApplicationService(ApplicationLifeCycleUsecase):
 

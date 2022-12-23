@@ -11,6 +11,8 @@ from dino_seedwork_be.utils.process import ThreadLocal
 
 EventType = TypeVar("EventType", bound=DomainEvent)
 
+__all__ = ["DomainEventPublisher"]
+
 
 class DomainEventPublisher:
     ins: ThreadLocal["DomainEventPublisher"]

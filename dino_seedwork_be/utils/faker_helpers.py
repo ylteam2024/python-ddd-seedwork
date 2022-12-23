@@ -8,6 +8,8 @@ Faker.seed(0)  # This will raise a TypeError
 
 ElementType = TypeVar("ElementType")
 
+__all__ = ["random_element_or_none", "random_elements_or_none"]
+
 
 def random_elements_or_none(elements: List[ElementType]) -> Optional[List[ElementType]]:
     return flow(

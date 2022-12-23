@@ -10,8 +10,7 @@ from returns.functions import tap
 from returns.maybe import Maybe, Nothing, Some
 from returns.result import Result
 
-from dino_seedwork_be.adapters.messaging.rabbitmq.ConnectionSettings import \
-    ConnectionSettings
+from .ConnectionSettings import ConnectionSettings
 
 # I am an abstract class for all Brocker Component, i include an channel
 # that all broker component need to refer to
@@ -22,6 +21,8 @@ LOG_FORMAT = (
 )
 
 LOGGER = logging.getLogger(__name__)
+
+__all__ = ["BrokerComponent"]
 
 
 class BrokerComponent(ABC):

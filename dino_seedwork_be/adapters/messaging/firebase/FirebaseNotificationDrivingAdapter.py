@@ -8,6 +8,8 @@ from dino_seedwork_be.adapters.messaging.firebase import \
 
 app = messaging.firebase_admin.initialize_app()
 
+__all__ = ["FirebaseNotificationDrivingAdapter", "app"]
+
 
 class FirebaseNotificationDrivingAdapter(UserNotificationPushDrivingAdapter):
     def push_to_device(

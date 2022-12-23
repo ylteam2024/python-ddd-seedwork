@@ -2,6 +2,8 @@ import typing as t
 
 T = t.TypeVar("T", bound=t.Callable)
 
+__all__ = ["is_callable_type", "ReturnType"]
+
 
 def is_callable_type(tp) -> bool:
     origin = getattr(tp, "__origin__", None)

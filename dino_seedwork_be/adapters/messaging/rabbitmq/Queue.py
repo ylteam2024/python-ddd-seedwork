@@ -8,13 +8,16 @@ from returns.maybe import Maybe
 from returns.result import Failure, Result, Success, safe
 
 from dino_seedwork_be.adapters import SIMPLE_LOGGER
-from dino_seedwork_be.adapters.messaging.rabbitmq import (BrokerComponent,
-                                                          ConnectionSettings,
-                                                          Exchange)
 from dino_seedwork_be.exceptions import MainException
 from dino_seedwork_be.utils import execute, unsafe_panic
 
+from .BrokerComponent import BrokerComponent
+from .ConnectionSettings import ConnectionSettings
+from .Exchange import Exchange
+
 LOGGER = logging.getLogger(__name__)
+
+__all__ = ["Queue"]
 
 
 class Queue(BrokerComponent):

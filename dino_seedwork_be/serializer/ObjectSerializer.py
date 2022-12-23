@@ -6,6 +6,8 @@ from dino_seedwork_be.serializer.Serializable import JSONSerializable
 ObjectSerializable = TypeVar("ObjectSerializable", bound=JSONSerializable)
 UnderlyingObject = TypeVar("UnderlyingObject")
 
+__all__ = ["ObjectSerializer"]
+
 
 class ObjectSerializer(AbstractSerializer, Generic[ObjectSerializable]):
     def __init__(self):

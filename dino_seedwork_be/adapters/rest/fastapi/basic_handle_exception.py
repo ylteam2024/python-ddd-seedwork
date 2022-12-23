@@ -6,6 +6,8 @@ from dino_seedwork_be.adapters.logger import SIMPLE_LOGGER
 from dino_seedwork_be.adapters.rest import error_detail_with_code
 from dino_seedwork_be.exceptions import MainException
 
+__all__ = ["basic_handle_exception"]
+
 
 def basic_handle_exception(exception):
     match exception:

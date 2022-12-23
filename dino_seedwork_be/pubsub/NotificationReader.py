@@ -14,6 +14,8 @@ DomainEventT = TypeVar("DomainEventT")
     Reader for Message-Based Context Mapping 
 """
 
+__all__ = ["NotificationReader"]
+
 
 class NotificationReader(Generic[DomainEventT], AbstractJSONMediaReader):
     _event: dict

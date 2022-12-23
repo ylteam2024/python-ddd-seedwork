@@ -12,6 +12,8 @@ from dino_seedwork_be.logic import AssertionConcern
 from dino_seedwork_be.serializer import JSONSerializable
 from dino_seedwork_be.utils import now_utc, set_protected_attr, unwrap
 
+__all__ = ["DomainEvent"]
+
 
 class DomainEvent(AssertionConcern, JSONSerializable):
     _version: int = 0

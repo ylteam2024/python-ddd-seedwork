@@ -4,6 +4,8 @@ from enum import Enum
 
 from dino_seedwork_be.process.ProcessId import ProcessId
 
+__all__ = ["ProcessCompletionType", "IProcess"]
+
 
 class ProcessCompletionType(Enum):
     NOT_COMPLETED = "NOT_COMPLETED"

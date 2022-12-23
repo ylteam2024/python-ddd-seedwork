@@ -6,6 +6,8 @@ from dino_seedwork_be.domain.value_objects import ID, UUID
 from dino_seedwork_be.exceptions import IllegalArgumentException
 from dino_seedwork_be.logic import DomainAssertionConcern
 
+__all__ = ["IdentifiedDomainObject"]
+
 
 class IdentifiedDomainObject(DomainAssertionConcern):
     _id: ID = field(hash=True)

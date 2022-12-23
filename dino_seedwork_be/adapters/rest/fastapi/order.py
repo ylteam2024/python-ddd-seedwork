@@ -4,6 +4,8 @@ from typing import Any, List
 from dino_seedwork_be.adapters.rest import to_param_orders
 from dino_seedwork_be.utils.dict import extract
 
+__all__ = ["Orders"]
+
 
 class Orders:
     def __init__(self, keys: List[str]) -> None:

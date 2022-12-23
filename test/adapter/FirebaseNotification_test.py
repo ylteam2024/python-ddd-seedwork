@@ -6,7 +6,7 @@ from dino_seedwork_be.utils.functional import unwrap_future_result_io
 class TestFirebaseNotificationDrivingAdapter:
     async def test_push_to_a_device(self):
         adapter = FirebaseNotificationDrivingAdapter()
-        test_user_token = "dItVm2ogWYAI1qoN8Ag6UU:APA91bEWPP9DFpHNCc_ZckOxlywPtcb13mDj-dVohn1EzD-h6Eo0mJoT9bdTBo_xfhREWPyHTi7zcKarzxZx9MSLOjqTqPkal2MbyJm1W1C1-G_bgAF_cdSYLJikAs0Jtl3H8eTQ5qcO"
+        test_user_token = "dUyLTpjhcrL99gwNtq-MVs:APA91bEvb5skJ4lLid1VLhqDXUa4OWXv96TOhpmRYBwfCY1BaUG75GTaUM33NNzweXutiFOBbIPsi9qf907N_phSY5kf4_S2XHnGRd1_Ze5F4gzXXd5jjWPphkEkgm3jBEDOFw_Rrqtl"
         result_io = await adapter.push_to_device(
             {
                 "package_id": "f8e12a8c-4aa2-4807-ae5c-0e9d730afb86",

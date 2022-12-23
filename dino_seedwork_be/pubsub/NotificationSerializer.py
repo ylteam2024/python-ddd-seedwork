@@ -8,6 +8,8 @@ from dino_seedwork_be.serializer.AbstractSerializer import AbstractSerializer
 
 NotificationT = TypeVar("NotificationT", bound=Notification)
 
+__all__ = ["NotificationSerializer"]
+
 
 class NotificationSerializer(
     AbstractSerializer,

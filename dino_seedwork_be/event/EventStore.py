@@ -7,6 +7,8 @@ from dino_seedwork_be.domain.DomainEvent import DomainEvent
 from dino_seedwork_be.event.StoredEvent import StoredEvent
 from dino_seedwork_be.storage.uow import DBSessionUser
 
+__all__ = ["EventStore"]
+
 
 class EventStore(ABC, DBSessionUser):
     @abstractmethod

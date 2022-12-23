@@ -13,6 +13,8 @@ from dino_seedwork_be.storage.uow import DBSessionUser
 from dino_seedwork_be.utils.functional import (apply, tap_excute_future,
                                                tap_failure_execute_future)
 
+__all__ = ["AbstractApplicationServiceLifeCycle"]
+
 
 class AbstractApplicationServiceLifeCycle(ABC):
     _sessions: Dict = {}

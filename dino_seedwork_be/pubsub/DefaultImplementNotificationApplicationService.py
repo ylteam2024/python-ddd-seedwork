@@ -8,6 +8,8 @@ from dino_seedwork_be.application.ApplicationLifeCycleUseCase import \
     ApplicationLifeCycleUsecase
 from dino_seedwork_be.pubsub.NotificationPublisher import NotificationPublisher
 
+__all__ = ["DefaultImplementNotificationApplicationService"]
+
 
 class DefaultImplementNotificationApplicationService(ApplicationLifeCycleUsecase):
 

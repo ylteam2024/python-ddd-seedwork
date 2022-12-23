@@ -10,6 +10,9 @@ from .value_objects import ID, UUID
 RawAttributes = TypeVar("RawAttributes")
 
 
+__all__ = ["Entity"]
+
+
 class Entity(Generic[RawAttributes], IdentifiedDomainObject):
     _created_at: Optional[datetime.datetime] = None
     _updated_at: Optional[datetime.datetime] = None

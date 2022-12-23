@@ -9,10 +9,9 @@ from returns.pipeline import flow, managed, pipe
 from returns.pointfree import bind, map_
 from returns.result import Result, Success
 
-from dino_seedwork_be.adapters.messaging.rabbitmq import (ConnectionSettings,
-                                                          Exchange,
-                                                          MessageParameters,
-                                                          MessageProducer)
+from dino_seedwork_be.adapters.messaging.rabbitmq import (
+    RabbitMQConnectionSettings, RabbitMQExchange, RabbitMQMessageParameters,
+    RabbitMQMessageProducer)
 from dino_seedwork_be.event import EventSerializer, EventStore, StoredEvent
 from dino_seedwork_be.exceptions import MainException
 from dino_seedwork_be.pubsub import (Notification, NotificationPublisher,
@@ -20,16 +19,18 @@ from dino_seedwork_be.pubsub import (Notification, NotificationPublisher,
                                      PublishedNotificationTrackerStore)
 from dino_seedwork_be.storage import SuperDBSessionUser
 from dino_seedwork_be.utils import (feed_args, feed_kwargs,
-                                    print_result_with_text, return_v)
+                                    print_result_with_text)
+
+__all__ = ["RabbitMQPublisher"]
 
 
 class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
     _event_store: EventStore
     _exchange_name: str
     _published_notif_tracker_store: PublishedNotificationTrackerStore
-    _message_producer_ins: Optional[MessageProducer] = None
+    _message_producer_ins: Optional[RabbitMQMessageProducer] = None
     _event_serializer: EventSerializer
-    _connection_settings: ConnectionSettings
+    _connection_settings: RabbitMQConnectionSettings
 
     def __init__(
         self,
@@ -37,7 +38,7 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
         exchange_name: str,
         published_notif_tracker_store: PublishedNotificationTrackerStore,
         event_serializer: EventSerializer,
-        connection_settings: ConnectionSettings,
+        connection_settings: RabbitMQConnectionSettings,
     ) -> None:
         # session = session_factory()
         self.set_exchange_name(exchange_name)
@@ -90,11 +91,13 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
             )
 
         def publish_future(
-            msg_producer: MessageProducer,
+            msg_producer: RabbitMQMessageProducer,
         ) -> FutureResult[Maybe[int], Any]:
             match msg_producer.is_ready_for_publish():
                 case False:
-                    return FutureFailure(MainException("MessageProducer not ready yet"))
+                    return FutureFailure(
+                        MainException("RabbitMQMessageProducer not ready yet")
+                    )
                 case True:
                     return (
                         self.published_notif_tracker_store()
@@ -136,7 +139,7 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
                         )
                     )
 
-        def close_producer(producer: MessageProducer, _):
+        def close_producer(producer: RabbitMQMessageProducer, _):
             producer.close()
             return FutureSuccess(None)
 
@@ -146,7 +149,7 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
 
     def _publish(
         self,
-        a_message_producer: MessageProducer,
+        a_message_producer: RabbitMQMessageProducer,
         a_notification: Notification,
     ) -> FutureResult[None, Exception]:
         return flow(
@@ -155,7 +158,7 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
                 "a_message_id": str(a_notification.id()),
                 "a_timestamp": int(a_notification.occurred_on().timestamp()),
             },
-            feed_kwargs(MessageParameters.durable_text_parameters),
+            feed_kwargs(RabbitMQMessageParameters.durable_text_parameters),
             lambda text_parameters: flow(
                 a_notification,
                 NotificationSerializer.instance().serialize,
@@ -183,10 +186,10 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
     def set_exchange_name(self, a_name: str):
         self._exchange_name = a_name
 
-    def _set_message_producer(self, message_producer: MessageProducer):
+    def _set_message_producer(self, message_producer: RabbitMQMessageProducer):
         self._message_producer_ins = message_producer
 
-    def _message_producer(self) -> Result[MessageProducer, Any]:
+    def _message_producer(self) -> Result[RabbitMQMessageProducer, Any]:
         match self._message_producer_ins:
             case None:
                 return flow(
@@ -195,11 +198,11 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
                         self.exchange_name(),
                         True,
                     ],
-                    feed_args(Exchange.fanout_instance),
-                    map_(MessageProducer.factory),
+                    feed_args(RabbitMQExchange.fanout_instance),
+                    map_(RabbitMQMessageProducer.factory),
                     map_(tap(self._set_message_producer)),
                 )
-            case MessageProducer():
+            case RabbitMQMessageProducer():
                 return Success(self._message_producer_ins)
             case _:
                 print("not message producer in case", self._message_producer_ins)

@@ -1,5 +1,7 @@
 from pika import BasicProperties, DeliveryMode
 
+__all__ = ["MessageParameters"]
+
 
 class MessageParameters:
     _properties: BasicProperties

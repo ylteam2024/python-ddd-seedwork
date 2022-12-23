@@ -4,6 +4,8 @@ from typing import Optional
 from dino_seedwork_be.domain import ValueObject
 from dino_seedwork_be.logic import DomainAssertionConcern
 
+__all__ = ["StringWithRegex"]
+
 
 class StringWithRegex(ValueObject, DomainAssertionConcern):
     _pattern: str

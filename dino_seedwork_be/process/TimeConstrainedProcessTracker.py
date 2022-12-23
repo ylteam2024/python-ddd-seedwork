@@ -16,6 +16,8 @@ from dino_seedwork_be.utils import (apply, feed_kwargs, now_utc, return_v,
 
 from .timeout_event_factory import timeout_factory_type
 
+__all__ = ["TimeConstrainedProcessTracker"]
+
 
 class TimeConstrainedProcessTracker(AssertionConcern):
     _allowable_duration: int

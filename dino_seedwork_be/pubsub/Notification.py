@@ -10,6 +10,8 @@ from dino_seedwork_be.logic.assertion_concern import AssertionConcern
 from dino_seedwork_be.serializer.Serializable import JSONSerializable
 from dino_seedwork_be.utils.functional import return_v
 
+__all__ = ["DomainEventSerializable", "Notification"]
+
 
 class DomainEventSerializable(DomainEvent, JSONSerializable):
     pass

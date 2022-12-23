@@ -12,6 +12,8 @@ from dino_seedwork_be.storage.uow import DBSessionUser
 EntityType = TypeVar("EntityType")
 DTOType = TypeVar("DTOType")
 
+__all__ = ["PaginationResultDB", "Repository"]
+
 
 @dataclass
 class PaginationResultDB(Generic[EntityType]):

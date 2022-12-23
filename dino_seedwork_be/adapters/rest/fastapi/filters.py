@@ -6,6 +6,8 @@ from dino_seedwork_be.utils.dict import extract
 
 FilterType = TypeVar("FilterType", bound=TypedDict)
 
+__all__ = ["Filters"]
+
 
 class Filters:
     def __init__(self, keys: List[str]) -> None:

@@ -1,20 +1,14 @@
 from abc import abstractmethod
 from datetime import datetime
-from enum import Enum
 
 from multimethod import multimethod
 from returns.future import FutureFailure, FutureResult
 
 from dino_seedwork_be.exceptions import MainException
 
+from .MessageType import MessageType
 
-class Type(Enum):
-    BINARY = "BINARY"
-    TEXT = "TEXT"
-
-
-class MessageException(MainException):
-    pass
+__all__ = ["MessageListener"]
 
 
 class MessageListener:
@@ -29,19 +23,19 @@ class MessageListener:
     """
 
     # My type, which indicates whether I listen for BINARY or TEXT messages.
-    _type: Type
+    _type: MessageType
 
-    def __init__(self, a_type: Type) -> None:
+    def __init__(self, a_type: MessageType) -> None:
         self.set_type(a_type)
 
-    def type(self) -> Type:
+    def type(self) -> MessageType:
         """
         * Answers my type.
         * @return Type
         """
         return self._type
 
-    def set_type(self, a_type: Type):
+    def set_type(self, a_type: MessageType):
         """
         * Sets my type.
         * @param a_type the Type to set as my type

@@ -8,6 +8,8 @@ from dino_seedwork_be.application.service import AbstractUOWApplicationService
 InputType = TypeVar("InputType")
 ReturnType = TypeVar("ReturnType")
 
+__all__ = ["BaseHandler"]
+
 
 class BaseHandler(Generic[InputType, ReturnType], AbstractUOWApplicationService):
     @abstractmethod

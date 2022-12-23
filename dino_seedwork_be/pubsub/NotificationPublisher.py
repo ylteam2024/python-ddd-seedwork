@@ -7,6 +7,8 @@ from returns.result import Result
 
 from dino_seedwork_be.storage.uow import DBSessionUser
 
+__all__ = ["NotificationPublisher"]
+
 
 class NotificationPublisher(ABC, DBSessionUser):
     @abstractmethod

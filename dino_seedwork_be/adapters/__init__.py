@@ -1,5 +1,4 @@
 from .dto import *
-from .IRepository import *
 from .logger import *
 from .messaging import *
 from .pubsub import *
