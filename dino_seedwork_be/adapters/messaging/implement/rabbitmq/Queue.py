@@ -7,7 +7,7 @@ from returns.iterables import Fold
 from returns.maybe import Maybe
 from returns.result import Failure, Result, Success, safe
 
-from dino_seedwork_be.adapters import SIMPLE_LOGGER
+from dino_seedwork_be.adapters.logger.SimpleLogger import SIMPLE_LOGGER
 from dino_seedwork_be.exceptions import MainException
 from dino_seedwork_be.utils import execute, unsafe_panic
 
@@ -29,10 +29,10 @@ class Queue(BrokerComponent):
     def is_queue(self) -> bool:
         return True
 
-    @multimethod
     def __init__(
         self,
-        a_con_settings: ConnectionSettings,
+        a_con_settings: Optional[ConnectionSettings],
+        a_broker_component: Optional[Union[Exchange, "Queue"]],
         a_name: str,
         is_durable: bool,
         is_exclusive: bool,
@@ -40,44 +40,18 @@ class Queue(BrokerComponent):
         on_setup_finish: Optional[Callable[[Any], Any]],
     ):
         """
-        Constructs my default state.
+        Construct my default state.
         @param a_con_settings the ConnectionSettings to initialize with
-        @param a_name the String name of the queue, or the empty string
-        @param is_durable the boolean indicating whether or not I am durable
-        @param is_exclusive the boolean indicating whether or not I am exclusive
-        @param is_auto_deleted the boolean indicating whether or not I should be auto-deleted
-        """
-
-        super().__init__(a_con_settings=a_con_settings, on_setup_finish=on_setup_finish)
-        self.set_durable(is_durable)
-        self.set_name(a_name)
-        self._is_exclusive = is_exclusive
-        self._is_auto_deleted = is_auto_deleted
-
-    @__init__.register
-    def _(
-        self,
-        a_broker_channel: Union[Exchange, "Queue"],
-        a_name: str,
-        is_durable: bool,
-        is_exclusive: bool,
-        is_auto_deleted: bool,
-        on_setup_finish: Optional[Callable[[Any], Any]],
-    ):
-        """
-        Constructs my default state.
         @param a_broker_channel the BrokerChannel to initialize with
         @param a_name the String name of the queue, or the empty string
         @param is_durable the boolean indicating whether or not I am durable
         @param is_exclusive the boolean indicating whether or not I am exclusive
         @param is_auto_deleted the boolean indicating whether or not I should be auto-deleted
         """
-
-        self.set_durable(is_durable)
-        self.set_name(a_name)
         self._is_exclusive = is_exclusive
         self._is_auto_deleted = is_auto_deleted
-        super().__init__(a_broker_channel, on_setup_finish)
+        self.set_durable(is_durable)
+        super().__init__(a_name, a_con_settings, a_broker_component, on_setup_finish)
 
     @multimethod
     @staticmethod
@@ -95,7 +69,13 @@ class Queue(BrokerComponent):
         @return Queue
         """
         return Queue(
-            a_con_settings, a_name, False, False, False, on_setup_finish=on_setup_finish
+            a_con_settings,
+            None,
+            a_name,
+            False,
+            False,
+            False,
+            on_setup_finish=on_setup_finish,
         )
 
     @safe
@@ -122,6 +102,7 @@ class Queue(BrokerComponent):
         """
         return Queue(
             a_con_settings,
+            None,
             a_name,
             is_durable,
             is_exclusive,
@@ -146,6 +127,7 @@ class Queue(BrokerComponent):
 
         return Queue(
             a_connection_settings,
+            None,
             a_name,
             True,
             False,
@@ -169,6 +151,7 @@ class Queue(BrokerComponent):
         """
         return Queue(
             a_connection_settings,
+            None,
             a_name,
             True,
             True,
@@ -196,6 +179,7 @@ class Queue(BrokerComponent):
             return Queue._bind_queue(queue, an_exchange, cb, "")
 
         queue = Queue(
+            None,
             an_exchange,
             a_name or "",
             is_durable,
@@ -207,6 +191,7 @@ class Queue(BrokerComponent):
 
     @staticmethod
     @factory_exchange_subscriber.register
+    @safe
     def _(
         an_exchange: Exchange,
         routing_keys: List[str],
@@ -233,6 +218,7 @@ class Queue(BrokerComponent):
             ).unwrap()
 
         queue = Queue(
+            None,
             an_exchange,
             "",
             is_durable,
@@ -244,6 +230,7 @@ class Queue(BrokerComponent):
 
     @staticmethod
     @factory_exchange_subscriber.register
+    @safe
     def _(
         an_exchange: Exchange,
         a_name: str,
@@ -251,7 +238,7 @@ class Queue(BrokerComponent):
         is_durable: bool,
         is_exclusive: bool,
         is_auto_deleted: bool,
-        cb: Optional[Callable[[Any], Result]],
+        cb: Optional[Callable],
     ) -> "Queue":
         """
         Answers a new instance of a Queue that is bound to an_exchange, and
@@ -282,10 +269,11 @@ class Queue(BrokerComponent):
                             partial(Queue._bind_queue, queue, an_exchange, cb),
                             routing_keys,
                         ),
-                        Result(()),
+                        Success(()),
                     ) or Result(None)
 
         queue = Queue(
+            None,
             an_exchange,
             a_name,
             is_durable,
@@ -318,6 +306,7 @@ class Queue(BrokerComponent):
                 MainException(code="BIND_QUEUE_TO_EXCHANGE_FAILED", message=str(error))
             )
 
+    @safe
     def setup(self, callback: Optional[Callable[[Any], Result]]):
         try:
             self.channel().unwrap().queue_declare(

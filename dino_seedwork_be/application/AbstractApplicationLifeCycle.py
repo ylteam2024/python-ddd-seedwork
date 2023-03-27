@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
+from traceback import print_exception
 from typing import Callable, Dict, List, Optional
 from uuid import uuid4
 
+from returns.functions import tap
 from returns.future import FutureResult
 from returns.pipeline import flow, managed
-from returns.pointfree import bind, lash
+from returns.pointfree import alt, bind, lash
 
 from dino_seedwork_be.application.ApplicationLifeCycleUseCase import \
     ApplicationLifeCycleUsecase
@@ -73,6 +75,7 @@ class AbstractApplicationServiceLifeCycle(ABC):
         return flow(
             result,
             bind(tap_excute_future(apply(cls.commit_db, correlation_id))),
+            alt(tap(print_exception)),
             lash(tap_failure_execute_future(apply(cls.rollback_db, correlation_id))),
         )
 
@@ -89,7 +92,10 @@ class AbstractApplicationServiceLifeCycle(ABC):
     @classmethod
     @abstractmethod
     def start_db(
-        cls, correlation_id: str, db_session_users: List[DBSessionUser]
+        cls,
+        correlation_id: str,
+        db_session_users: List[DBSessionUser],
+        usecase: ApplicationLifeCycleUsecase,
     ) -> FutureResult:
         ...
 
@@ -110,13 +116,6 @@ class AbstractApplicationServiceLifeCycle(ABC):
                         lambda _: target_function(*args, **kwargs),
                         lambda _, result: cls.exit(correlation_id, result),
                     ),
-                    # bind(lambda _: target_function(*args, **kwargs)),
-                    # bind(
-                    #     lambda result: flow(
-                    #         partial(cls.exit, correlation_id)(), map_(returnV(result))
-                    #     )
-                    # ),
-                    # lash(partial(cls.exit, correlation_id)),
                 )
 
             return proxy

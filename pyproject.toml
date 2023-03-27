@@ -4,7 +4,7 @@
 
 [tool.poetry]
 name = "dinohub-seedwork-be"
-version = "0.1.7"
+version = "0.1.9"
 authors = [
   "Tuan Cau Rao <tuan.pt@orai.io>",
 ]
@@ -51,6 +51,8 @@ multimethod = "^1.9"
 firebase-admin = "^6.0.1"
 sqlalchemy-utils = "^0.38.3"
 pyramda = "^0.1"
+redis = "^4.5.1"
+hiredis = "^2.2.2"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.981"

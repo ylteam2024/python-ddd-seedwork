@@ -1,6 +1,7 @@
 import os
 
 from dotenv import load_dotenv
+from returns.curry import partial
 
 __all__ = ["cast_bool_from_str", "get_env"]
 
@@ -27,3 +28,11 @@ def get_env(name, default=None, is_bool=False):
         else:
             return value
     return default
+
+
+def get_environment() -> str:
+    return os.environ.get("ENV", default="local")
+
+
+def get_env_with(env: str):
+    return partial(get_env, env=env)

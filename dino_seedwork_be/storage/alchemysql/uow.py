@@ -1,5 +1,4 @@
-from collections.abc import Callable
-from typing import List, TypeVar
+from typing import Callable, List, TypeVar
 
 from returns.future import FutureResult, future_safe
 from returns.pipeline import flow

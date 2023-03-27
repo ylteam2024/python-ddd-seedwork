@@ -1,15 +1,19 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import List, Optional
+from typing import Any, Callable, List, Optional
 
+from pika.exchange_type import ExchangeType
 from returns.functions import tap
-from returns.future import FutureResult
+from returns.future import FutureResult, FutureSuccess
 from returns.maybe import Maybe
 from returns.pipeline import flow
 from returns.pointfree import bind, map_
 from returns.result import Result, safe
 
-from dino_seedwork_be.utils.functional import feed_args
+from dino_seedwork_be.adapters.logger.SimpleLogger import DomainLogger
+from dino_seedwork_be.adapters.messaging.notification.EventHandlingTracker import \
+    EventHandlingTracker
+from dino_seedwork_be.utils.functional import feed_args, tap_excute_future
 
 from .ConnectionSettings import ConnectionSettings
 from .Exchange import Exchange
@@ -22,31 +26,34 @@ __all__ = ["ExchangeListener"]
 
 
 class ExchangeListener(ABC):
+
     _message_consumer: Optional[MessageConsumer]
     _queue: Optional[Queue] = None
     _exchange: Exchange
-    is_durable: bool = True
+
+    is_exchange_durable: bool = True
+    is_exchange_auto_delete: bool = False
+    exchange_type: ExchangeType = ExchangeType.fanout
+
     is_queue_durable: bool = True
     is_queue_auto_deleted: bool = False
+    is_queue_exclusive: bool = True
+    queue_routing_keys: Optional[List[str]] = None
+
     is_auto_acknowledged: bool = False
     is_retry: bool = False
-    is_exclusive: bool = True
 
-    def __init__(
-        self,
-        broker_host: str,
-        broker_port: int,
-        broker_virtual_host: str,
-        broker_user_name: Maybe[str],
-        broker_user_password: Maybe[str],
-    ) -> None:
-        self.attach_to_queue(
-            broker_host,
-            broker_port,
-            broker_virtual_host,
-            broker_user_name,
-            broker_user_password,
-        )
+    label: str = ""
+    logger: DomainLogger
+    event_handling_tracker: EventHandlingTracker
+
+    def _queue_routing_keys(self) -> List[str]:
+        return Maybe.from_optional(self.queue_routing_keys).value_or(self.listen_to())
+
+    def __init__(self, connection_setting: ConnectionSettings) -> None:
+        self.attach_to_queue().unwrap()
+        self.logger = DomainLogger(self.label)
+        self._connection_setting = connection_setting
 
     def message_consumer(self) -> Maybe[MessageConsumer]:
         return Maybe.from_optional(self._message_consumer)
@@ -100,48 +107,61 @@ class ExchangeListener(ABC):
     def set_queue(self, a_queue: Queue):
         self._queue = a_queue
 
-    def attach_to_queue(
-        self,
-        broker_host: str,
-        broker_port: int,
-        broker_virtual_host: str,
-        broker_user_name: Maybe[str],
-        broker_user_password: Maybe[str],
-    ) -> Result:
+    def attach_to_queue(self) -> Result:
 
         """
         " Attaches to the queues I listen to for messages.
         """
         return flow(
             [
-                ConnectionSettings.factory(
-                    broker_host,
-                    broker_port,
-                    broker_virtual_host,
-                    broker_user_name.value_or(None),
-                    broker_user_password.value_or(None),
-                ),
+                self._connection_setting,
                 self.exchange_name(),
-                self.is_durable,
+                self.exchange_type,
+                self.is_exchange_durable,
+                self.is_exchange_auto_delete,
                 lambda exchange: flow(
                     [
                         exchange,
                         self.queue_name(),
-                        self.register_consumer,
+                        self._queue_routing_keys(),
                         self.is_queue_durable,
+                        self.is_queue_exclusive,
                         self.is_queue_auto_deleted,
-                        self.is_exclusive,
+                        self.register_consumer,
                     ],
                     feed_args(Queue.factory_exchange_subscriber),
                     map_(tap(self.set_queue)),
                 ),
             ],
-            feed_args(Exchange.fanout_instance),
+            feed_args(Exchange.factory),
             map_(tap(self.set_exchange)),
         )
 
     def set_message_consumer(self, message_consumer: MessageConsumer):
         self._message_consumer = message_consumer
+
+    def itempotent_handle_dispatch(
+        self, a_message_id: str, a_type: str, a_binary_message: bytes
+    ):
+        def idempotent_handle(is_handled: bool):
+            match is_handled:
+                case False:
+                    return self.filtered_dispatch(
+                        a_type, a_binary_message.decode()
+                    ).bind(
+                        tap_excute_future(
+                            lambda _: self.event_handling_tracker.mark_notif_as_handled(
+                                a_message_id=a_message_id
+                            )
+                        )
+                    )
+                case _:
+                    return FutureSuccess(None)
+
+        self.logger.info(f"Handle message_id {a_message_id}")
+        return self.event_handling_tracker.check_if_notif_handled(a_message_id).bind(
+            idempotent_handle
+        )
 
     def register_consumer(self, queue: Queue) -> Result:
         parent = self
@@ -156,17 +176,21 @@ class ExchangeListener(ABC):
                 a_delivery_tag: int,
                 is_redelivery: bool,
             ) -> FutureResult:
-                return parent.filtered_dispatch(a_type, a_binary_message.decode())
+                return parent.itempotent_handle_dispatch(
+                    a_message_id, a_type, a_binary_message
+                )
+
+        rabbitmq_register_consumer: Callable[
+            [MessageConsumer], Result
+        ] = lambda msg_consumer: msg_consumer.receive_only(
+            self.listen_to(), MessageListenerAdapter(Type.TEXT)
+        )
 
         return flow(
-            [self.is_auto_acknowledged, queue, self.is_retry],
+            [self.is_auto_acknowledged, queue, self.is_retry, self.label],
             feed_args(MessageConsumer.factory),
             map_(tap(self.set_message_consumer)),
-            bind(
-                lambda msg_consumer: msg_consumer.receive_only(
-                    self.listen_to(), MessageListenerAdapter(Type.TEXT)
-                )
-            ),
+            bind(rabbitmq_register_consumer),
         )
 
     def is_ready_for_consume(self) -> bool:

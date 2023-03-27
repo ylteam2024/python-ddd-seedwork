@@ -2,13 +2,14 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Callable, Optional
 
-from multimethod import multimethod
 from pika import SelectConnection
 from pika.channel import Channel
 from pika.connection import ConnectionParameters
 from returns.functions import tap
 from returns.maybe import Maybe, Nothing, Some
 from returns.result import Result
+
+from dino_seedwork_be.exceptions import MainException
 
 from .ConnectionSettings import ConnectionSettings
 
@@ -39,40 +40,36 @@ class BrokerComponent(ABC):
 
     _is_open: bool = False
 
-    _on_setup_finish: Callable
+    _on_setup_finish: Optional[Callable[..., Result]]
 
     _name: str
 
-    @multimethod
     def __init__(
         self,
-        a_connection_settings: ConnectionSettings,
         a_name: str,
-        on_setup_finish: Optional[Callable],
+        a_connection_settings: Optional[ConnectionSettings] = None,
+        a_broker_channel: Optional["BrokerComponent"] = None,
+        on_setup_finish: Optional[Callable[..., Result]] = None,
     ) -> None:
         self.set_name(a_name)
-        self.set_connection_settings(a_connection_settings)
-        connection = self._factory_connection(a_connection_settings)
-        self.set_connection(connection)
-        self._on_setup_callback = on_setup_finish
-        # self.run()
-
-    @__init__.register
-    def _(
-        self,
-        a_broker_channel: "BrokerComponent",
-        on_setup_finish: Optional[Callable],
-    ):
-        """
-        Initialize a broker component that reuse connection, channel, and setting
-        from an existed component, it is useful for creating a queue that routed by
-        an ready exchange
-        """
-        self.set_connection_settings(a_broker_channel.connection_settings())
-        self.set_connection(a_broker_channel.connection())
-        a_broker_channel.channel().map(tap(self.set_channel))
-        self._on_setup_callback = on_setup_finish
-        self.setup(self._on_setup_callback)
+        self._on_setup_finish = on_setup_finish
+        match [a_connection_settings, a_broker_channel]:
+            case [ConnectionSettings() as connection_setting, None]:
+                self.set_connection_settings(connection_setting)
+                connection = self._factory_connection(connection_setting)
+                self.set_connection(connection)
+            case [None, BrokerComponent() as broker_component]:
+                """
+                Initialize a broker component that reuse connection, channel, and setting
+                from an existed component, it is useful for creating a queue that routed by
+                an ready exchange
+                """
+                self.set_connection_settings(broker_component.connection_settings())
+                self.set_connection(broker_component.connection())
+                broker_component.channel().map(tap(self.set_channel))
+                self.setup(self._on_setup_finish)
+            case _:
+                raise MainException("[Exchange] Params for construtor are not invalid")
 
     def _factory_connection(
         self,
@@ -134,7 +131,7 @@ class BrokerComponent(ABC):
 
         LOGGER.info("Setup detail ...")
 
-        self.setup(self._on_setup_callback)
+        self.setup(self._on_setup_finish)
 
     def _on_channel_closed(self, channel: Channel, reason: Exception):
         """Invoked by pika when RabbitMQ unexpectedly closes the channel.
@@ -222,11 +219,11 @@ class BrokerComponent(ABC):
         the Channel.Close RPC command.
         """
 
-        def exe_with_unnone(_):
+        def exe_with_unnone(_):bind
             LOGGER.info("Close the channel")
             self.channel().unwrap().close()
 
-        self.channel().bind(tap(exe_with_unnone))
+        self.channel().map(tap(exe_with_unnone))
 
     def _close_connection(self):
         """This method closes the connection to RabbitMQ."""

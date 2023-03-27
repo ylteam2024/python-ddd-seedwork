@@ -73,6 +73,9 @@ class ID(ValueObject):
     def get_raw_string(id: "ID"):
         return id.get_raw()
 
+    def __str__(self) -> str:
+        return self.get_raw()
+
     @staticmethod
     def from_string(id: str | "ID") -> "ID":
         match id:

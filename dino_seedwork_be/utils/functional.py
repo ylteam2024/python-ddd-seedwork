@@ -7,13 +7,15 @@ from returns.converters import maybe_to_result
 from returns.curry import curry, partial
 from returns.future import (Future, FutureFailure, FutureResult, FutureResultE,
                             future_safe)
-from returns.io import IOResult
+from returns.io import IOFailure, IOResult, IOSuccess
 from returns.iterables import Fold
 from returns.maybe import Maybe
 from returns.pipeline import flow, is_successful
 from returns.pointfree import bind, lash
-from returns.result import Result
+from returns.result import Failure, Result, Success
 from returns.unsafe import unsafe_perform_io
+
+from dino_seedwork_be.exceptions import MainException
 
 T = TypeVar("T")
 
@@ -60,6 +62,8 @@ __all__ = [
     "unwrap_future_result_io",
     "unwrap_maybe",
     "return_v",
+    "must_be_true",
+    "result_to_future_callable",
 ]
 
 
@@ -225,6 +229,24 @@ def unwrap_future_result_io(result: IOResult[InnerValueType, Any]) -> InnerValue
     return unsafe_perform_io(unwrap(result))
 
 
+_ValueType = TypeVar("_ValueType", covariant=True)
+
+
+async def unwrap_future_result(
+    future_result: FutureResult[_ValueType, Any]
+) -> _ValueType:
+    io_result = await future_result.awaitable()
+    match io_result:
+        case IOSuccess(Success(data)):
+            return data
+        case IOSuccess(Failure(e)):
+            raise e
+        case IOFailure(Failure(e)):
+            raise e
+        case _:
+            raise MainException("UNKNOW_PATTERN")
+
+
 def collect_container(init):
     def with_items(items):
         return Fold.collect(items, init)
@@ -261,6 +283,13 @@ def feed_kwargs(func):
 
 def throw_future_failed(exception: Exception):
     return lambda _: FutureFailure(exception)
+
+
+def exception_to_domain_exception(code: str, prefix: str, exception: Exception):
+    return DomainException(
+        code=code,
+        message=f"[{prefix} - {str(exception)}] {traceback.print_tb(exception.__traceback__)}",
+    )
 
 
 def not_nothing_or_throw_future_failed(
@@ -304,11 +333,7 @@ def unsafe_panic(f: Callable[..., Result | FutureResult]):
 
 
 def execute(fn: Optional[Callable[..., T]], *args, **kwargs) -> T | None:
-    match fn:
-        case Callable():
-            return fn(*args, **kwargs)
-        case _:
-            return None
+    return Maybe.from_optional(fn).map(lambda f: f(*args, **kwargs)).value_or(None)
 
 
 def async_execute(fn: Callable[..., FutureResult]):
@@ -334,3 +359,21 @@ def tap_failure_execute_future(
         return fn(input).bind(return_v(FutureFailure(input)))
 
     return execute
+
+
+def must_be_true(
+    exception: Optional[MainException] = None,
+) -> Callable[[bool], Result]:
+    def assert_true(value: bool) -> Result:
+        has_value_and_exception = value is False and exception is not None
+        match has_value_and_exception:
+            case True:
+                return Failure(exception)
+            case False:
+                return Success(value)
+
+    return assert_true
+
+
+def result_to_future_callable(fn: Callable[..., Result]):
+    return lambda *args, **kwargs: FutureResult.from_result(fn(*args, **kwargs))

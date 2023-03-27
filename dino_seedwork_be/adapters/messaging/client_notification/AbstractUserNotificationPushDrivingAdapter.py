@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from returns.future import FutureResult
 
-all = ["UserNotificationPushDrivingAdapter"]
+__all__ = ["UserNotificationPushDrivingAdapter"]
 
 
 class UserNotificationPushDrivingAdapter(ABC):

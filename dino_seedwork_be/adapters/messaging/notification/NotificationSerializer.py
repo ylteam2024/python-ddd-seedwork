@@ -1,10 +1,12 @@
 import json
-from typing import Any, Generic, Type, TypeVar
+from typing import Generic, TypeVar
 
+import jsonpickle
 from returns.result import Failure, Result, Success
 
-from dino_seedwork_be.pubsub.Notification import Notification
 from dino_seedwork_be.serializer.AbstractSerializer import AbstractSerializer
+
+from .Notification import Notification
 
 NotificationT = TypeVar("NotificationT", bound=Notification)
 
@@ -24,8 +26,7 @@ class NotificationSerializer(
     def serialize(self, aNotification: NotificationT) -> Result[str, Exception]:
         try:
             return Success(
-                "%s"
-                % str(self.json_marshaller().encode(aNotification, unpicklable=False))
+                "%s" % str(jsonpickle.encode(aNotification, unpicklable=False))
             )
         except Exception as error:
             return Failure(error)

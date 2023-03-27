@@ -39,6 +39,7 @@ class ConnectionSettings:
         return Maybe.from_optional(self._port)
 
     def username(self) -> Maybe[str]:
+
         return Maybe.from_optional(self._username)
 
     def virtual_host(self) -> str:

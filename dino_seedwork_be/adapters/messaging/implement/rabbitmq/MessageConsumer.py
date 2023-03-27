@@ -12,11 +12,12 @@ from returns.pipeline import flow
 from returns.pointfree import alt, bind
 from returns.result import Failure, Result, Success, safe
 
-from dino_seedwork_be.adapters import SIMPLE_LOGGER
+from dino_seedwork_be.adapters.logger.SimpleLogger import DomainLogger
 from dino_seedwork_be.exceptions import MainException
 from dino_seedwork_be.utils.functional import (apply, async_execute,
-                                               feed_kwargs, return_v,
-                                               tap_excute_future)
+                                               feed_kwargs,
+                                               print_result_with_text,
+                                               return_v, tap_excute_future)
 
 from .exceptions import MessageException
 from .MessageListener import MessageListener
@@ -45,20 +46,27 @@ class MessageConsumer:
     # My queue, which is where my messages come from.
     _queue: Queue
 
+    _label: str
+
     # My tag, which is produced by the broker.
     _tag: str
+
+    logger: DomainLogger
 
     def __init__(
         self,
         a_queue: Queue,
         is_auto_acknowledged: bool,
         is_retry: bool = False,
+        label: str = "",
     ) -> None:
         super().__init__()
         self.set_queue(a_queue)
         self.set_auto_acknowledged(is_auto_acknowledged)
         self.set_message_types(set([]))
         self._is_retry = is_retry
+        self._label = label
+        self.domain_logger = DomainLogger(self.label())
 
     @multimethod
     @staticmethod
@@ -81,9 +89,14 @@ class MessageConsumer:
     @staticmethod
     @factory.register
     def _(
-        is_auto_acknowledged: bool, a_queue: Queue, is_retry: bool
+        is_auto_acknowledged: bool,
+        a_queue: Queue,
+        is_retry: bool,
+        label: str = "",
     ) -> Result["MessageConsumer", Any]:
-        return Success(MessageConsumer(a_queue, is_auto_acknowledged, is_retry)).bind(
+        return Success(
+            MessageConsumer(a_queue, is_auto_acknowledged, is_retry, label)
+        ).bind(
             lambda consumer: consumer.equalize_message_distribution().map(
                 return_v(consumer)
             )
@@ -103,6 +116,9 @@ class MessageConsumer:
 
     def tag(self) -> str:
         return self._tag
+
+    def label(self) -> str:
+        return self._label
 
     def is_consuming(self) -> bool:
         return self._consuming
@@ -145,7 +161,7 @@ class MessageConsumer:
             return Failure(MessageException(code="MESSAGE_EQUALIZE_DIS_FAILED"))
 
     def on_basic_qos_ok(self, _):
-        SIMPLE_LOGGER.info("QOS set to: %d", self._prefetch_count)
+        self.domain_logger.info(f"QOS set to: {self._prefetch_count}")
         self.set_is_ready(True)
 
     def receive_all(self, a_message_listener: MessageListener) -> Result:
@@ -179,20 +195,20 @@ class MessageConsumer:
                 match self.is_auto_acknowledged():
                     case False:
                         channel.basic_ack(delivery_tag, False)
-                        SIMPLE_LOGGER.info(
+                        self.domain_logger.info(
                             f"ACK handle message success {self.message_types()}",
                         )
                 return FutureSuccess(None)
             except Exception as error:
-                SIMPLE_LOGGER.error("Exception on ACK %s", error)
+                self.domain_logger.error(f"Exception on ACK {error}")
                 raise error
 
         def nak(channel: Channel, delivery_tag: int, is_retry: bool):
             try:
                 match self.is_auto_acknowledged():
                     case False:
-                        SIMPLE_LOGGER.info(
-                            "NonACK handle message failed, would retry ? %s", is_retry
+                        self.domain_logger.info(
+                            f"NonACK handle message failed, would retry ? {is_retry}"
                         )
                         channel.basic_nack(delivery_tag, False, is_retry)
             except Exception as error:
@@ -201,7 +217,7 @@ class MessageConsumer:
         def handle_delivery_exception(
             channel: Channel, delivery_tag: int, is_retry: bool, exception: Exception
         ):
-            SIMPLE_LOGGER.info("Exception on handle delivery %s", exception)
+            self.domain_logger.info(f"Exception on handle delivery {exception}")
             traceback.print_exc()
             match exception:
                 case MessageException():
@@ -216,7 +232,7 @@ class MessageConsumer:
         ) -> FutureResult:
             match self.is_target_message_type(properties.type):
                 case True:
-                    SIMPLE_LOGGER.info("Handle delivery %s", properties.type)
+                    self.domain_logger.info(f"Handle delivery {properties.type}")
                     return flow(
                         {
                             "a_type": properties.type,
@@ -232,6 +248,7 @@ class MessageConsumer:
                                 apply(ack, channel, getattr(method, "delivery_tag", 0))
                             )
                         ),
+                        alt(tap(print_result_with_text("error here"))),
                         alt(
                             tap(
                                 partial(
@@ -255,7 +272,7 @@ class MessageConsumer:
                 on_message_callback=async_execute(handle_delivery),
             )
             channel.add_on_cancel_callback(self.on_consumer_cancelled)
-            SIMPLE_LOGGER.info("Register message listener success")
+            self.domain_logger.info("Register message listener success")
             self.set_tag(tag)
             self.set_is_consuming(True)
             return Success(None)
@@ -267,8 +284,8 @@ class MessageConsumer:
         receiving messages.
         :param pika.frame.Method method_frame: The Basic.Cancel frame
         """
-        SIMPLE_LOGGER.info(
-            "Consumer was cancelled remotely, shutting down: %r", method_frame
+        self.domain_logger.info(
+            f"Consumer was cancelled remotely, shutting down: {method_frame}"
         )
         self.close_channel()
 

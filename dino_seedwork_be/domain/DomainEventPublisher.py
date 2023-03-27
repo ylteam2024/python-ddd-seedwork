@@ -1,3 +1,4 @@
+import json
 from typing import Any, List, Tuple, TypeVar
 
 from returns.curry import partial
@@ -5,6 +6,7 @@ from returns.future import FutureFailure, FutureResult, FutureSuccess
 from returns.iterables import Fold
 from returns.pipeline import flow, managed
 
+from dino_seedwork_be.adapters.logger.SimpleLogger import DomainLogger
 from dino_seedwork_be.domain import DomainEvent, DomainEventSubscriber
 from dino_seedwork_be.exceptions import MainException
 from dino_seedwork_be.utils.process import ThreadLocal
@@ -18,16 +20,18 @@ class DomainEventPublisher:
     ins: ThreadLocal["DomainEventPublisher"]
     _isLock: bool
     _subscribers: List[DomainEventSubscriber]
+    logger: DomainLogger = DomainLogger("DomainEventPublisher")
 
     def __init__(self) -> None:
         self._subscribers = []
         self._isLock = False
 
-    @staticmethod
-    def instance() -> "DomainEventPublisher":
+    @classmethod
+    def instance(cls) -> "DomainEventPublisher":
         try:
             return DomainEventPublisher.ins.value()
-        except AttributeError:
+        except AttributeError as error:
+            cls.logger.info(f"attribute error in publisher {error}")
             DomainEventPublisher.new_instance_for_publisher()
             return DomainEventPublisher.ins.value()
 
@@ -65,8 +69,11 @@ class DomainEventPublisher:
                 case False:
                     return FutureFailure(MainException(code="EVENT_PUBLISHER_LOCK"))
 
+        self.logger.info(
+            f"Publish domain event {json.dumps(an_event.as_dict())}, {self.is_lock()}, {self.has_subscribers()}",
+        )
         return flow(
-            FutureSuccess(not self.is_lock() and self.has_subscribers()),
+            FutureSuccess((not self.is_lock()) and self.has_subscribers()),
             managed(execute, lambda *_: FutureResult.from_value(self.unlock())),
         )
 
@@ -95,10 +102,9 @@ class DomainEventPublisher:
 
     @staticmethod
     def new_instance_for_publisher():
-        print("new instance for publisher")
         DomainEventPublisher.ins = ThreadLocal(
             "domain_publisher", DomainEventPublisher()
         )
 
 
-DomainEventPublisher.new_instance_for_publisher()
+# DomainEventPublisher.new_instance_for_publisher()

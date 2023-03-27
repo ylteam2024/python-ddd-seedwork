@@ -5,15 +5,16 @@ from returns.pipeline import flow
 from returns.pointfree import map_
 from sqlalchemy.engine import Result
 
-from dino_seedwork_be.logic import AssertionConcern
 from dino_seedwork_be.utils import get_class_name, set_protected_attr, unwrap
+
+from .AbstractValueObject import ValueObject
 
 IdRawType = TypeVar("IdRawType")
 
 __all__ = ["AbstractIdentity"]
 
 
-class AbstractIdentity(ABC, AssertionConcern, Generic[IdRawType]):
+class AbstractIdentity(ABC, ValueObject, Generic[IdRawType]):
 
     _id: IdRawType
 
@@ -44,3 +45,6 @@ class AbstractIdentity(ABC, AssertionConcern, Generic[IdRawType]):
             map_(self.validate),
             map_(lambda _: set_protected_attr(self, "_id", an_id)),
         )
+
+    def get_raw(self) -> IdRawType:
+        return self.id()

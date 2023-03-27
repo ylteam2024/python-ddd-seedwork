@@ -1,11 +1,11 @@
 from abc import abstractmethod
 from typing import Any, List
 
+from firebase_admin.messaging import Notification
 from returns.future import FutureResult
 from returns.maybe import Maybe
 
-from dino_seedwork_be.pubsub.Notification import Notification
-from dino_seedwork_be.pubsub.PublishedNotificationTracker import \
+from dino_seedwork_be.adapters.messaging.notification.PublishedNotificationTracker import \
     PublishedNotificationTracker
 from dino_seedwork_be.storage.uow import DBSessionUser
 

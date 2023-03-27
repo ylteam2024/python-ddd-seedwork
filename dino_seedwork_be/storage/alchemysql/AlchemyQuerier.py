@@ -2,10 +2,13 @@ from functools import reduce
 from typing import Any, List, Optional
 
 from sqlalchemy import TEXT, Column, and_, cast, func, or_
+from sqlalchemy.exc import PendingRollbackError
 from sqlalchemy.ext.asyncio.session import AsyncSession
+from sqlalchemy.util import EMPTY_DICT
 
-from dino_seedwork_be.adapters.rest import (FilterElement, OrderParam,
-                                            ParamOperators, ParamWithComparing)
+from dino_seedwork_be.adapters.rest.utils import (FilterElement, OrderParam,
+                                                  ParamOperators,
+                                                  ParamWithComparing)
 from dino_seedwork_be.application.query import BaseQuerier
 from dino_seedwork_be.exceptions import MainException
 from dino_seedwork_be.storage.uow import DBSessionUser
@@ -26,6 +29,24 @@ class AlchemyQuerier(BaseQuerier):
 
     def session(self) -> AsyncSession:
         return self._query_session
+
+    async def execute(
+        self,
+        statement,
+        params=None,
+        execution_options=EMPTY_DICT,
+        bind_arguments=None,
+        **kw
+    ) -> Any:
+        execute = lambda: self.session().execute(
+            statement, params, execution_options, bind_arguments, **kw
+        )
+        try:
+            result = await execute()
+            return result
+        except PendingRollbackError:
+            await self.session().rollback()
+            return await execute()
 
     def is_allowed_primitive(self, v: Any):
         return (

@@ -1,5 +1,6 @@
 from typing import Any, Callable, List, Optional
 
+from pika.exchange_type import ExchangeType
 from returns.curry import partial
 from returns.functions import tap
 from returns.future import FutureFailure, FutureResult, FutureSuccess
@@ -9,17 +10,18 @@ from returns.pipeline import flow, managed, pipe
 from returns.pointfree import bind, map_
 from returns.result import Result, Success
 
-from dino_seedwork_be.adapters.messaging.rabbitmq import (
-    RabbitMQConnectionSettings, RabbitMQExchange, RabbitMQMessageParameters,
-    RabbitMQMessageProducer)
+from dino_seedwork_be.adapters.messaging.notification import (
+    Notification, NotificationPublisher, NotificationSerializer,
+    PublishedNotificationTrackerStore)
 from dino_seedwork_be.event import EventSerializer, EventStore, StoredEvent
 from dino_seedwork_be.exceptions import MainException
-from dino_seedwork_be.pubsub import (Notification, NotificationPublisher,
-                                     NotificationSerializer,
-                                     PublishedNotificationTrackerStore)
 from dino_seedwork_be.storage import SuperDBSessionUser
 from dino_seedwork_be.utils import (feed_args, feed_kwargs,
                                     print_result_with_text)
+from dino_seedwork_be.utils.functional import return_v
+
+from . import (RabbitMQConnectionSettings, RabbitMQExchange,
+               RabbitMQMessageParameters, RabbitMQMessageProducer)
 
 __all__ = ["RabbitMQPublisher"]
 
@@ -27,6 +29,7 @@ __all__ = ["RabbitMQPublisher"]
 class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
     _event_store: EventStore
     _exchange_name: str
+    _exchange_type: ExchangeType
     _published_notif_tracker_store: PublishedNotificationTrackerStore
     _message_producer_ins: Optional[RabbitMQMessageProducer] = None
     _event_serializer: EventSerializer
@@ -36,6 +39,7 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
         self,
         event_store: EventStore,
         exchange_name: str,
+        exchange_type: ExchangeType,
         published_notif_tracker_store: PublishedNotificationTrackerStore,
         event_serializer: EventSerializer,
         connection_settings: RabbitMQConnectionSettings,
@@ -45,7 +49,12 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
         self.set_event_store(event_store)
         # self._event_store.set_session(session)
         self._connection_settings = connection_settings
-        self._message_producer()
+
+        def init_message_producer():
+            self._exchange_type = exchange_type
+            self._message_producer()
+
+        init_message_producer()
         self.set_published_notif_tracker_store(published_notif_tracker_store)
         # self._published_notif_tracker_store.set_session(session)
         self.set_session_users(
@@ -147,6 +156,9 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
             FutureResult.from_result(self._message_producer())
         )
 
+    def _notification_routing_key(self, notification: Notification):
+        return notification.type_name()
+
     def _publish(
         self,
         a_message_producer: RabbitMQMessageProducer,
@@ -163,9 +175,11 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
                 a_notification,
                 NotificationSerializer.instance().serialize,
                 map_(tap(print_result_with_text("notification serialized"))),
-                bind(
-                    lambda notif: FutureResult.from_result(
-                        a_message_producer.send(text_parameters, notif)
+                lambda notif_string: FutureResult.from_result(
+                    a_message_producer.send(
+                        text_parameters,
+                        notif_string,
+                        self._notification_routing_key(a_notification),
                     )
                 ),
             ),
@@ -176,6 +190,9 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
 
     def exchange_name(self) -> str:
         return self._exchange_name
+
+    def exchange_type(self) -> ExchangeType:
+        return self._exchange_type
 
     def published_notif_tracker_store(self) -> PublishedNotificationTrackerStore:
         return self._published_notif_tracker_store
@@ -196,9 +213,10 @@ class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):
                     [
                         self._connection_settings,
                         self.exchange_name(),
+                        self.exchange_type(),
                         True,
                     ],
-                    feed_args(RabbitMQExchange.fanout_instance),
+                    feed_args(RabbitMQExchange.factory),
                     map_(RabbitMQMessageProducer.factory),
                     map_(tap(self._set_message_producer)),
                 )

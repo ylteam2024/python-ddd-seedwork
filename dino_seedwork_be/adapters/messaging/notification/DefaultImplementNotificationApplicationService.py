@@ -4,9 +4,10 @@ from typing import Any
 from returns.future import FutureResult
 from returns.maybe import Maybe
 
+from dino_seedwork_be.adapters.messaging.notification.NotificationPublisher import \
+    NotificationPublisher
 from dino_seedwork_be.application.ApplicationLifeCycleUseCase import \
     ApplicationLifeCycleUsecase
-from dino_seedwork_be.pubsub.NotificationPublisher import NotificationPublisher
 
 __all__ = ["DefaultImplementNotificationApplicationService"]
 

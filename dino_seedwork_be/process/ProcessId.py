@@ -12,6 +12,13 @@ class ProcessId(AbstractIdentity[str]):
     def __init__(self, id: str) -> None:
         super().__init__(id)
 
+    def __eq__(self, __o: object) -> bool:
+        match __o:
+            case ProcessId():
+                return __o.id() == self.id()
+            case _:
+                return False
+
     @staticmethod
     def new_process_id() -> Result["ProcessId", Any]:
         try:

@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from types import FunctionType
 
 __all__ = ["Validator"]
@@ -7,7 +7,7 @@ __all__ = ["Validator"]
 # it will be instantiated inside validate method of entity
 
 
-class Validator:
+class Validator(ABC):
 
     notification_handler: FunctionType
 
