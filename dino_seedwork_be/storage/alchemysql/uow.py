@@ -37,18 +37,18 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
         self,
     ):
         self.set_session(self.session_factory())
-        [session_user.set_session(self.session) for session_user in self.session_users]
+        [session_user.set_session(self._session) for session_user in self.session_users]
         result = await super().__aenter__()
         return result
 
     @future_safe
-    async def futureAEnter(self):
+    async def future_Enter(self):
         r = await self.__aenter__()
         return r
 
     async def __aexit__(self, *args):
         await super().__aexit__(*args)
-        await self.session.close()
+        await self._session.close()
 
     @future_safe
     async def future__aexit_with_failure(self, result: ExceptionType) -> ExceptionType:
@@ -62,16 +62,16 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
         return result
 
     async def _commit(self):
-        await self.session.commit()
+        await self._session.commit()
         print("commit to db ", self.session_users)
 
     async def rollback(self):
-        await self.session.rollback()
+        await self._session.rollback()
         print("rollback db ", self.session_users)
 
     def absord(self):
         def enter(_):
-            return self.futureAEnter()
+            return self.future_Enter()
 
         def catch_future_result(
             result: FutureResult[ResultType, ExceptionType]

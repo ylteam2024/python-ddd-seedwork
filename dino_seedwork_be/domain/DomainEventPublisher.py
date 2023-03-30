@@ -52,6 +52,15 @@ class DomainEventPublisher:
                 return True
 
     def publish(self, an_event: DomainEvent) -> FutureResult[Tuple, Any]:
+        def check_if_target_event(event_type: str, subscriber: DomainEventSubscriber):
+            match subscriber.event_type_subscribed():
+                case list(target_event_types):
+                    return event_type in target_event_types
+                case str(target_event_type):
+                    return target_event_type == event_type or target_event_type == "*"
+                case _:
+                    return False
+
         def execute(is_allow_to_run: bool):
             match is_allow_to_run:
                 case True:
@@ -60,8 +69,7 @@ class DomainEventPublisher:
                         self._subscribers,
                         partial(
                             filter,
-                            lambda subs: subs.event_type_subscribed() == an_event.type()
-                            or subs.event_type_subscribed() == "*",
+                            partial(check_if_target_event, an_event.type()),
                         ),
                         partial(map, lambda sub: sub.handle_event(an_event)),
                         lambda futureS: Fold.collect(futureS, FutureSuccess(())),

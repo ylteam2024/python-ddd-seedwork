@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, List
 
 from returns.future import FutureResult
 
@@ -14,5 +14,5 @@ class DomainEventSubscriber(ABC):
         ...
 
     @abstractmethod
-    def event_type_subscribed(self) -> str:
+    def event_type_subscribed(self) -> List[str] | str:
         ...

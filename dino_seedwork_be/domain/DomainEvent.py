@@ -48,6 +48,16 @@ class DomainEvent(Generic[DomainEventProps], AssertionConcern, JSONSerializable)
             )
         )
 
+    def __eq__(self, __o: object) -> bool:
+        match __o:
+            case DomainEvent() as domain_event:
+                return (
+                    domain_event.name() == self.name()
+                    and domain_event.props() == self.props()
+                )
+            case _:
+                return False
+
     @staticmethod
     @safe
     def factory(
