@@ -1,7 +1,7 @@
-import json
 from datetime import datetime
 from typing import Generic, Optional, TypedDict, TypeVar, cast
 
+import jsonpickle
 from returns.functions import tap
 from returns.maybe import Maybe, Nothing
 from returns.pipeline import flow
@@ -109,7 +109,7 @@ class DomainEvent(Generic[DomainEventProps], AssertionConcern, JSONSerializable)
         return self.name()
 
     def body_json(self) -> str:
-        return json.dumps(self.props())
+        return jsonpickle.encode(self.props(), unpicklable=False) or "{}"
 
     def as_dict(self):
         return {

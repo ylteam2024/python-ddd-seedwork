@@ -48,3 +48,9 @@ class AbstractIdentity(ABC, ValueObject, Generic[IdRawType]):
 
     def get_raw(self) -> IdRawType:
         return self.id()
+
+    def get_raw_str(self) -> str:
+        return str(self.id())
+
+    def __getstate__(self):
+        return self.__str__()

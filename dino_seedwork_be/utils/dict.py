@@ -1,7 +1,8 @@
 from typing import List
 
 from returns._internal.pipeline.flow import flow
-from toolz.dicttoolz import assoc
+from returns.maybe import Maybe
+from toolz.dicttoolz import assoc, get_in
 from toolz.functoolz import reduce
 
 from dino_seedwork_be.utils.functional import feed_kwargs
@@ -26,3 +27,7 @@ def dict_to_cls(v: dict, keys: List[str], Cls):
 
 def extract(v: dict, keys: List[str]) -> dict:
     return {k: v.get(k, None) for k in keys}
+
+
+def path(paths: List[str], v: dict) -> Maybe:
+    return Maybe.from_optional(get_in(paths, v, None))

@@ -15,6 +15,7 @@ from returns.pointfree import bind, lash
 from returns.result import Failure, Result, Success
 from returns.unsafe import unsafe_perform_io
 
+from dino_seedwork_be.domain.exceptions import DomainException
 from dino_seedwork_be.exceptions import MainException
 
 T = TypeVar("T")
@@ -288,8 +289,12 @@ def throw_future_failed(exception: Exception):
 def exception_to_domain_exception(code: str, prefix: str, exception: Exception):
     return DomainException(
         code=code,
-        message=f"[{prefix} - {str(exception)}] {traceback.print_tb(exception.__traceback__)}",
+        message=f"[{prefix} - {str(exception)}] {print_exception_with_traceback(exception)}",
     )
+
+
+def print_exception_with_traceback(exception: Exception):
+    return traceback.print_tb(exception.__traceback__)
 
 
 def not_nothing_or_throw_future_failed(
