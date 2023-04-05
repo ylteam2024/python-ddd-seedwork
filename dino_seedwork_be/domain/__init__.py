@@ -1,5 +1,4 @@
 from .AbstractDomainEventDict import *
-from .AbstractIdentity import *
 from .AggregateRoot import *
 from .DomainEvent import *
 from .DomainEventPublisher import *

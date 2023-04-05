@@ -219,7 +219,7 @@ class BrokerComponent(ABC):
         the Channel.Close RPC command.
         """
 
-        def exe_with_unnone(_):bind
+        def exe_with_unnone(_):
             LOGGER.info("Close the channel")
             self.channel().unwrap().close()
 

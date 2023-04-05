@@ -47,6 +47,7 @@ __all__ = [
     "not_nothing_or_throw_future_failed",
     "pass_to",
     "print_result_with_text",
+    "print_exception_with_traceback",
     "raise_exception",
     "result_to_future",
     "return_future_failure",
@@ -260,7 +261,6 @@ def filter_not_none(items: List[InnerValueType | None]) -> List[InnerValueType]:
 
 
 def assert_not_none(v):
-    print("assertNotNone", v)
     assert v is not None
 
 

@@ -22,20 +22,20 @@ class EmptyProps(TypedDict):
 DomainEventProps = TypeVar("DomainEventProps", bound=TypedDict, default=EmptyProps)
 
 
-class DomainEvent(Generic[DomainEventProps], AssertionConcern, JSONSerializable):
-    _id: Maybe[int]
+class DomainEvent(AssertionConcern, JSONSerializable):
+    _id: int | None
     _version: int = 0
     _occurred_on: datetime
     _name: str
-    _props: DomainEventProps
+    _props: dict = {}
 
     def __init__(
         self,
         name: str,
-        id: Maybe[int],
-        props: DomainEventProps,
+        id: int | None = None,
         version: int = 0,
         occurred_on: Optional[datetime] = None,
+        props: dict = {},
     ):
         unwrap(
             flow(
@@ -44,7 +44,7 @@ class DomainEvent(Generic[DomainEventProps], AssertionConcern, JSONSerializable)
                 map_(lambda _: self.set_occurred_on(occurred_on or now_utc())),
                 map_(lambda _: self.set_name(name)),
                 map_(lambda _: self.set_props(props)),
-                map_(lambda _: self.set_id(id.unwrap())),
+                map_(lambda _: self.set_id(id)),
             )
         )
 
@@ -63,10 +63,10 @@ class DomainEvent(Generic[DomainEventProps], AssertionConcern, JSONSerializable)
     def factory(
         occurred_on: datetime,
         name: str,
-        props: DomainEventProps,
         version: int = 0,
+        props: dict = {},
     ):
-        return DomainEvent(name, Nothing, props, version, occurred_on)
+        return DomainEvent(name, None, version, occurred_on, props)
 
     def occurred_on(self) -> datetime:
         return self._occurred_on
@@ -74,7 +74,7 @@ class DomainEvent(Generic[DomainEventProps], AssertionConcern, JSONSerializable)
     def version(self) -> int:
         return self._version
 
-    def props(self) -> DomainEventProps:
+    def props(self) -> dict:
         return self._props
 
     def set_occurred_on(self, a_datetime: datetime) -> Result:
@@ -86,21 +86,24 @@ class DomainEvent(Generic[DomainEventProps], AssertionConcern, JSONSerializable)
         return Success(None)
 
     def set_id(self, id: int | None) -> Result:
-        self._id = Maybe.from_optional(id)
+        self._id = id
         return Success(None)
 
     def set_name(self, a_name: str) -> Result:
+        def set(_):
+            self._name = a_name
+
         return flow(
             self.assert_argument_not_empty(a_name),
-            map_(tap(lambda _: set_protected_attr(self, "_name", a_name))),
+            map_(tap(set)),
         )
 
-    def set_props(self, props: DomainEventProps) -> Result:
+    def set_props(self, props: dict) -> Result:
         self._props = props
         return Success(None)
 
     def get_prop_attr(self, attr_name: str):
-        return getattr(self._props, attr_name)
+        return self._props[attr_name]
 
     def name(self) -> str:
         return self._name
@@ -111,27 +114,30 @@ class DomainEvent(Generic[DomainEventProps], AssertionConcern, JSONSerializable)
     def body_json(self) -> str:
         return jsonpickle.encode(self.props(), unpicklable=False) or "{}"
 
+    def props_to_dict(self):
+        return self._props
+
     def as_dict(self):
         return {
             "version": self.version(),
             "occurred_on": to_iso_format(self.occurred_on()),
             "name": self.name(),
-            "props": self._props,
+            "props": self.props_to_dict(),
             "id": self._id,
         }
 
     def id(self) -> Maybe[int]:
-        return self._id
+        return Maybe.from_optional(self._id)
 
-    @classmethod
-    def restore(cls, a_dict):
+    @staticmethod
+    def restore(a_dict):
         return DomainEvent(
-            version=cast(int, get_in(["version"], a_dict, 0)),
+            version=get_in(["version"], a_dict, 0),
             occurred_on=Maybe.from_optional(get_in(["occurred_on"], a_dict, None))
             .map(str)
             .map(datetime.fromisoformat)
             .value_or(None),
             name=str(get_in(["name"], a_dict)),
-            props=a_dict,
-            id=Maybe.from_optional(cast(int, get_in(["id"], a_dict))),
+            props=dict(get_in(["props"], a_dict, {})),
+            id=int(get_in(["id"], a_dict)),
         )
