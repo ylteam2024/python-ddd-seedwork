@@ -1,13 +1,14 @@
 import re
 from typing import Optional
 
-from ..DomainAssertionConcern import DomainAssertionConcern
+from returns.result import safe
+
 from ..value_objects import ValueObject
 
 __all__ = ["StringWithRegex"]
 
 
-class StringWithRegex(ValueObject, DomainAssertionConcern):
+class StringWithRegex(ValueObject):
     _pattern: str
     _value: str | None = None
     _error_message: str = "Value does not path the pattern: "
@@ -17,6 +18,7 @@ class StringWithRegex(ValueObject, DomainAssertionConcern):
         if an_error_message is not None:
             self._error_message = an_error_message
 
+    @safe
     def set_value(
         self,
         a_value: Optional[str],
