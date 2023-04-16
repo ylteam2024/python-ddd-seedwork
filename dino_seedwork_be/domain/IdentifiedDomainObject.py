@@ -29,5 +29,5 @@ class IdentifiedDomainObject(Generic[IdentityType], DomainAssertionConcern):
         return self._id.get_raw_str()
 
     @safe
-    def setId(self, id: IdentityType):
+    def set_id(self, id: IdentityType):
         self._id = id

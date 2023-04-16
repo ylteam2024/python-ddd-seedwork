@@ -1,12 +1,21 @@
 import datetime
 from abc import abstractmethod
-from typing import Generic, Optional, TypeVar, cast
+from typing import Any, Generic, Optional, TypedDict, TypeVar, cast
 
-from returns.result import Result, Success
+from returns.result import Result, Success, safe
+from typing_extensions import Self
+
+from dino_seedwork_be.utils.date import now_utc
 
 from .IdentifiedDomainObject import IdentifiedDomainObject, IdentityType
 
-RawAttributes = TypeVar("RawAttributes")
+
+class BaseRawAttributes(TypedDict):
+    created_at: datetime.datetime | None
+    updated_at: datetime.datetime | None
+
+
+RawAttributes = TypeVar("RawAttributes", bound=BaseRawAttributes)
 
 
 __all__ = ["Entity"]
@@ -18,19 +27,13 @@ class Entity(
     _created_at: Optional[datetime.datetime] = None
     _updated_at: Optional[datetime.datetime] = None
 
-    _init_param_keys = []
-
     _concurrency_version: int = 0
 
     def __init__(self, id: Optional[IdentityType] = None):
         self._concurrency_version = 0
         if id is not None:
-            self.setId(id)
+            self.set_id(id)
         super().__init__()
-
-    @staticmethod
-    def init_param_keys():
-        return Entity._init_param_keys
 
     def updated_at(self):
         return self._updated_at
@@ -62,10 +65,23 @@ class Entity(
         else:
             return self.identity() == cast(Entity, __o).identity()
 
-    @staticmethod
+    @classmethod
+    @safe
+    def create(cls, raw_attributes: RawAttributes, id: IdentityType) -> Self:
+        entity = cls()
+        match raw_attributes["created_at"]:
+            case datetime.datetime(created_at):
+                entity.set_created_at(created_at).unwrap()
+            case None:
+                entity.set_created_at(now_utc()).unwrap()
+
+        match raw_attributes["updated_at"]:
+            case datetime.datetime(updated_at):
+                entity.set_update_at(updated_at).unwrap()
+        entity.set_id(id).unwrap()
+        entity.from_atributes(raw_attributes).unwrap()
+        return entity
+
     @abstractmethod
-    def create(raw_attributes: RawAttributes, id: IdentityType):
-        print(
-            "There is no default method for creation"
-            "Please override this create method"
-        )
+    def from_atributes(self, raw_attributes: RawAttributes) -> Result:
+        pass

@@ -1,6 +1,6 @@
 import re
 from enum import Enum
-from typing import List, Optional, Union, overload
+from typing import Any, List, Optional, TypeVar, Union, overload
 
 from returns.future import FutureFailure, FutureResult, FutureSuccess
 from returns.maybe import Maybe, Some
@@ -28,6 +28,9 @@ class AssertionErrorCode(Enum):
     ARG_NOT_REGEX_MATCHED = "NOT_REGEX_MATCHED"
     STATE_NOT_SATISFIED = "STATE_NOT_STATISFIED"
     STATE_CANNOT_STATISFIED = "STATE_CANNOT_STATISFIED"
+
+
+InputType = TypeVar("InputType")
 
 
 class AssertionConcern:
@@ -176,12 +179,12 @@ class AssertionConcern:
 
     def assert_argument_not_null(
         self,
-        an_object: object,
+        an_object: InputType,
         a_message: Optional[str] = None,
         exception: Optional[Exception] = None,
         loc: Optional[List[str]] = None,
         code: Optional[str] = None,
-    ) -> Result:
+    ) -> Result[InputType, Any]:
         return AssertionConcern.simple_handle_on_bool_val(
             an_object is None,
             exception

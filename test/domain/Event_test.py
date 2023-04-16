@@ -1,7 +1,5 @@
 from datetime import datetime
 
-import jsonpickle
-
 from dino_seedwork_be.domain.DomainEvent import DomainEvent
 
 
@@ -14,11 +12,8 @@ class TestEvent:
             id=1,
             props={},
         )
-        event_json = jsonpickle.encode(new_event, unpicklable=False)
-        event_encoded = jsonpickle.decode(event_json)
+        event_json = new_event.as_dict()
+        event_encoded = DomainEvent.restore(event_json)
         assert type(event_encoded) == DomainEvent
         assert event_encoded.version() == new_event.version()
-        assert (
-            datetime.fromisoformat(event_encoded.occurred_on())
-            == new_event.occurred_on()
-        )
+        assert event_encoded.occurred_on() == new_event.occurred_on()
