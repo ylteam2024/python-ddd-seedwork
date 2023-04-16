@@ -29,6 +29,7 @@ class ExampleEntityUUID(Entity[ExampleEntityAttributes, UUID]):
 
 class TestEntity:
     def test_created_at_auto(self):
+        new_id = UUID(uuid4())
         example_entity = ExampleEntityUUID.create(
             {
                 "attribute_a": 1,
@@ -36,9 +37,10 @@ class TestEntity:
                 "created_at": None,
                 "updated_at": None,
             },
-            UUID(uuid4()),
+            new_id,
         ).unwrap()
 
         assert example_entity.created_at() is not None
         assert example_entity.attribute_a() == 1
         assert example_entity.attribute_b() == "tuanpham"
+        assert example_entity.identity() == new_id
