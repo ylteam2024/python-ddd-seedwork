@@ -3,7 +3,7 @@ from returns.functions import tap
 from returns.pipeline import flow
 from returns.pointfree import bind, map_
 
-from dino_seedwork_be.event.EventStore import EventStore
+from dino_seedwork_be.domain.event.EventStore import EventStore
 from dino_seedwork_be.utils.functional import (assert_equal,
                                                unwrap_future_result_io)
 

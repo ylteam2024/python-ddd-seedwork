@@ -11,10 +11,10 @@ from returns.pointfree import bind, map_
 from returns.result import Success
 
 from dino_seedwork_be.domain.DomainEvent import DomainEvent
-from dino_seedwork_be.event.EventSerializer import EventSerializer
-from dino_seedwork_be.event.EventStore import EventStore
-from dino_seedwork_be.event.StoredEvent import StoredEvent
-from dino_seedwork_be.utils.functional import feedKwargs, for_each
+from dino_seedwork_be.domain.event.EventSerializer import EventSerializer
+from dino_seedwork_be.domain.event.EventStore import EventStore
+from dino_seedwork_be.domain.event.StoredEvent import StoredEvent
+from dino_seedwork_be.utils.functional import feed_kwargs, for_each
 from dino_seedwork_be.utils.meta import get_class_name
 
 
@@ -93,7 +93,7 @@ class MockEventStore(EventStore):
                     "body": serialized_event,
                 }
             ),
-            map_(feedKwargs(StoredEvent.factory)),
+            map_(feed_kwargs(StoredEvent.factory)),
             bind(
                 lambda stored_event: self.count_events()
                 .map(lambda count: cast(StoredEvent, stored_event).set_id(count + 1))

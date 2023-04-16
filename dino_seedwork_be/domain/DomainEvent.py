@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from typing import Optional, TypedDict, TypeVar
 
@@ -109,7 +110,7 @@ class DomainEvent(AssertionConcern, JSONSerializable):
         return self.name()
 
     def body_json(self) -> str:
-        return jsonpickle.encode(self.props(), unpicklable=False) or "{}"
+        return json.dumps(self.props(), default=str) or "{}"
 
     def props_to_dict(self):
         return self._props

@@ -29,7 +29,7 @@ class EventSerializer(AbstractSerializer):
 
     @safe
     def serialize(self, an_event: DomainEvent) -> str:
-        return str(self.json_marshaller().encode(an_event, unpicklable=False))
+        return str(json.dumps(an_event.as_dict(), default=str))
 
     @safe
     def deserialize(self, an_json: str) -> DomainEvent:
