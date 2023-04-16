@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 
-from dino_seedwork_be.process.ProcessId import ProcessId
+from .ProcessId import ProcessId
 
 __all__ = ["ProcessCompletionType", "IProcess"]
 

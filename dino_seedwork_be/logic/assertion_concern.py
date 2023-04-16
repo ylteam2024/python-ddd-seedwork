@@ -6,13 +6,11 @@ from returns.future import FutureFailure, FutureResult, FutureSuccess
 from returns.maybe import Maybe, Some
 from returns.result import Result, Success
 
-from dino_seedwork_be.domain.exceptions import (DomainIllegalArgumentException,
-                                                DomainIllegalStateException)
 from dino_seedwork_be.exceptions import (IllegalArgumentException,
                                          IllegalStateException)
 from dino_seedwork_be.utils.functional import return_v
 
-__all__ = ["AssertionErrorCode", "AssertionConcern", "DomainAssertionConcern"]
+__all__ = ["AssertionErrorCode", "AssertionConcern"]
 
 
 class AssertionErrorCode(Enum):
@@ -33,8 +31,8 @@ class AssertionErrorCode(Enum):
 
 
 class AssertionConcern:
-    __IllegalArgExceptionCls = IllegalArgumentException
-    __IllegalStExceptionCls = IllegalStateException
+    IllegalArgExceptionCls = IllegalArgumentException
+    IllegalStExceptionCls = IllegalStateException
 
     @staticmethod
     def simple_handle_on_bool_val(aBool: bool, exception: Optional[Exception]):
@@ -59,7 +57,7 @@ class AssertionConcern:
         return AssertionConcern.simple_handle_on_bool_val(
             isNotEqual,
             exception
-            or self.__IllegalArgExceptionCls(
+            or self.IllegalArgExceptionCls(
                 message=a_message,
                 code=code or AssertionErrorCode.ARG_SHOULD_EQUALS.value,
                 loc=loc,
@@ -78,7 +76,7 @@ class AssertionConcern:
         return AssertionConcern.simple_handle_on_bool_val(
             not isFalse,
             exception
-            or self.__IllegalArgExceptionCls(
+            or self.IllegalArgExceptionCls(
                 f"Must be False: {a_message}",
                 code=code or AssertionErrorCode.ARG_CANNOT_BE_TRUE.value,
                 loc=loc,
@@ -97,7 +95,7 @@ class AssertionConcern:
         return AssertionConcern.simple_handle_on_bool_val(
             not isTrue,
             exception
-            or self.__IllegalArgExceptionCls(
+            or self.IllegalArgExceptionCls(
                 f"Must be True: {a_message}",
                 code=code or AssertionErrorCode.ARG_CANNOT_BE_FALSE.value,
                 loc=loc,
@@ -119,7 +117,7 @@ class AssertionConcern:
             case True:
                 return Result.from_failure(
                     exception
-                    or self.__IllegalArgExceptionCls(
+                    or self.IllegalArgExceptionCls(
                         f"Length must be less than {a_maximum} but {aString} is not: {a_message}",
                         code=code or AssertionErrorCode.ARG_LENGTH_INVALID.value,
                         loc=loc,
@@ -130,7 +128,7 @@ class AssertionConcern:
             case True:
                 return Result.from_failure(
                     exception
-                    or self.__IllegalArgExceptionCls(
+                    or self.IllegalArgExceptionCls(
                         f"Length must be large than {a_minimum}: {a_message}",
                         code=code or AssertionErrorCode.ARG_LENGTH_INVALID.value,
                         loc=loc,
@@ -150,7 +148,7 @@ class AssertionConcern:
         return AssertionConcern.simple_handle_on_bool_val(
             aBool=isEmpty,
             exception=exception
-            or self.__IllegalArgExceptionCls(
+            or self.IllegalArgExceptionCls(
                 f"String not empty: {a_message}",
                 code=code or AssertionErrorCode.ARG_STRING_CANNOT_EMPTY.value,
                 loc=loc,
@@ -169,7 +167,7 @@ class AssertionConcern:
         return AssertionConcern.simple_handle_on_bool_val(
             an_object1 == an_object2,
             exception
-            or self.__IllegalArgExceptionCls(
+            or self.IllegalArgExceptionCls(
                 f"Argument cannot be equal: {a_message}",
                 code=code or AssertionErrorCode.ARG_NOT_EQUALS.value,
                 loc=loc,
@@ -187,7 +185,7 @@ class AssertionConcern:
         return AssertionConcern.simple_handle_on_bool_val(
             an_object is None,
             exception
-            or self.__IllegalArgExceptionCls(
+            or self.IllegalArgExceptionCls(
                 f"Argument cannot be null: {a_message}",
                 code=code or AssertionErrorCode.ARG_CANNOT_BE_NONE.value,
                 loc=loc,
@@ -208,7 +206,7 @@ class AssertionConcern:
             (not allow_equal and a_value <= a_minium)
             or (allow_equal and a_value < a_minium),
             exception
-            or self.__IllegalArgExceptionCls(
+            or self.IllegalArgExceptionCls(
                 f"Argument must be in larger than {a_minium} with {a_value}: {a_message} - loc: {loc}",
                 code=code or AssertionErrorCode.ARG_NOT_LARGER_THAN.value,
                 loc=loc,
@@ -228,7 +226,7 @@ class AssertionConcern:
         return AssertionConcern.simple_handle_on_bool_val(
             a_value >= a_maximum or (allow_equal and a_value > a_maximum),
             exception
-            or self.__IllegalArgExceptionCls(
+            or self.IllegalArgExceptionCls(
                 f"Argument must be in smaller than {a_maximum}: {a_message} - loc: {loc}",
                 code=code or AssertionErrorCode.ARG_NOT_SMALLER_THAN.value,
                 loc=loc,
@@ -273,7 +271,7 @@ class AssertionConcern:
         return AssertionConcern.simple_handle_on_bool_val(
             a_value < a_minium or a_value > a_maximum,
             exception
-            or self.__IllegalArgExceptionCls(
+            or self.IllegalArgExceptionCls(
                 f"Value {a_value} just in range {a_minium} -> {a_maximum}: {a_message} - loc: {loc}",
                 code=code or AssertionErrorCode.ARG_NOT_IN_RANGE.value,
                 loc=loc,
@@ -292,7 +290,7 @@ class AssertionConcern:
         return AssertionConcern.simple_handle_on_bool_val(
             re.match(regex, a_value) is None,
             exception
-            or self.__IllegalArgExceptionCls(
+            or self.IllegalArgExceptionCls(
                 f"Argument does not match the required regex pattern: {a_message} with value {a_value} - loc: {loc}",
                 code=code or AssertionErrorCode.ARG_NOT_REGEX_MATCHED.value,
                 loc=loc,
@@ -310,7 +308,7 @@ class AssertionConcern:
         return AssertionConcern.simple_handle_on_bool_val(
             not a_boolean,
             exception
-            or self.__IllegalStExceptionCls(
+            or self.IllegalStExceptionCls(
                 a_message,
                 code=code or AssertionErrorCode.STATE_NOT_SATISFIED.value,
                 loc=loc,
@@ -328,7 +326,7 @@ class AssertionConcern:
         return AssertionConcern.simple_handle_on_bool_val(
             aBoolean,
             exception
-            or self.__IllegalStExceptionCls(
+            or self.IllegalStExceptionCls(
                 aMessage,
                 code=code or AssertionErrorCode.STATE_CANNOT_STATISFIED.value,
                 loc=loc,
@@ -347,10 +345,5 @@ class AssertionConcern:
                 return FutureSuccess(sth)
             case _:
                 return FutureFailure(
-                    self.__IllegalArgExceptionCls(code=code, message=a_message, loc=loc)
+                    self.IllegalArgExceptionCls(code=code, message=a_message, loc=loc)
                 )
-
-
-class DomainAssertionConcern(AssertionConcern):
-    __IllegalArgExceptionCls = DomainIllegalArgumentException
-    __IllegalStExceptionCls = DomainIllegalStateException

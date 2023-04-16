@@ -3,8 +3,9 @@ from typing import Any, List
 
 from returns.future import FutureResult
 
+from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
+    DBSessionUser
 from dino_seedwork_be.domain.DomainEvent import DomainEvent
-from dino_seedwork_be.storage.uow import DBSessionUser
 
 __all__ = ["EventStore"]
 

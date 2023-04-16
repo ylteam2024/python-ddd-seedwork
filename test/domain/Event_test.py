@@ -2,7 +2,7 @@ from datetime import datetime
 
 import jsonpickle
 
-from dino_seedwork_be.domain import DomainEvent
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
 
 
 class TestEvent:

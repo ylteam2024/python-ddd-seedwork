@@ -1,20 +1,19 @@
 import uuid
-from typing import BinaryIO, List, Optional, Union
+from typing import BinaryIO, List, Optional
 
 import validators
 
-from dino_seedwork_be.domain import DomainException
-from dino_seedwork_be.exceptions import IllegalArgumentException
-from dino_seedwork_be.logic import DomainAssertionConcern
 from dino_seedwork_be.utils import (get_image_dimension, get_image_file_size,
                                     is_url_image)
+
+from .DomainAssertionConcern import DomainAssertionConcern
+from .exceptions import DomainException
 
 UUID = uuid.UUID
 UUID_v4 = uuid.uuid4
 
 __all__ = [
     "ValueObject",
-    "ID",
     "ImageURL",
     "URL",
     "FullName",
@@ -25,64 +24,10 @@ __all__ = [
 
 
 class ValueObject(DomainAssertionConcern):
+
     """
     Base class for value objects
     """
-
-
-class ID(ValueObject):
-    __id: UUID
-
-    def __init__(self, id: Union[UUID, str]):
-
-        if isinstance(id, UUID):
-            self.set_id(id)
-        elif isinstance(id, str):
-            self.set_id(UUID(id))
-        else:
-            raise IllegalArgumentException("id should be UUID or UUID string")
-        super().__init__()
-
-    def __eq__(self, obj):
-        return self.__id == obj.__id
-
-    def equals(self, obj: object) -> bool:
-        isEqual = False
-        if isinstance(obj, ID):
-            isEqual = self.__id == obj.__id
-        return isEqual
-
-    def set_id(self, id: UUID | str):
-        self.assert_argument_not_empty(str(id), "The id must be provided").unwrap()
-        self.assert_argument_length(
-            str(id),
-            a_minimum=0,
-            a_maximum=36,
-            a_message="The id must be 36 characters or less.",
-        ).unwrap()
-        match id:
-            case str() as id:
-                self.__id = UUID(id)
-            case UUID() as id:
-                self.__id = id
-
-    def get_raw(self) -> str:
-        return str(self.__id)
-
-    @staticmethod
-    def get_raw_string(id: "ID"):
-        return id.get_raw()
-
-    def __str__(self) -> str:
-        return self.get_raw()
-
-    @staticmethod
-    def from_string(id: str | "ID") -> "ID":
-        match id:
-            case str():
-                return ID(id)
-            case ID():
-                return id
 
 
 class ImageURL(ValueObject):

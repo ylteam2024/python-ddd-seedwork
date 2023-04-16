@@ -8,7 +8,6 @@ from .Entity import *
 from .exceptions import *
 from .IdentifiedDomainObject import *
 from .mixins import *
-from .RegexValue import *
 from .utils import *
 from .validator import *
 from .value_objects import *

@@ -9,11 +9,12 @@ from returns.pointfree import alt, bind, map_
 from sqlalchemy import Column, DateTime, Integer, String, select
 from sqlalchemy.sql.functions import count
 
+from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
+    DBSessionUser
 from dino_seedwork_be.domain.DomainEvent import DomainEvent
-from dino_seedwork_be.event.EventSerializer import EventSerializer
-from dino_seedwork_be.event.EventStore import EventStore
-from dino_seedwork_be.event.StoredEvent import StoredEvent
-from dino_seedwork_be.storage.uow import DBSessionUser
+from dino_seedwork_be.domain.event.EventSerializer import EventSerializer
+from dino_seedwork_be.domain.event.EventStore import EventStore
+from dino_seedwork_be.domain.event.StoredEvent import StoredEvent
 from dino_seedwork_be.utils import (async_to_future_result, feed_kwargs,
                                     print_result_with_text, return_v)
 

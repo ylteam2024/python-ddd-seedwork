@@ -1,8 +1,4 @@
-from abc import ABC, abstractmethod
-from contextlib import AsyncContextDecorator
-from typing import Any, Generic, List, TypeVar
-
-from sqlalchemy.ext.asyncio.session import AsyncSession
+from typing import Generic, List, TypeVar
 
 from dino_seedwork_be.utils.functional import for_each
 
@@ -11,9 +7,8 @@ SessionType = TypeVar("SessionType")
 __all__ = [
     "SessionUserAlreadyHaveSession",
     "DBSessionUser",
-    "AsyncSessionUser",
     "SuperDBSessionUser",
-    "AbstractUnitOfWork",
+    "SessionType",
 ]
 
 
@@ -50,15 +45,11 @@ class DBSessionUser(Generic[SessionType]):
         return not (session.new or session.dirty or session.deleted)
 
 
-class AsyncSessionUser(DBSessionUser[AsyncSession]):
-    pass
-
-
-class SuperDBSessionUser(DBSessionUser):
+class SuperDBSessionUser(Generic[SessionType], DBSessionUser[SessionType]):
     _sessionUsers: List[DBSessionUser] = []
-    _session: AsyncSession
+    _session: SessionType
 
-    def set_session(self, session: AsyncSession):
+    def set_session(self, session: SessionType):
         self._session = session
         if self.session_users() is not None:
             for_each(
@@ -74,44 +65,3 @@ class SuperDBSessionUser(DBSessionUser):
 
     def set_session_users(self, session_users: List[DBSessionUser]):
         self._sessionUsers = session_users
-
-
-class AbstractUnitOfWork(ABC, AsyncContextDecorator):
-    def __init__(
-        self, session_users: List[DBSessionUser], session_factory: None | Any = None
-    ):
-        super().__init__()
-
-    async def __aenter__(self):
-        return self
-
-    async def aenter(self):
-        return self.__aenter__()
-
-    async def __aexit__(self, *args):
-        if args[0] is not None:
-            await self.rollback()
-        else:
-            await self.commit()
-
-    async def aexit(self, *args):
-        return self.__aexit__(*args)
-
-    @abstractmethod
-    def session(self) -> Any:
-        pass
-
-    async def commit(self):
-        await self._commit()
-
-    @abstractmethod
-    async def _commit(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    async def rollback(self):
-        raise NotImplementedError
-
-    @abstractmethod
-    def absord(self):
-        raise NotImplementedError

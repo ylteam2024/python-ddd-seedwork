@@ -5,12 +5,10 @@ from returns.future import FutureResult
 from returns.maybe import Maybe
 from returns.result import Result
 
-from dino_seedwork_be.storage.uow import DBSessionUser
-
 __all__ = ["NotificationPublisher"]
 
 
-class NotificationPublisher(ABC, DBSessionUser):
+class NotificationPublisher(ABC):
     @abstractmethod
     def publish_notifications(self) -> FutureResult[Maybe[int], Any]:
         """

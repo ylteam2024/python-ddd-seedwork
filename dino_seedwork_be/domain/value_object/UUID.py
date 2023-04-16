@@ -1,6 +1,8 @@
 from typing import Union
 from uuid import UUID as UUIDRaw
 
+from returns.result import Result, Success
+
 from dino_seedwork_be.exceptions import IllegalArgumentException
 
 from .AbstractIdentity import AbstractIdentity
@@ -32,3 +34,6 @@ class UUID(AbstractIdentity[UUIDRaw]):
                 self._id = UUIDRaw(id)
             case UUIDRaw(id):
                 self._id = id
+
+    def validate(self, an_id: UUIDRaw) -> Result:
+        return Success(an_id)

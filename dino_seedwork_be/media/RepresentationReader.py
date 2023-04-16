@@ -1,4 +1,4 @@
-from dino_seedwork_be.media import AbstractJSONMediaReader
+from .AbstractJsonMediaReader import AbstractJSONMediaReader
 
 __all__ = ["RepresentationReader"]
 

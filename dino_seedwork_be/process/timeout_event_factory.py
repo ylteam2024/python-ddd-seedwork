@@ -2,8 +2,9 @@ from datetime import datetime
 from typing import Callable
 
 from dino_seedwork_be.domain.DomainEvent import DomainEvent
-from dino_seedwork_be.process.ProcessId import ProcessId
 from dino_seedwork_be.utils.date import now_utc
+
+from .ProcessId import ProcessId
 
 timeout_factory_type = Callable[[str, ProcessId, int, int, datetime], DomainEvent]
 

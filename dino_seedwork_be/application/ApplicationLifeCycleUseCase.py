@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Generic, List, TypeVar
 
-from dino_seedwork_be.storage.uow import DBSessionUser
+from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
+    DBSessionUser
 
 __all__ = ["ApplicationLifeCycleUsecase"]
 

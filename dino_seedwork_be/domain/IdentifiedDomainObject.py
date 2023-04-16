@@ -1,16 +1,20 @@
 from dataclasses import field
+from typing import Generic, TypeVar
 
 from returns.result import safe
 
-from dino_seedwork_be.domain.value_objects import ID, UUID
-from dino_seedwork_be.exceptions import IllegalArgumentException
-from dino_seedwork_be.logic import DomainAssertionConcern
+from dino_seedwork_be.domain.value_object.AbstractIdentity import \
+    AbstractIdentity
+
+from .DomainAssertionConcern import DomainAssertionConcern
 
 __all__ = ["IdentifiedDomainObject"]
 
+IdentityType = TypeVar("IdentityType", bound=AbstractIdentity)
 
-class IdentifiedDomainObject(DomainAssertionConcern):
-    _id: ID = field(hash=True)
+
+class IdentifiedDomainObject(Generic[IdentityType], DomainAssertionConcern):
+    _id: IdentityType = field(hash=True)
 
     def __eq__(self, obj):
         return self._id == obj.id
@@ -21,18 +25,9 @@ class IdentifiedDomainObject(DomainAssertionConcern):
     def identity(self):
         return self._id
 
-    def raw_id(self) -> str:
-        return self._id.get_raw()
+    def id_as_string(self) -> str:
+        return self._id.get_raw_str()
 
     @safe
-    def setId(self, id: UUID | ID | str):
-        match id:
-            case UUID() as id:
-                self._id = ID(id)
-            case ID() as id:
-                self._id = id
-            case str() as id:
-                self._id = ID(id)
-            case _:
-                raise IllegalArgumentException("id is not in correct type")
-        return "OK"
+    def setId(self, id: IdentityType):
+        self._id = id

@@ -3,7 +3,8 @@ from uuid import UUID, uuid4
 
 from returns.result import Failure, Result, Success, safe
 
-from dino_seedwork_be.domain.AbstractIdentity import AbstractIdentity
+from dino_seedwork_be.domain.value_object.AbstractIdentity import \
+    AbstractIdentity
 
 __all__ = ["ProcessId"]
 

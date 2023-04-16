@@ -4,7 +4,8 @@ from redis import Redis
 from returns.future import future_safe
 from returns.maybe import Maybe
 
-from .AbstractKeyValueRepository import AbstractKeyValueRepository
+from dino_seedwork_be.adapters.persistance.key_value.AbstractKeyValueRepository import \
+    AbstractKeyValueRepository
 
 
 class RedisPyRepository(AbstractKeyValueRepository):

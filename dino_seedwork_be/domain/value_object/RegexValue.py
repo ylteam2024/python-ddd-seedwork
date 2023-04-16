@@ -1,8 +1,8 @@
 import re
 from typing import Optional
 
-from dino_seedwork_be.domain import ValueObject
-from dino_seedwork_be.logic import DomainAssertionConcern
+from ..DomainAssertionConcern import DomainAssertionConcern
+from ..value_objects import ValueObject
 
 __all__ = ["StringWithRegex"]
 

@@ -15,7 +15,6 @@ from returns.pointfree import bind, lash
 from returns.result import Failure, Result, Success
 from returns.unsafe import unsafe_perform_io
 
-from dino_seedwork_be.domain.exceptions import DomainException
 from dino_seedwork_be.exceptions import MainException
 
 T = TypeVar("T")
@@ -284,13 +283,6 @@ def feed_kwargs(func):
 
 def throw_future_failed(exception: Exception):
     return lambda _: FutureFailure(exception)
-
-
-def exception_to_domain_exception(code: str, prefix: str, exception: Exception):
-    return DomainException(
-        code=code,
-        message=f"[{prefix} - {str(exception)}] {print_exception_with_traceback(exception)}",
-    )
 
 
 def print_exception_with_traceback(exception: Exception):

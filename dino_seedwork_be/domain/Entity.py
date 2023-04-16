@@ -1,11 +1,10 @@
 import datetime
+from abc import abstractmethod
 from typing import Generic, Optional, TypeVar, cast
 
 from returns.result import Result, Success
 
-from dino_seedwork_be.domain import IdentifiedDomainObject
-
-from .value_objects import ID, UUID
+from .IdentifiedDomainObject import IdentifiedDomainObject, IdentityType
 
 RawAttributes = TypeVar("RawAttributes")
 
@@ -13,7 +12,9 @@ RawAttributes = TypeVar("RawAttributes")
 __all__ = ["Entity"]
 
 
-class Entity(Generic[RawAttributes], IdentifiedDomainObject):
+class Entity(
+    Generic[RawAttributes, IdentityType], IdentifiedDomainObject[IdentityType]
+):
     _created_at: Optional[datetime.datetime] = None
     _updated_at: Optional[datetime.datetime] = None
 
@@ -21,7 +22,7 @@ class Entity(Generic[RawAttributes], IdentifiedDomainObject):
 
     _concurrency_version: int = 0
 
-    def __init__(self, id: Optional[ID] = None):
+    def __init__(self, id: Optional[IdentityType] = None):
         self._concurrency_version = 0
         if id is not None:
             self.setId(id)
@@ -62,7 +63,8 @@ class Entity(Generic[RawAttributes], IdentifiedDomainObject):
             return self.identity() == cast(Entity, __o).identity()
 
     @staticmethod
-    def create(raw_attributes: RawAttributes, id: UUID):
+    @abstractmethod
+    def create(raw_attributes: RawAttributes, id: IdentityType):
         print(
             "There is no default method for creation"
             "Please override this create method"

@@ -7,7 +7,8 @@ from returns.maybe import Maybe
 
 from dino_seedwork_be.adapters.messaging.notification.PublishedNotificationTracker import \
     PublishedNotificationTracker
-from dino_seedwork_be.storage.uow import DBSessionUser
+from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
+    DBSessionUser
 
 __all__ = ["PublishedNotificationTrackerStore"]
 

@@ -5,8 +5,9 @@ from returns.maybe import Maybe
 from returns.result import Result
 
 from dino_seedwork_be.domain.DomainEvent import DomainEvent
-from dino_seedwork_be.event.EventSerializer import EventSerializer
 from dino_seedwork_be.logic.assertion_concern import AssertionConcern
+
+from .EventSerializer import EventSerializer
 
 __all__ = ["StoredEvent"]
 

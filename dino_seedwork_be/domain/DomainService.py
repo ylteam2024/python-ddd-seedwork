@@ -1,14 +1,11 @@
 from typing import Optional
 
-from dino_seedwork_be.storage.uow import SuperDBSessionUser
-
 from .DomainEventPublisher import DomainEventPublisher
-from .mixins import BusinessRuleValidationMixin
 
 __all__ = ["DomainService"]
 
 
-class DomainService(BusinessRuleValidationMixin, SuperDBSessionUser):
+class DomainService:
     """
     Domain services carry domain knowledge that doesnt naturally fit entities and value objects.
     """

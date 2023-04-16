@@ -1,24 +1,27 @@
 from abc import ABC, abstractmethod
 from traceback import print_exception
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, Generic, List, Optional
 from uuid import uuid4
 
 from returns.functions import tap
 from returns.future import FutureResult
 from returns.pipeline import flow, managed
 from returns.pointfree import alt, bind, lash
+from returns.result import safe
+from toolz.dicttoolz import dissoc
 
-from dino_seedwork_be.application.ApplicationLifeCycleUseCase import \
-    ApplicationLifeCycleUsecase
-from dino_seedwork_be.event.EventStore import EventStore
-from dino_seedwork_be.storage.uow import DBSessionUser
+from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import (
+    DBSessionUser, SessionType)
+from dino_seedwork_be.domain.event.EventStore import EventStore
 from dino_seedwork_be.utils.functional import (apply, tap_excute_future,
                                                tap_failure_execute_future)
+
+from .ApplicationLifeCycleUseCase import ApplicationLifeCycleUsecase
 
 __all__ = ["AbstractApplicationServiceLifeCycle"]
 
 
-class AbstractApplicationServiceLifeCycle(ABC):
+class AbstractApplicationServiceLifeCycle(ABC, Generic[SessionType]):
     _sessions: Dict = {}
     _event_store: EventStore
 
@@ -51,6 +54,11 @@ class AbstractApplicationServiceLifeCycle(ABC):
                 return session
 
     @classmethod
+    @safe
+    def remove_session_by_correlation(cls, correlation_id):
+        cls._sessions = dissoc(cls._sessions, correlation_id)
+
+    @classmethod
     @abstractmethod
     def initialize(cls):
         ...
@@ -63,20 +71,27 @@ class AbstractApplicationServiceLifeCycle(ABC):
     def begin(
         cls,
         correlation_id: str,
-        db_session_users: List[DBSessionUser],
-        usecase: ApplicationLifeCycleUsecase,
+        db_session_users: List[DBSessionUser[SessionType]],
+        usecase: ApplicationLifeCycleUsecase[SessionType],
     ) -> FutureResult:
         return cls.start_db(correlation_id, db_session_users, usecase).bind(
-            lambda _: cls.event_listen()
+            lambda _: cls.event_listen(correlation_id)
         )
 
     @classmethod
     def exit(cls, correlation_id, result: FutureResult) -> FutureResult:
-        return flow(
+        commit_or_rollback_result = flow(
             result,
             bind(tap_excute_future(apply(cls.commit_db, correlation_id))),
             alt(tap(print_exception)),
             lash(tap_failure_execute_future(apply(cls.rollback_db, correlation_id))),
+        )
+        release_session = lambda *_: FutureResult.from_result(
+            cls.remove_session_by_correlation(correlation_id)
+        )
+        return flow(
+            commit_or_rollback_result,
+            managed(lambda _: commit_or_rollback_result, release_session),
         )
 
     @classmethod
@@ -94,21 +109,23 @@ class AbstractApplicationServiceLifeCycle(ABC):
     def start_db(
         cls,
         correlation_id: str,
-        db_session_users: List[DBSessionUser],
-        usecase: ApplicationLifeCycleUsecase,
+        db_session_users: List[DBSessionUser[SessionType]],
+        usecase: ApplicationLifeCycleUsecase[SessionType],
     ) -> FutureResult:
         ...
 
     @classmethod
     @abstractmethod
-    def event_listen(cls) -> FutureResult:
+    def event_listen(cls, correlation_id: str) -> FutureResult:
         ...
 
     @classmethod
     def life_cycle(cls):
         def decor(target_function: Callable[..., FutureResult]):
             def proxy(*args, **kwargs):
-                db_session_users: List[DBSessionUser] = args[0].get_session_users()
+                db_session_users: List[DBSessionUser[SessionType]] = args[
+                    0
+                ].get_session_users()
                 correlation_id = cls.get_new_correlation_id()
                 return flow(
                     cls.begin(correlation_id, db_session_users, args[0]),

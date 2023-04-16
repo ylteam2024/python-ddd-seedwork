@@ -9,7 +9,6 @@ from .meta import *
 from .none_or_instance import *
 from .number import *
 from .params import *
-from .persistance import *
 from .process import *
 from .set import *
 from .text import *

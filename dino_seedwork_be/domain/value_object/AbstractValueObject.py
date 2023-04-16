@@ -1,4 +1,4 @@
-from dino_seedwork_be.logic.assertion_concern import DomainAssertionConcern
+from ..DomainAssertionConcern import DomainAssertionConcern
 
 
 class ValueObject(DomainAssertionConcern):

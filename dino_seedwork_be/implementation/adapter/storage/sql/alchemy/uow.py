@@ -5,7 +5,10 @@ from returns.pipeline import flow
 from returns.pointfree import bind, lash
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from dino_seedwork_be.storage.uow import AbstractUnitOfWork, DBSessionUser
+from dino_seedwork_be.adapters.persistance.sql.AbstractUnitOfWork import \
+    AbstractUnitOfWork
+from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
+    DBSessionUser
 from dino_seedwork_be.utils.functional import pass_to
 
 ResultType = TypeVar("ResultType")
@@ -14,18 +17,16 @@ ExceptionType = TypeVar("ExceptionType", bound=Exception)
 __all__ = ["SqlAlchemyUnitOfWork"]
 
 
-class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
+class SqlAlchemyUnitOfWork(AbstractUnitOfWork[AsyncSession]):
 
     _session: AsyncSession
 
     def __init__(
         self,
         session_factory: Callable[[], AsyncSession],
-        session_users: List[DBSessionUser],
+        session_users: List[DBSessionUser[AsyncSession]],
     ):
-        self.session_factory = session_factory
-        self.session_users = session_users
-        super().__init__(session_users)
+        super().__init__(session_users, session_factory)
 
     def session(self) -> AsyncSession:
         return self._session
@@ -36,8 +37,11 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
     async def __aenter__(
         self,
     ):
-        self.set_session(self.session_factory())
-        [session_user.set_session(self._session) for session_user in self.session_users]
+        self.set_session(self.session_factory()())
+        [
+            session_user.set_session(self._session)
+            for session_user in self.session_users()
+        ]
         result = await super().__aenter__()
         return result
 

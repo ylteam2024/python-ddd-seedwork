@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Any, Type
+from typing import Any
 
 from multimethod import multimethod
 from returns.functions import tap
@@ -10,10 +10,10 @@ from returns.result import Result, Success
 
 from dino_seedwork_be.domain import DomainEvent, DomainEventPublisher
 from dino_seedwork_be.logic import AssertionConcern
-from dino_seedwork_be.process import ProcessId
 from dino_seedwork_be.utils import (apply, feed_kwargs, now_utc, return_v,
                                     set_protected_attr)
 
+from .ProcessId import ProcessId
 from .timeout_event_factory import timeout_factory_type
 
 __all__ = ["TimeConstrainedProcessTracker"]

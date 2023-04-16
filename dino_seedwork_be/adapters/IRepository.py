@@ -1,19 +1,18 @@
-import uuid
 from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Any, Generic, List, Optional, TypeVar
 
-from returns.future import FutureResult, FutureSuccess
+from returns.future import FutureResult
 from returns.maybe import Maybe
-from returns.pipeline import flow, pipe
-from returns.pointfree import bind, lash
 
-from dino_seedwork_be.domain.value_objects import ID
+from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import (
+    DBSessionUser, SessionType)
+from dino_seedwork_be.domain.Entity import Entity
+from dino_seedwork_be.domain.value_object.AbstractIdentity import \
+    AbstractIdentity
 from dino_seedwork_be.exceptions import NotImplementError
-from dino_seedwork_be.storage.uow import DBSessionUser
-from dino_seedwork_be.utils.functional import return_v
 
-EntityType = TypeVar("EntityType")
+EntityType = TypeVar("EntityType", bound=Entity)
 DTOType = TypeVar("DTOType")
 
 
@@ -25,32 +24,15 @@ class PaginationResultDB(Generic[EntityType]):
     total: int
 
 
-class IRepository(DBSessionUser, Generic[EntityType]):
-    def get_next_id(self, simple: Optional[bool] = False) -> FutureResult[ID, Any]:
-        def check_exist_and_gen() -> FutureResult:
-            next_id_candidate = ID(uuid.uuid4())
-            return flow(
-                next_id_candidate,
-                self.get_by_id,
-                bind(
-                    pipe(
-                        bind(return_v(FutureSuccess(next_id_candidate))),
-                        lash(lambda _: check_exist_and_gen()),
-                    )
-                ),
-            )
-
-        next_id_candidate = uuid.uuid4()
-        match simple:
-            case True:
-                return FutureSuccess(ID(next_id_candidate))
-            case False:
-                return check_exist_and_gen()
-
-        return FutureSuccess(ID(next_id_candidate))
+class IRepository(Generic[EntityType, SessionType], DBSessionUser[SessionType]):
+    @abstractmethod
+    def get_next_id(
+        self, simple: Optional[bool] = False
+    ) -> FutureResult[AbstractIdentity, Any]:
+        pass
 
     @abstractmethod
-    def get_by_id(self, id: ID) -> FutureResult[Maybe[EntityType], Any]:
+    def get_by_id(self, id: AbstractIdentity) -> FutureResult[Maybe[EntityType], Any]:
 
         raise NotImplementError(
             "Repository does not support the default getById"
@@ -74,7 +56,7 @@ class IRepository(DBSessionUser, Generic[EntityType]):
         )
 
     @abstractmethod
-    def remove(self, id: ID) -> FutureResult:
+    def remove(self, id: AbstractIdentity) -> FutureResult:
         raise NotImplementError(
             "Repository does not support the default delete"
             "method, you need to give it the detail logic"

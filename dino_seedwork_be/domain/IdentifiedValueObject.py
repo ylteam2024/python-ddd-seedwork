@@ -1,14 +1,15 @@
-from dataclasses import dataclass, field
-from uuid import uuid4
+from dataclasses import dataclass
 
-from dino_seedwork_be.domain import ID, IdentifiedDomainObject, ValueObject
+from dino_seedwork_be.domain.value_objects import ValueObject
+
+from .IdentifiedDomainObject import IdentifiedDomainObject, IdentityType
 
 __all__ = ["IdentifiedValueObject"]
 
 
 @dataclass(frozen=True, kw_only=True)
-class IdentifiedValueObject(IdentifiedDomainObject, ValueObject):
-    id: ID = field(hash=True, default_factory=lambda: ID(uuid4()))
+class IdentifiedValueObject(IdentifiedDomainObject[IdentityType], ValueObject):
+    id: IdentityType
     """
     Base class for identified objects
     """

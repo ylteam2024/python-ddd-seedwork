@@ -4,3 +4,4 @@ from .connection import engine_factory as engine_factory
 from .Repository import AlchemyRepository as AlchemyRepository
 from .SerializableBase import SerializableEntity as SerializableEntity
 from .uow import SqlAlchemyUnitOfWork as SqlAlchemyUnitOfWork
+from .util import *

@@ -7,9 +7,11 @@ from returns.iterables import Fold
 from returns.pipeline import flow, managed
 
 from dino_seedwork_be.adapters.logger.SimpleLogger import DomainLogger
-from dino_seedwork_be.domain import DomainEvent, DomainEventSubscriber
 from dino_seedwork_be.exceptions import MainException
 from dino_seedwork_be.utils.process import ThreadLocal
+
+from .DomainEvent import DomainEvent
+from .DomainEventSubscriber import DomainEventSubscriber
 
 EventType = TypeVar("EventType", bound=DomainEvent)
 

@@ -1,6 +1,9 @@
 from typing import Callable, List
 
-from dino_seedwork_be.storage.uow import AbstractUnitOfWork, DBSessionUser
+from dino_seedwork_be.adapters.persistance.sql.AbstractUnitOfWork import \
+    AbstractUnitOfWork
+from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
+    DBSessionUser
 
 UowFactory = Callable[[List[DBSessionUser]], AbstractUnitOfWork]
 

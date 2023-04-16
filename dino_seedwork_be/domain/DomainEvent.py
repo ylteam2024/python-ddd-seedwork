@@ -1,9 +1,9 @@
 from datetime import datetime
-from typing import Generic, Optional, TypedDict, TypeVar, cast
+from typing import Optional, TypedDict, TypeVar
 
 import jsonpickle
 from returns.functions import tap
-from returns.maybe import Maybe, Nothing
+from returns.maybe import Maybe
 from returns.pipeline import flow
 from returns.pointfree import map_
 from returns.result import Result, Success, safe
@@ -12,14 +12,11 @@ from toolz.dicttoolz import get_in
 from dino_seedwork_be.logic.assertion_concern import AssertionConcern
 from dino_seedwork_be.serializer.Serializable import JSONSerializable
 from dino_seedwork_be.utils.date import now_utc, to_iso_format
-from dino_seedwork_be.utils.functional import set_protected_attr, unwrap
+from dino_seedwork_be.utils.functional import unwrap
 
 
 class EmptyProps(TypedDict):
     pass
-
-
-DomainEventProps = TypeVar("DomainEventProps", bound=TypedDict, default=EmptyProps)
 
 
 class DomainEvent(AssertionConcern, JSONSerializable):

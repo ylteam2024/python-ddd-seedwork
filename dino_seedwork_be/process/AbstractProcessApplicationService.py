@@ -7,9 +7,12 @@ from returns.iterables import Fold
 from returns.pipeline import flow, pipe
 from returns.pointfree import bind
 
+from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
+    DBSessionUser
 from dino_seedwork_be.application import ApplicationLifeCycleUsecase
-from dino_seedwork_be.process import TimeConstrainedProcessTrackerRepository
-from dino_seedwork_be.storage import DBSessionUser
+
+from .TimeConstrainedProcessTrackerRepository import \
+    TimeConstrainedProcessTrackerRepository
 
 __all__ = ["AbstractProcessApplicationService"]
 

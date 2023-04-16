@@ -33,7 +33,6 @@ class AbstractDomainEventDict:
 
     @classmethod
     def get_type_by_key(cls, key: str) -> Maybe[Type[DomainEvent]]:
-        print("dict type", cls._dict)
         try:
             return Some(cls._dict[key])
         except KeyError:
