@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Type
+from typing import Any, List, Type
 
 from returns.future import FutureResult, FutureSuccess
 
@@ -10,7 +10,8 @@ from dino_seedwork_be.utils.functional import return_v, throw_exception
 from .TestableDomainEvent import (AnotherTestableDomainEvent,
                                   TestableDomainEvent)
 
-test_event = TestableDomainEvent(name="test", occurred_on=datetime.now())
+event_type = "test_event"
+test_event = TestableDomainEvent(name=event_type, occurred_on=datetime.now())
 
 
 class TestDomainEventPublisher:
@@ -25,8 +26,8 @@ class TestDomainEventPublisher:
             TestDomainEventPublisher.event_handled = True
             return FutureSuccess(None)
 
-        def event_type_subscribed(self) -> Type[TestableDomainEvent]:
-            return TestableDomainEvent
+        def event_type_subscribed(self) -> List[str] | str:
+            return event_type
 
     async def test_domain_event_publisher_publish(self):
         DomainEventPublisher.instance().reset()
@@ -42,7 +43,8 @@ class TestDomainEventPublisher:
         assert TestDomainEventPublisher.event_handled == True
 
     async def test_domain_event_publisher_blocked(self):
-        another_test_event = AnotherTestableDomainEvent("TestDomainEvent")
+        another_test_event_type = "TestDomainEvent"
+        another_test_event = AnotherTestableDomainEvent(another_test_event_type)
         TestDomainEventPublisher.event_handled = False
         TestDomainEventPublisher.another_event_handled = False
 
@@ -58,8 +60,8 @@ class TestDomainEventPublisher:
                     .map(return_v("OK"))
                 )
 
-            def event_type_subscribed(self) -> Type[TestableDomainEvent]:
-                return TestableDomainEvent
+            def event_type_subscribed(self) -> str:
+                return event_type
 
         class AnotherTestDomainEventSubscriber(DomainEventSubscriber):
             def handle_event(
@@ -68,8 +70,8 @@ class TestDomainEventPublisher:
                 TestDomainEventPublisher.another_event_handled = True
                 return FutureSuccess(None)
 
-            def event_type_subscribed(self) -> Type[AnotherTestableDomainEvent]:
-                return AnotherTestableDomainEvent
+            def event_type_subscribed(self) -> str:
+                return another_test_event_type
 
         DomainEventPublisher.instance().reset()
         DomainEventPublisher.instance().subscribe(TestDomainEventSubscriber())
@@ -79,7 +81,7 @@ class TestDomainEventPublisher:
         assert TestDomainEventPublisher.another_event_handled == False
 
         await DomainEventPublisher.instance().publish(
-            TestableDomainEvent(name="test")
+            TestableDomainEvent(name=event_type)
         ).awaitable()
 
         assert TestDomainEventPublisher.event_handled == True
