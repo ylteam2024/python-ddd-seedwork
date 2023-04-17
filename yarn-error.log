@@ -1,0 +1,37 @@
+Arguments: 
+  /Users/oraichaintuancaurao/.nvm/versions/node/v16.10.0/bin/node /Users/oraichaintuancaurao/.nvm/versions/node/v16.10.0/bin/yarn publish-pypi
+
+PATH: 
+  /Users/oraichaintuancaurao/Library/Caches/pypoetry/virtualenvs/dinohub-seedwork-be-mEUsxx48-py3.10/bin:/opt/homebrew/opt/openssl@3/bin:/Users/oraichaintuancaurao/.pyenv/shims:/Users/oraichaintuancaurao/.poetry/bin:/opt/homebrew/opt/openssl@3/bin:/Users/oraichaintuancaurao/.poetry/bin:/Users/oraichaintuancaurao/.nvm/versions/node/v16.10.0/bin:/Library/Frameworks/Python.framework/Versions/3.11/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/oraichaintuancaurao/.cargo/bin:/Users/oraichaintuancaurao/.yarn/bin:/usr/local/opt/python/libexec/bin:/Users/oraichaintuancaurao/bin:/snap/bin:/Users/oraichaintuancaurao/.cargo/bin://Users/oraichaintuancaurao/.local/bin:/Users/oraichaintuancaurao/Documents/Code/sonar-scanner/bin:/Users/oraichaintuancaurao/.yarn/bin:/usr/local/opt/python/libexec/bin:/Users/oraichaintuancaurao/bin:/snap/bin:/Users/oraichaintuancaurao/.cargo/bin://Users/oraichaintuancaurao/.local/bin:/Users/oraichaintuancaurao/Documents/Code/sonar-scanner/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  16.10.0
+
+Platform: 
+  darwin arm64
+
+Trace: 
+  SyntaxError: /Users/oraichaintuancaurao/Documents/Code/Orai/dinohub-seedwork-be/package.json: Unexpected token } in JSON at position 176
+      at JSON.parse (<anonymous>)
+      at /Users/oraichaintuancaurao/.nvm/versions/node/v16.10.0/lib/node_modules/yarn/lib/cli.js:1629:59
+      at Generator.next (<anonymous>)
+      at step (/Users/oraichaintuancaurao/.nvm/versions/node/v16.10.0/lib/node_modules/yarn/lib/cli.js:310:30)
+      at /Users/oraichaintuancaurao/.nvm/versions/node/v16.10.0/lib/node_modules/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "python-seedwork-be",
+    "scripts": {
+      "build": "python3 -m build",
+      "publish-pypi": "python3 -m twine upload --verbose dist/dinohub_seedwork_be-0.1.10*"
+    },
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
