@@ -1,17 +1,20 @@
 from test.mock.MockEventHandlingTracker import MockEventHandlingTracker
 from typing import Callable, List
+from uuid import uuid4
 
 import pytest
 from redis import Redis
 from returns.future import FutureResult, FutureSuccess
 
-from dino_seedwork_be.adapters.messaging.implement.rabbitmq.ExchangeListener import \
-    ExchangeListener
 from dino_seedwork_be.adapters.messaging.notification.EventHandlingTracker import \
     EventHandlingTracker
 from dino_seedwork_be.adapters.messaging.notification.KeyValueEventHandlingTracker import \
     KeyValueEventHandlingTracker
-from dino_seedwork_be.adapters.persistance.key_value.RedisRepository import \
+from dino_seedwork_be.implementation.adapter.messaging.rabbitmq.ConnectionSettings import \
+    ConnectionSettings
+from dino_seedwork_be.implementation.adapter.messaging.rabbitmq.ExchangeListener import \
+    ExchangeListener
+from dino_seedwork_be.implementation.adapter.storage.key_value.RedisRepository import \
     RedisPyRepository
 from dino_seedwork_be.utils.functional import unwrap_future_result
 
@@ -45,8 +48,10 @@ class MockListener(ExchangeListener):
         self, cb: Callable, notification_tracker: EventHandlingTracker
     ) -> None:
         self.dispatch_callback = cb
-        self.notification_tracker = notification_tracker
-        super().__init__()
+        self.event_handling_tracker = notification_tracker
+        super().__init__(
+            ConnectionSettings.factory("localhost", 6379, "test", "test", None)
+        )
 
     def exchange_name(self) -> str:
         return "MOCK_EXCHANGE"
@@ -73,7 +78,7 @@ class TestExchangeListener:
 
         mock_listener = MockListener(cb, mock_notification_tracker)
 
-        message_id = "mock_message_id"
+        message_id = f"mock_message_id_{uuid4()}"
 
         await mock_listener.itempotent_handle_dispatch(
             message_id, "mock_type_message", b"mock_content"
@@ -93,7 +98,7 @@ class TestExchangeListener:
 
         mock_listener = MockListener(cb, mock_notification_tracker)
 
-        message_id = "mock_message_id"
+        message_id = f"mock_message_id_{uuid4()}"
         mock_notification_tracker._store[message_id] = True
 
         await mock_listener.itempotent_handle_dispatch(
@@ -115,7 +120,7 @@ class TestExchangeListener:
 
         mock_listener = MockListener(cb, redis_notification_tracker)
 
-        message_id = "mock_message_id"
+        message_id = f"mock_message_id_{uuid4()}"
 
         await unwrap_future_result(
             mock_listener.itempotent_handle_dispatch(
@@ -147,7 +152,7 @@ class TestExchangeListener:
 
         mock_listener = MockListener(cb, redis_notification_tracker)
 
-        message_id = "mock_message_id"
+        message_id = f"mock_message_id_{uuid4()}"
 
         await unwrap_future_result(
             redis_notification_tracker.mark_notif_as_handled(message_id)

@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from dino_seedwork_be.domain.DomainEvent import DomainEvent
-from dino_seedwork_be.pubsub.Notification import Notification
-from dino_seedwork_be.pubsub.NotificationSerializer import \
+from dino_seedwork_be.adapters.messaging.notification.Notification import \
+    Notification
+from dino_seedwork_be.adapters.messaging.notification.NotificationSerializer import \
     NotificationSerializer
+from dino_seedwork_be.domain.DomainEvent import DomainEvent
 
 
 class TestNotificationSerializer:

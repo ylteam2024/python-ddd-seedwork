@@ -2,9 +2,10 @@ from typing import Any
 
 from returns.future import FutureResult
 
+from dino_seedwork_be.adapters.messaging.notification.EventHandlingTracker import \
+    EventHandlingTracker
 from dino_seedwork_be.adapters.persistance.key_value.AbstractKeyValueRepository import \
     AbstractKeyValueRepository
-from dino_seedwork_be.pubsub.EventHandlingTracker import EventHandlingTracker
 from dino_seedwork_be.utils.params import cast_bool_from_str
 
 

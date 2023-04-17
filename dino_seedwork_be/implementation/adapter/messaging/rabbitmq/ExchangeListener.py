@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Callable, List, Optional
+from typing import Callable, List, Optional
 
 from pika.exchange_type import ExchangeType
 from returns.functions import tap
@@ -51,9 +51,9 @@ class ExchangeListener(ABC):
         return Maybe.from_optional(self.queue_routing_keys).value_or(self.listen_to())
 
     def __init__(self, connection_setting: ConnectionSettings) -> None:
+        self._connection_setting = connection_setting
         self.attach_to_queue().unwrap()
         self.logger = DomainLogger(self.label)
-        self._connection_setting = connection_setting
 
     def message_consumer(self) -> Maybe[MessageConsumer]:
         return Maybe.from_optional(self._message_consumer)
