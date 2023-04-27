@@ -11,7 +11,8 @@ from pydantic import BaseModel
 from returns.maybe import Maybe, Nothing, Some
 from toolz.dicttoolz import assoc
 
-from dino_seedwork_be.domain.value_objects import ValueObject
+from dino_seedwork_be.domain.value_object.AbstractValueObject import \
+    ValueObject
 from dino_seedwork_be.exceptions import MainException
 from dino_seedwork_be.utils.text import parse_num_or_keeping
 

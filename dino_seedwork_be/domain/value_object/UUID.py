@@ -7,6 +7,8 @@ from dino_seedwork_be.exceptions import IllegalArgumentException
 
 from .AbstractIdentity import AbstractIdentity
 
+__all__ = ["UUID"]
+
 
 class UUID(AbstractIdentity[UUIDRaw]):
     def __init__(self, an_id: Union[UUIDRaw, str]):

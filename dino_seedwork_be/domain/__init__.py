@@ -10,4 +10,4 @@ from .IdentifiedDomainObject import *
 from .mixins import *
 from .utils import *
 from .validator import *
-from .value_objects import *
+from .value_object import *

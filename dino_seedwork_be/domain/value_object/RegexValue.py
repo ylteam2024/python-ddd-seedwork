@@ -3,7 +3,8 @@ from typing import Optional
 
 from returns.result import safe
 
-from ..value_objects import ValueObject
+from dino_seedwork_be.domain.value_object.AbstractValueObject import \
+    ValueObject
 
 __all__ = ["StringWithRegex"]
 
