@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from returns.maybe import Nothing
 from returns.result import Result, Success
 
 from dino_seedwork_be.domain.AggregateRoot import AggregateRoot
@@ -41,7 +42,7 @@ class TestAggregate:
             new_id,
         ).unwrap()
 
-        assert example_agg.created_at() is not None
+        assert example_agg.created_at() is not Nothing
         assert example_agg.attribute_a() == 1
         assert example_agg.attribute_b() == "tuanpham"
         assert example_agg.identity() == new_id

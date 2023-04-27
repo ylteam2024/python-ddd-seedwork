@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from returns.maybe import Nothing
 from returns.result import Result, Success
 
 from dino_seedwork_be.domain.Entity import BaseRawAttributes, Entity
@@ -40,7 +41,7 @@ class TestEntity:
             new_id,
         ).unwrap()
 
-        assert example_entity.created_at() is not None
+        assert example_entity.created_at() is not Nothing
         assert example_entity.attribute_a() == 1
         assert example_entity.attribute_b() == "tuanpham"
         assert example_entity.identity() == new_id
