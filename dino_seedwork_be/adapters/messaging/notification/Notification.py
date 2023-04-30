@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Any, Generic, TypeVar
 
+from returns.maybe import Some
 from returns.pipeline import flow
 from returns.pointfree import bind
 from returns.result import Failure, Result, Success, safe
@@ -40,12 +41,12 @@ class Notification(Generic[DomainEventT], JSONSerializable, AssertionConcern):
         return Notification(a_num_id, event)
 
     def set_domain_event(self, event: DomainEventT):
-        self.assert_argument_not_null(event, a_message="Event must be specified")
+        self.assert_argument_not_null(event, a_message=Some("Event must be specified"))
         self._event = event
 
     def set_id(self, a_num_id: int):
         self.assert_argument_not_null(
-            a_num_id, a_message="Notification id cannot be null"
+            a_num_id, a_message=Some("Notification id cannot be null")
         )
         self._id = a_num_id
 
@@ -55,7 +56,7 @@ class Notification(Generic[DomainEventT], JSONSerializable, AssertionConcern):
     def set_type_name(self, a_type_name: str) -> Result[None, Any]:
         assert_result = flow(
             self.assert_argument_not_empty(
-                a_type_name, a_message="The type name cannot be empty"
+                Some(a_type_name), a_message=Some("The type name cannot be empty")
             ),
             bind(
                 return_v(
@@ -63,7 +64,7 @@ class Notification(Generic[DomainEventT], JSONSerializable, AssertionConcern):
                         a_type_name,
                         a_maximum=100,
                         a_minimum=0,
-                        a_message="The type name must be 100 characters or less",
+                        a_message=Some("The type name must be 100 characters or less"),
                     )
                 )
             ),

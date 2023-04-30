@@ -2,6 +2,6 @@
   "name": "python-seedwork-be",
   "scripts": {
     "build": "python3 -m build",
-    "publish-pypi": "python3 -m twine upload --verbose dist/dinohub_seedwork_be-0.1.13*"
+    "publish-pypi": "python3 -m twine upload --verbose dist/dinohub_seedwork_be-0.1.20*"
   }
 }

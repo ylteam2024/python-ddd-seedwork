@@ -160,8 +160,10 @@ class MessageProducer(AssertionConcern):
     def _check(self, a_message_parameters) -> Result:
         return self.assert_state_false(
             self.exchange().is_durable() != a_message_parameters.is_durable(),
-            code="MSG_PARAMETER_DURABLE_NOT_MATCH_WITH_BROKER",
-            aMessage="message parameter durable property is not match with broker component durable",
+            code=Some("MSG_PARAMETER_DURABLE_NOT_MATCH_WITH_BROKER"),
+            a_message=Some(
+                "message parameter durable property is not match with broker component durable"
+            ),
         )
 
     def run(self):

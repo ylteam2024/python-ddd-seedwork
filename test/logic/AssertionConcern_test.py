@@ -1,32 +1,32 @@
-from returns.result import Failure
+from returns.maybe import Some
 
 from dino_seedwork_be.logic.assertion_concern import AssertionConcern
 
-aAssertionConcern = AssertionConcern()
+a_assertion_concern = AssertionConcern()
 
 
 class TestAssertionConcern:
     def test_ExceptionComposition(self):
-        checkingNum = 0
+        checking_num = 0
 
-        def increase(cN: int):
-            return cN + 1
+        def increase(a_value: int):
+            return a_value + 1
 
         result = (
-            aAssertionConcern.assert_argument_equals(1, 1, "correct")
-            .map(lambda _: increase(checkingNum))
+            a_assertion_concern.assert_argument_equals(1, 1, Some("correct"))
+            .map(lambda _: increase(checking_num))
             .bind(
-                lambda value: aAssertionConcern.assert_argument_false(False).map(
+                lambda value: a_assertion_concern.assert_argument_false(False).map(
                     lambda _: value
                 )
             )
-            .map(lambda cN: increase(cN))
+            .map(lambda a_value: increase(a_value))
             .bind(
-                lambda value: aAssertionConcern.assert_argument_not_null("Oke").map(
+                lambda value: a_assertion_concern.assert_argument_not_null("Oke").map(
                     lambda _: value
                 )
             )
-            .map(lambda cN: increase(cN))
+            .map(lambda a_value: increase(a_value))
         )
 
         assert result.unwrap() == 3

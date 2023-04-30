@@ -4,6 +4,7 @@ from typing import Any
 from multimethod import multimethod
 from returns.functions import tap
 from returns.future import FutureResult, FutureSuccess
+from returns.maybe import Some
 from returns.pipeline import flow
 from returns.pointfree import bind, map_
 from returns.result import Result, Success
@@ -163,13 +164,12 @@ class TimeConstrainedProcessTracker(AssertionConcern):
 
     def set_retry_count(self, a_num: int) -> Result:
         return flow(
-            {
-                "a_value": a_num,
-                "a_minium": 0,
-                "a_maximum": self.total_retries_permitted() + 1,
-                "code": "RETRY_COUNT_VALID_VALUE",
-            },
-            feed_kwargs(self.assert_argument_range),
+            self.assert_argument_range(
+                a_value=a_num,
+                a_minium=0,
+                a_maximum=self.total_retries_permitted() + 1,
+                code=Some("RETRY_COUNT_VALID_VALUE"),
+            ),
             map_(tap(lambda _: set_protected_attr(self, "_retry_count", a_num))),
         )
 
@@ -194,7 +194,9 @@ class TimeConstrainedProcessTracker(AssertionConcern):
 
     def set_allowable_duration(self, an_allowable_duration: int) -> Result:
         return self.assert_argument_larger_than(
-            an_allowable_duration, 0, code="ALLOW_DURATION_MUST_BE_LARGER_THAN_ZERO"
+            an_allowable_duration,
+            0,
+            code=Some("ALLOW_DURATION_MUST_BE_LARGER_THAN_ZERO"),
         ).map(
             tap(
                 lambda _: set_protected_attr(

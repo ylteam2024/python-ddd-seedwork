@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from returns.maybe import Maybe
+from returns.maybe import Maybe, Some
 from returns.pipeline import flow
 from returns.pointfree import bind, map_
 from returns.result import Failure, Result, Success
@@ -57,7 +57,7 @@ class PublishedNotificationTracker(AssertionConcern):
         match an_num_id:
             case int():
                 assert_result = self.assert_argument_larger_than(
-                    an_num_id, 0, "notification id must be large than zero"
+                    an_num_id, 0, Some("notification id must be large than zero")
                 )
                 match assert_result:
                     case Failure(_):
@@ -70,16 +70,16 @@ class PublishedNotificationTracker(AssertionConcern):
     def set_type_name(self, an_type_name: str) -> Result[None, Any]:
         assert_condition = flow(
             self.assert_argument_not_empty(
-                an_type_name,
-                code="TRACKER_type_name_NOT_EMPTY",
-                a_message="The tracker topic name is required",
+                Some(an_type_name),
+                code=Some("TRACKER_type_name_NOT_EMPTY"),
+                a_message=Some("The tracker topic name is required"),
             ),
             bind(
                 lambda _: self.assert_argument_length(
                     an_type_name,
                     1,
                     100,
-                    "The tracker topic name must be 100 characters or less",
+                    Some("The tracker topic name must be 100 characters or less"),
                 )
             ),
         )

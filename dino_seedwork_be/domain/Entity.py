@@ -1,6 +1,6 @@
 import datetime
 from abc import abstractmethod
-from typing import Any, Generic, Optional, TypedDict, TypeVar, cast
+from typing import Generic, TypedDict, TypeVar, cast
 
 from returns.maybe import Maybe, Nothing, Some
 from returns.result import Result, Success, safe
@@ -30,10 +30,11 @@ class Entity(
 
     _concurrency_version: int = 0
 
-    def __init__(self, id: Optional[IdentityType] = None):
+    def __init__(self, id: Maybe[IdentityType] = Nothing):
         self._concurrency_version = 0
-        if id is not None:
-            self.set_id(id)
+        match id:
+            case Some(_id):
+                self.set_id(_id)
         super().__init__()
 
     def updated_at(self) -> Maybe:
@@ -80,9 +81,9 @@ class Entity(
             case datetime.datetime(updated_at):
                 entity.set_update_at(updated_at).unwrap()
         entity.set_id(id).unwrap()
-        entity.from_atributes(raw_attributes).unwrap()
+        entity.init_by_atributes(raw_attributes).unwrap()
         return entity
 
     @abstractmethod
-    def from_atributes(self, raw_attributes: RawAttributes) -> Result:
+    def init_by_atributes(self, raw_attributes: RawAttributes) -> Result:
         pass

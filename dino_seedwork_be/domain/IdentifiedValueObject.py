@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from dino_seedwork_be.domain.value_objects import ValueObject
+from dino_seedwork_be.domain.value_object.AbstractValueObject import \
+    ValueObject
 
 from .IdentifiedDomainObject import IdentifiedDomainObject, IdentityType
 

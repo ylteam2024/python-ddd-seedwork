@@ -6,6 +6,7 @@ from returns.curry import partial
 from returns.functions import tap
 from returns.future import FutureResult, FutureSuccess
 from returns.iterables import Fold
+from returns.maybe import Some
 from returns.pipeline import flow
 from returns.pointfree import bind, map_
 from returns.result import Success
@@ -114,7 +115,7 @@ class MockEventStore(EventStore):
                 lambda s_event: StoredEvent(
                     type_name=get_class_name(event),
                     occurred_on=event.occurred_on(),
-                    id=stored_event_id,
+                    id=Some(stored_event_id),
                     body=str(s_event),
                 )
             ),

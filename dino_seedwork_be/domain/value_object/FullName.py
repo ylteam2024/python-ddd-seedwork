@@ -1,3 +1,5 @@
+from returns.maybe import Some
+
 from dino_seedwork_be.domain.exceptions import DomainException
 from dino_seedwork_be.domain.value_object.AbstractValueObject import \
     ValueObject
@@ -41,18 +43,22 @@ class FullName(ValueObject):
 
     def _set_first_name(self, a_value: str):
         try:
-            self.assert_argument_not_empty(a_value, "First name is required").unwrap()
+            self.assert_argument_not_empty(
+                Some(a_value), Some("First name is required")
+            ).unwrap()
             self.assert_argument_length(
                 a_value,
                 a_minimum=1,
                 a_maximum=50,
-                a_message="First name must be 50 characters or less",
+                a_message=Some("First name must be 50 characters or less"),
             ).unwrap()
             self.assert_argument_regex(
                 a_value,
                 r"^[A-Z\s](?:[A-Za-z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s])+$",
-                "First name must be at least one character in length, \
-                starting with a capital letter.",
+                Some(
+                    "First name must be at least one character in length, \
+                starting with a capital letter."
+                ),
             ).unwrap()
             self._first_name = a_value
         except Exception as error:
@@ -60,17 +66,19 @@ class FullName(ValueObject):
 
     def _set_last_name(self, a_value: str):
         try:
-            self.assert_argument_not_empty(a_value, "Last name is required").unwrap()
+            self.assert_argument_not_empty(
+                Some(a_value), Some("Last name is required")
+            ).unwrap()
             self.assert_argument_length(
                 a_value,
                 a_minimum=1,
                 a_maximum=50,
-                a_message="last name must be 50 characters or less",
+                a_message=Some("last name must be 50 characters or less"),
             ).unwrap()
             self.assert_argument_regex(
                 a_value,
                 r"^[A-Z\s](?:[A-Za-z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s])+$",
-                "Last name must be at least one character in length.",
+                Some("Last name must be at least one character in length."),
             ).unwrap()
             self._last_name = a_value
         except Exception as error:

@@ -22,7 +22,7 @@ class ExampleEntityUUID(Entity[ExampleEntityAttributes, UUID]):
     def attribute_b(self) -> str:
         return self._attribute_b
 
-    def from_atributes(self, raw_attributes: ExampleEntityAttributes) -> Result:
+    def init_by_atributes(self, raw_attributes: ExampleEntityAttributes) -> Result:
         self._attribute_a = raw_attributes["attribute_a"]
         self._attribute_b = raw_attributes["attribute_b"]
         return Success(None)

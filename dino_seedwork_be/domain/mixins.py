@@ -1,3 +1,4 @@
+from returns.maybe import Some
 from returns.result import safe
 
 from dino_seedwork_be.logic import AssertionConcern
@@ -6,15 +7,15 @@ __all__ = ["OrderItemMixin"]
 
 
 class OrderItemMixin(AssertionConcern):
-    __order: int = 0
+    _order: int = 0
 
-    def getOrder(self) -> int:
-        return self.__order
+    def get_order(self) -> int:
+        return self._order
 
     @safe
-    def setOrder(self, anIntValue: int):
+    def set_order(self, order: int):
         self.assert_argument_larger_than(
-            anIntValue, -1, "Order need to a positive number or 0"
+            order, -1, Some("Order need to a positive number or 0")
         ).unwrap()
-        self.__order = anIntValue
+        self._order = order
         return "OK"

@@ -1,4 +1,6 @@
-from typing import List, Optional
+from typing import List
+
+from returns.maybe import Maybe, Nothing, Some
 
 from dino_seedwork_be.domain.value_object.AbstractValueObject import \
     ValueObject
@@ -18,11 +20,11 @@ class URL(ValueObject):
     def __init__(
         self,
         value: str,
-        validation_message: Optional[str] = None,
-        loc: Optional[List[str]] = ["url"],
+        validation_message: Maybe[str] = Nothing,
+        loc: List[str] = ["url"],
     ):
         self.assert_argument_regex(
-            value, self._regex, a_message=validation_message, loc=loc
+            value, self._regex, a_message=validation_message, loc=Some(loc)
         ).unwrap()
         self._value = value
         super().__init__()

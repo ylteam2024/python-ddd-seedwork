@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Optional
+from typing import Any, List, Optional
 
 from pika.exchange_type import ExchangeType
 from returns.curry import partial
@@ -13,9 +13,12 @@ from returns.result import Result, Success
 from dino_seedwork_be.adapters.messaging.notification import (
     Notification, NotificationPublisher, NotificationSerializer,
     PublishedNotificationTrackerStore)
-from dino_seedwork_be.event import EventSerializer, EventStore, StoredEvent
+from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
+    SuperDBSessionUser
+from dino_seedwork_be.domain.event.EventSerializer import EventSerializer
+from dino_seedwork_be.domain.event.EventStore import EventStore
+from dino_seedwork_be.domain.event.StoredEvent import StoredEvent
 from dino_seedwork_be.exceptions import MainException
-from dino_seedwork_be.storage import SuperDBSessionUser
 from dino_seedwork_be.utils import (feed_args, feed_kwargs,
                                     print_result_with_text)
 from dino_seedwork_be.utils.functional import return_v

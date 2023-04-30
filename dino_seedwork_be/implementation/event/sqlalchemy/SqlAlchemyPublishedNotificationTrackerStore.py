@@ -10,7 +10,7 @@ from dino_seedwork_be.adapters.messaging.notification.PublishedNotificationTrack
     PublishedNotificationTracker
 from dino_seedwork_be.adapters.messaging.notification.PublishedNotificationTrackerStore import \
     PublishedNotificationTrackerStore
-from dino_seedwork_be.implementation.adapter.storage.sql.Repository import \
+from dino_seedwork_be.implementation.adapter.storage.sql.alchemy.Repository import \
     AlchemyRepository
 
 __all__ = [

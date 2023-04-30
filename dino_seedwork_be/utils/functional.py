@@ -1,7 +1,7 @@
 import asyncio
 import traceback
 from collections.abc import Callable, Iterable
-from typing import Any, Coroutine, List, Optional, TypeVar
+from typing import Any, Coroutine, List, Optional, ParamSpec, TypeVar
 
 from returns.converters import maybe_to_result
 from returns.curry import curry, partial
@@ -141,21 +141,21 @@ def unwrap(v):
     return v.unwrap()
 
 
-def assert_false(exception):
+def assert_false():
     assert False
 
 
-def assert_true(value):
+def assert_true():
     assert True
 
 
 @curry
-def assert_false_with_desc(desc, exception):
+def assert_false_with_desc(desc):
     assert False, desc or ""
 
 
 @curry
-def assert_true_with_des(desc, value):
+def assert_true_with_des(desc):
     assert True, desc or ""
     return True
 
@@ -316,8 +316,15 @@ def return_v(v: InnerValueType) -> Callable[[Any], InnerValueType]:
 
 FunctionType = TypeVar("FunctionType", bound=Callable)
 
+P = ParamSpec("P")
+T = TypeVar("T")
 
-def apply(f: Callable, *args, **kwargs):
+
+def apply(
+    f: Callable[P, T],
+    *args: P.args,
+    **kwargs: P.kwargs,
+) -> Callable[[Any], T]:
     return lambda _: f(*args, **kwargs)
 
 

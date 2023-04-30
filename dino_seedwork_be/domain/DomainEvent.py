@@ -4,7 +4,7 @@ from typing import Optional, TypedDict, TypeVar
 
 import jsonpickle
 from returns.functions import tap
-from returns.maybe import Maybe
+from returns.maybe import Maybe, Some
 from returns.pipeline import flow
 from returns.pointfree import map_
 from returns.result import Result, Success, safe
@@ -92,7 +92,7 @@ class DomainEvent(AssertionConcern, JSONSerializable):
             self._name = a_name
 
         return flow(
-            self.assert_argument_not_empty(a_name),
+            self.assert_argument_not_empty(Some(a_name)),
             map_(tap(set)),
         )
 
