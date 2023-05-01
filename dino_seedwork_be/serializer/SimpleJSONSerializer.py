@@ -4,6 +4,8 @@ from returns.result import safe
 
 from .AbstractSerializer import AbstractSerializer
 
+__all__ = ["SimpleJSONSerializer"]
+
 
 class SimpleJSONSerializer(AbstractSerializer[dict]):
     @safe

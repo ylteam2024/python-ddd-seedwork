@@ -1,7 +1,5 @@
-from typing import Optional
-
 import validators
-from returns.maybe import Maybe, Some
+from returns.maybe import Some
 
 from dino_seedwork_be.domain.value_object.AbstractValueObject import \
     ValueObject

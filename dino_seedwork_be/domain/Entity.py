@@ -19,7 +19,7 @@ class BaseRawAttributes(TypedDict):
 RawAttributes = TypeVar("RawAttributes", bound=BaseRawAttributes)
 
 
-__all__ = ["Entity"]
+__all__ = ["Entity", "BaseRawAttributes"]
 
 
 class Entity(

@@ -1,8 +1,7 @@
 import json
 from datetime import datetime
-from typing import Optional, TypedDict, TypeVar
+from typing import Optional, TypedDict
 
-import jsonpickle
 from returns.functions import tap
 from returns.maybe import Maybe, Some
 from returns.pipeline import flow
@@ -14,6 +13,8 @@ from dino_seedwork_be.logic.assertion_concern import AssertionConcern
 from dino_seedwork_be.serializer.Serializable import JSONSerializable
 from dino_seedwork_be.utils.date import now_utc, to_iso_format
 from dino_seedwork_be.utils.functional import unwrap
+
+__all__ = ["EmptyProps", "DomainEvent"]
 
 
 class EmptyProps(TypedDict):

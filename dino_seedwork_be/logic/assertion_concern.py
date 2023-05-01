@@ -52,12 +52,12 @@ class AssertionConcern:
 
     def assert_argument_equals(
         self,
-        an_obj1: object,
-        an_obj2: object,
         a_message: Maybe[str] = Nothing,
         exception: Maybe[Exception] = Nothing,
         loc: Maybe[List[str]] = Nothing,
         code: Maybe[str] = Nothing,
+        an_obj1: object,
+        an_obj2: object,
     ) -> Result:
         is_not_equal = an_obj1 != an_obj2
         return AssertionConcern.simple_handle_on_bool_val(
