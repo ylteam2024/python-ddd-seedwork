@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from returns.maybe import Maybe
+from returns.maybe import Maybe, Nothing
 
 from dino_seedwork_be.utils.date import now_utc
 
@@ -16,6 +16,6 @@ class ValueObject(DomainAssertionConcern):
 
     _created_at: datetime
 
-    def __init__(self, created_at: Maybe[datetime]) -> None:
+    def __init__(self, created_at: Maybe[datetime] = Nothing) -> None:
         self._created_at = created_at.value_or(now_utc())
         super().__init__()

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from returns.maybe import Maybe
+from returns.maybe import Maybe, Nothing
 
 from dino_seedwork_be.domain.value_object.AbstractValueObject import \
     ValueObject
@@ -15,6 +15,6 @@ class IdentifiedValueObject(ValueObject, IdentifiedDomainObject[IdentityType]):
     Base class for identified objects
     """
 
-    def __init__(self, an_id: IdentityType, created_at: Maybe[datetime]):
+    def __init__(self, an_id: IdentityType, created_at: Maybe[datetime] = Nothing):
         self.set_id(an_id)
         super().__init__(created_at=created_at)
