@@ -4,7 +4,7 @@
 
 [tool.poetry]
 name = "dinohub-seedwork-be"
-version = "0.1.22"
+version = "0.1.23"
 authors = [
   "Tuan Cau Rao",
 ]
