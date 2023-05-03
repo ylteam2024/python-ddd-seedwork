@@ -7,6 +7,7 @@ from .DomainService import *
 from .Entity import *
 from .exceptions import *
 from .IdentifiedDomainObject import *
+from .IdentifiedValueObject import *
 from .mixins import *
 from .utils import *
 from .validator import *
