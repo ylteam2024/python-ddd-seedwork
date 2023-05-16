@@ -32,10 +32,7 @@ class Entity(
 
     def __init__(self, id: Maybe[IdentityType] = Nothing):
         self._concurrency_version = 0
-        match id:
-            case Some(_id):
-                self.set_id(_id)
-        super().__init__()
+        super().__init__(id)
 
     def updated_at(self) -> Maybe:
         return self._updated_at
@@ -70,7 +67,7 @@ class Entity(
     @classmethod
     @safe
     def create(cls, raw_attributes: RawAttributes, id: IdentityType) -> Self:
-        entity = cls()
+        entity = cls(Some(id))
         match raw_attributes["created_at"]:
             case datetime.datetime(created_at):
                 entity.set_created_at(created_at).unwrap()
@@ -80,7 +77,6 @@ class Entity(
         match raw_attributes["updated_at"]:
             case datetime.datetime(updated_at):
                 entity.set_update_at(updated_at).unwrap()
-        entity.set_id(id).unwrap()
         entity.init_by_atributes(raw_attributes).unwrap()
         return entity
 

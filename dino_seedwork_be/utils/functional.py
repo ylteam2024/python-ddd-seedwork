@@ -12,6 +12,7 @@ from returns.iterables import Fold
 from returns.maybe import Maybe
 from returns.pipeline import flow, is_successful
 from returns.pointfree import bind, lash
+from returns.primitives.exceptions import UnwrapFailedError
 from returns.result import Failure, Result, Success
 from returns.unsafe import unsafe_perform_io
 
@@ -138,7 +139,10 @@ def unwrap_maybe(v: Maybe[InnerValueType]) -> InnerValueType | None:
 
 
 def unwrap(v):
-    return v.unwrap()
+    try:
+        return v.unwrap()
+    except UnwrapFailedError as error:
+        raise error.halted_container._inner_value
 
 
 def assert_false():
