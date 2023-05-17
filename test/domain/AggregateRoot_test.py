@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from returns.maybe import Nothing
+from returns.maybe import Nothing, Some
 from returns.result import Result, Success
 
 from dino_seedwork_be.domain.AggregateRoot import AggregateRoot
@@ -39,7 +39,7 @@ class TestAggregate:
                 "created_at": None,
                 "updated_at": None,
             },
-            new_id,
+            Some(new_id),
         ).unwrap()
 
         assert example_agg.created_at() is not Nothing

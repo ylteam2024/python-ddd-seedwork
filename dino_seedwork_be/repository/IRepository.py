@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Any, Generic, List, Optional, TypeVar
+from typing import Any, Generic, List, Optional, Self, TypeVar, get_args
 
 from returns.future import FutureResult
 from returns.maybe import Maybe
@@ -15,6 +15,8 @@ from dino_seedwork_be.exceptions import NotImplementError
 EntityType = TypeVar("EntityType", bound=Entity)
 DTOType = TypeVar("DTOType")
 
+__all__ = ["PaginationResultDB", "Repository"]
+
 
 @dataclass
 class PaginationResultDB(Generic[EntityType]):
@@ -24,11 +26,9 @@ class PaginationResultDB(Generic[EntityType]):
     total: int
 
 
-class IRepository(Generic[EntityType, SessionType], DBSessionUser[SessionType]):
+class Repository(Generic[EntityType, SessionType], DBSessionUser[SessionType]):
     @abstractmethod
-    def get_next_id(
-        self, simple: Optional[bool] = False
-    ) -> FutureResult[AbstractIdentity, Any]:
+    def get_next_id(self, simple: bool = False) -> FutureResult[AbstractIdentity, Any]:
         pass
 
     @abstractmethod
@@ -66,14 +66,5 @@ class IRepository(Generic[EntityType, SessionType], DBSessionUser[SessionType]):
     def count(self) -> FutureResult[int, Any]:
         raise NotImplementError(
             "Repository does not support the default count"
-            "method, you need to give it the detail logic"
-        )
-
-    @abstractmethod
-    def get_list_pagination(
-        self, filter: Any
-    ) -> FutureResult[PaginationResultDB[EntityType], Any]:
-        raise NotImplementError(
-            "Repository does not support the default getListPagination"
             "method, you need to give it the detail logic"
         )

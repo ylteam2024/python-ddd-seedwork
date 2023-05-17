@@ -66,8 +66,8 @@ class Entity(
 
     @classmethod
     @safe
-    def create(cls, raw_attributes: RawAttributes, id: IdentityType) -> Self:
-        entity = cls(Some(id))
+    def create(cls, raw_attributes: RawAttributes, id: Maybe[IdentityType]) -> Self:
+        entity = cls(id)
         match raw_attributes["created_at"]:
             case datetime.datetime(created_at):
                 entity.set_created_at(created_at).unwrap()

@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from dino_seedwork_be.adapters.IRepository import IRepository
+from dino_seedwork_be.repository.IRepository import IRepository
 
 __all__ = [
     "alchemy_execute_query_on_repository",
