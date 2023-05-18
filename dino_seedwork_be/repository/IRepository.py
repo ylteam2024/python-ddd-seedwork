@@ -1,12 +1,10 @@
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import Any, Generic, List, Optional, Self, TypeVar, get_args
+from typing import Any, Generic, List, TypeVar
 
 from returns.future import FutureResult
 from returns.maybe import Maybe
 
-from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import (
-    DBSessionUser, SessionType)
 from dino_seedwork_be.domain.Entity import Entity
 from dino_seedwork_be.domain.value_object.AbstractIdentity import \
     AbstractIdentity
@@ -26,7 +24,7 @@ class PaginationResultDB(Generic[EntityType]):
     total: int
 
 
-class Repository(Generic[EntityType, SessionType], DBSessionUser[SessionType]):
+class Repository(Generic[EntityType]):
     @abstractmethod
     def get_next_id(self, simple: bool = False) -> FutureResult[AbstractIdentity, Any]:
         pass

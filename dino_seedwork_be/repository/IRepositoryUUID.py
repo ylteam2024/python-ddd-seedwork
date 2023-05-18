@@ -5,7 +5,6 @@ from returns.future import FutureResult, FutureSuccess
 from returns.pipeline import flow, pipe
 from returns.pointfree import bind, lash
 
-from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import SessionType
 from dino_seedwork_be.domain.value_object.UUID import UUID
 from dino_seedwork_be.utils.functional import return_v
 
@@ -14,7 +13,7 @@ from .IRepository import EntityType, Repository
 __all__ = ["RepositoryUUID"]
 
 
-class RepositoryUUID(Repository[EntityType, SessionType]):
+class RepositoryUUID(Repository[EntityType]):
     def get_next_id(self, simple: Optional[bool] = False) -> FutureResult[UUID, Any]:
         def check_exist_and_gen() -> FutureResult:
             next_id_candidate = UUID(uuid.uuid4())

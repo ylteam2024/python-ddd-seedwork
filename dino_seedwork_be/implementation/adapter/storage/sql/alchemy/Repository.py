@@ -29,7 +29,7 @@ AlchemyModel = TypeVar("AlchemyModel", bound=UUIDBaseModel)
 
 class StandardAlchemyRepository(
     Generic[EntityType, AlchemyModel],
-    Repository[EntityType, AsyncSession],
+    Repository[EntityType],
     DBSessionUser[AsyncSession],
 ):
     model: AlchemyModel

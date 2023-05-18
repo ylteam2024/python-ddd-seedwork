@@ -3,14 +3,12 @@ from typing import Any, List
 
 from returns.future import FutureResult
 
-from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
-    DBSessionUser
 from dino_seedwork_be.domain.DomainEvent import DomainEvent
 
 __all__ = ["EventStore"]
 
 
-class EventStore(ABC, DBSessionUser):
+class EventStore(ABC):
     @abstractmethod
     def all_stored_events_since(
         self, a_stored_event_id: int

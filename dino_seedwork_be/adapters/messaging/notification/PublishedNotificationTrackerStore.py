@@ -7,13 +7,11 @@ from returns.maybe import Maybe
 
 from dino_seedwork_be.adapters.messaging.notification.PublishedNotificationTracker import \
     PublishedNotificationTracker
-from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
-    DBSessionUser
 
 __all__ = ["PublishedNotificationTrackerStore"]
 
 
-class PublishedNotificationTrackerStore(DBSessionUser):
+class PublishedNotificationTrackerStore:
     @abstractmethod
     def published_notification_tracker() -> FutureResult[
         PublishedNotificationTracker, Exception

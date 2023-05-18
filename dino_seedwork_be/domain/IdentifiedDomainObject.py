@@ -24,7 +24,7 @@ class IdentifiedDomainObject(Generic[IdentityType], DomainAssertionConcern):
         self.set_id(id)
         super().__init__()
 
-    def identity(self) -> Maybe[AbstractIdentity]:
+    def identity(self) -> Maybe[IdentityType]:
         return self._id
 
     def id_as_string(self) -> Maybe[str]:
