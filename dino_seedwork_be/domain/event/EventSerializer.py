@@ -8,7 +8,7 @@ from returns.result import safe
 from dino_seedwork_be.domain.DomainEvent import DomainEvent
 from dino_seedwork_be.serializer.AbstractSerializer import AbstractSerializer
 
-__all__ = ["EventSerializer"]
+# __all__ = ["EventSerializer"]
 
 
 class EventSerializer(AbstractSerializer):

@@ -9,7 +9,7 @@ from dino_seedwork_be.domain.value_object.AbstractIdentity import \
 
 from .DomainAssertionConcern import DomainAssertionConcern
 
-__all__ = ["IdentifiedDomainObject"]
+# __all__ = ["IdentifiedDomainObject"]
 
 IdentityType = TypeVar("IdentityType", bound=AbstractIdentity)
 

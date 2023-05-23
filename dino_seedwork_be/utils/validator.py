@@ -9,19 +9,9 @@ from dino_seedwork_be.exceptions import MainException
 
 validator_utils = validators
 
-__all__ = [
-    "validator_utils",
-    "Validator",
-    "is_in_json_format",
-    "is_xml",
-    "is_url_image",
-]
 
-
-class Validator:
-    @staticmethod
-    def email(a_value: str):
-        return validators.email(a_value)
+def is_email(a_value: str):
+    return validators.email(a_value)
 
 
 def is_in_json_format(aText: str):

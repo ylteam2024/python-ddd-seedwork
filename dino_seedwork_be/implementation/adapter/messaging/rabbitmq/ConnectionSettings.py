@@ -3,7 +3,7 @@ from typing import Optional
 from pika.credentials import PlainCredentials
 from returns.maybe import Maybe, Nothing, Some
 
-__all__ = ["ConnectionSettings"]
+# __all__ = ["ConnectionSettings"]
 
 
 class ConnectionSettings:

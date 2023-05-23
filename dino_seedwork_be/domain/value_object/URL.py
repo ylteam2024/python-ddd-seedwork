@@ -5,7 +5,7 @@ from returns.maybe import Maybe, Nothing, Some
 from dino_seedwork_be.domain.value_object.AbstractValueObject import \
     ValueObject
 
-__all__ = ["URL"]
+# __all__ = ["URL"]
 
 
 class URL(ValueObject):

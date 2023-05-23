@@ -12,7 +12,7 @@ from .AbstractValueObject import ValueObject
 
 IdRawType = TypeVar("IdRawType")
 
-__all__ = ["AbstractIdentity"]
+# __all__ = ["AbstractIdentity"]
 
 
 class AbstractIdentity(ABC, ValueObject, Generic[IdRawType]):

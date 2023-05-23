@@ -8,8 +8,6 @@ from .ProcessId import ProcessId
 
 timeout_factory_type = Callable[[str, ProcessId, int, int, datetime], DomainEvent]
 
-__all__ = ["factory_timeout_event"]
-
 
 def factory_timeout_event(
     type: str,

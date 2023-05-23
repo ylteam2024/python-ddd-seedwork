@@ -13,7 +13,9 @@ class TestAssertionConcern:
             return a_value + 1
 
         result = (
-            a_assertion_concern.assert_argument_equals(1, 1, Some("correct"))
+            a_assertion_concern.assert_argument_equals(
+                an_obj1=1, an_obj2=1, a_message=Some("correct")
+            )
             .map(lambda _: increase(checking_num))
             .bind(
                 lambda value: a_assertion_concern.assert_argument_false(False).map(

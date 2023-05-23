@@ -13,8 +13,6 @@ from dino_seedwork_be.exceptions import NotImplementError
 EntityType = TypeVar("EntityType", bound=Entity)
 DTOType = TypeVar("DTOType")
 
-__all__ = ["PaginationResultDB", "Repository"]
-
 
 @dataclass
 class PaginationResultDB(Generic[EntityType]):

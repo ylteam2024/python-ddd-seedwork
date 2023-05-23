@@ -7,7 +7,7 @@ from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
 
 UowFactory = Callable[[List[DBSessionUser]], AbstractUnitOfWork]
 
-__all__ = ["AbstractUOWApplicationService"]
+# __all__ = ["AbstractUOWApplicationService"]
 
 
 class AbstractUOWApplicationService:

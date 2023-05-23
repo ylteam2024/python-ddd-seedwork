@@ -7,7 +7,7 @@ from dino_seedwork_be.exceptions import IllegalArgumentException
 
 from .AbstractIdentity import AbstractIdentity
 
-__all__ = ["UUID"]
+# __all__ = ["UUID"]
 
 
 class UUID(AbstractIdentity[UUIDRaw]):

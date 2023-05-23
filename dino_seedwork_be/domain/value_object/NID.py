@@ -6,7 +6,7 @@ from returns.result import Result
 from dino_seedwork_be.domain.value_object.AbstractIdentity import \
     AbstractIdentity
 
-__all__ = ["NID"]
+# __all__ = ["NID"]
 
 
 class NID(AbstractIdentity[int]):

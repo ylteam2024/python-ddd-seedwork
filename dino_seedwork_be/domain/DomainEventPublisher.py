@@ -15,7 +15,7 @@ from .DomainEventSubscriber import DomainEventSubscriber
 
 EventType = TypeVar("EventType", bound=DomainEvent)
 
-__all__ = ["DomainEventPublisher"]
+# __all__ = ["DomainEventPublisher"]
 
 
 class DomainEventPublisher:

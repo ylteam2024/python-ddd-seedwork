@@ -89,3 +89,11 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork[AsyncSession]):
             )
 
         return catch_future_result
+
+    @classmethod
+    def factory(
+        cls,
+        session_factory: Callable[[], AsyncSession],
+        session_users: List[DBSessionUser],
+    ):
+        return SqlAlchemyUnitOfWork(session_factory, session_users)

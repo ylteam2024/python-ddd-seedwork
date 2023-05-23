@@ -4,7 +4,7 @@ from dino_seedwork_be.domain.IdentifiedDomainObject import IdentityType
 
 from .Entity import Entity, RawAttributes
 
-__all__ = ["AggregateRoot"]
+# __all__ = ["AggregateRoot"]
 
 
 class AggregateRoot(

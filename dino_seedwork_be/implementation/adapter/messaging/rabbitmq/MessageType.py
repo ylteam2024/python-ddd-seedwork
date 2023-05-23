@@ -1,6 +1,6 @@
 from enum import Enum
 
-__all__ = ["MessageType"]
+# __all__ = ["MessageType"]
 
 
 class MessageType(Enum):

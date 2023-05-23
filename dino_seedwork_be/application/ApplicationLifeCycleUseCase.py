@@ -4,7 +4,7 @@ from typing import Generic, List, TypeVar
 from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
     DBSessionUser
 
-__all__ = ["ApplicationLifeCycleUsecase"]
+# __all__ = ["ApplicationLifeCycleUsecase"]
 
 SessionType = TypeVar("SessionType")
 

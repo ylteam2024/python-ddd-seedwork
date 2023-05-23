@@ -5,8 +5,6 @@ from dino_seedwork_be.utils.date import now_utc
 
 from .ProcessId import ProcessId
 
-__all__ = ["ProcessTimedOut"]
-
 
 class ProcessTimedOut(DomainEvent):
     _event_verion: int

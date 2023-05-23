@@ -18,7 +18,7 @@ from dino_seedwork_be.domain.event.StoredEvent import StoredEvent
 from dino_seedwork_be.utils import (async_to_future_result, feed_kwargs,
                                     print_result_with_text, return_v)
 
-__all__ = ["SqlAlchemyBaseEvent", "SqlAlchemyEventStore"]
+# __all__ = ["SqlAlchemyBaseEvent", "SqlAlchemyEventStore"]
 
 
 class SqlAlchemyBaseEvent:

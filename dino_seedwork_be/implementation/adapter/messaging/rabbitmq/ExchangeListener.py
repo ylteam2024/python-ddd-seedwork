@@ -22,7 +22,7 @@ from .MessageListener import MessageListener
 from .MessageType import MessageType as Type
 from .Queue import Queue
 
-__all__ = ["ExchangeListener"]
+# __all__ = ["ExchangeListener"]
 
 
 class ExchangeListener(ABC):

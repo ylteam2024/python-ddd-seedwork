@@ -3,11 +3,11 @@ from typing import Any, List
 from dino_seedwork_be.implementation.adapter.storage.sql.alchemy.Repository import \
     StandardAlchemyRepository
 
-__all__ = [
-    "alchemy_execute_query_on_repository",
-    "tuple_row_to_dict",
-    "tuple_rows_to_dict",
-]
+# __all__ = [
+#     "alchemy_execute_query_on_repository",
+#     "tuple_row_to_dict",
+#     "tuple_rows_to_dict",
+# ]
 
 
 def alchemy_execute_query_on_repository(repository: StandardAlchemyRepository):

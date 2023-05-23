@@ -2,7 +2,7 @@ from typing import Optional
 
 from .DomainEventPublisher import DomainEventPublisher
 
-__all__ = ["DomainService"]
+# __all__ = ["DomainService"]
 
 
 class DomainService:

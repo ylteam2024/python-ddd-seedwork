@@ -9,8 +9,6 @@ import toolz
 
 from dino_seedwork_be.exceptions import IllegalArgumentException
 
-__all__ = ["JSONReader", "AbstractJSONMediaReader"]
-
 
 class JSONReader:
     def deserialize(self, aJson: str):

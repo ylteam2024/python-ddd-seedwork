@@ -4,7 +4,7 @@ from dino_seedwork_be.domain.exceptions import DomainException
 from dino_seedwork_be.domain.value_object.AbstractValueObject import \
     ValueObject
 
-__all__ = ["FullName"]
+# __all__ = ["FullName"]
 
 
 class FullName(ValueObject):

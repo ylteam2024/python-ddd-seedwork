@@ -8,7 +8,7 @@ from dino_seedwork_be.exceptions import MainException
 
 from .MessageType import MessageType
 
-__all__ = ["MessageListener"]
+# __all__ = ["MessageListener"]
 
 
 class MessageListener:

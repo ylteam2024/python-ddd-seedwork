@@ -1,4 +1,4 @@
-from dino_seedwork_be.adapters.messaging.firebase.FirebaseNotificationDrivingAdapter import \
+from dino_seedwork_be.implementation.adapter.messaging.firebase.FirebaseNotificationDrivingAdapter import \
     FirebaseNotificationDrivingAdapter
 from dino_seedwork_be.utils.functional import unwrap_future_result_io
 

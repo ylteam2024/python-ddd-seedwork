@@ -14,8 +14,6 @@ from dino_seedwork_be.application import ApplicationLifeCycleUsecase
 from .TimeConstrainedProcessTrackerRepository import \
     TimeConstrainedProcessTrackerRepository
 
-__all__ = ["AbstractProcessApplicationService"]
-
 
 class AbstractProcessApplicationService(ApplicationLifeCycleUsecase):
 

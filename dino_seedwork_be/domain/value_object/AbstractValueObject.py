@@ -6,7 +6,7 @@ from dino_seedwork_be.utils.date import now_utc
 
 from ..DomainAssertionConcern import DomainAssertionConcern
 
-__all__ = ["ValueObject"]
+# __all__ = ["ValueObject"]
 
 
 class ValueObject(DomainAssertionConcern):

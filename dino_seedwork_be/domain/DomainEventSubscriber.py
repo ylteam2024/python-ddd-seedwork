@@ -5,7 +5,7 @@ from returns.future import FutureResult
 
 from dino_seedwork_be.domain import DomainEvent
 
-__all__ = ["DomainEventSubscriber"]
+# __all__ = ["DomainEventSubscriber"]
 
 
 class DomainEventSubscriber(ABC):

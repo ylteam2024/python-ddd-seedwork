@@ -3,7 +3,7 @@ from returns.result import safe
 
 from dino_seedwork_be.logic import AssertionConcern
 
-__all__ = ["OrderItemMixin"]
+# __all__ = ["OrderItemMixin"]
 
 
 class OrderItemMixin(AssertionConcern):

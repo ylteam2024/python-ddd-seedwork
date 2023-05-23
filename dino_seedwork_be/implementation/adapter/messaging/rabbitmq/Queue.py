@@ -17,7 +17,7 @@ from .Exchange import Exchange
 
 LOGGER = logging.getLogger(__name__)
 
-__all__ = ["Queue"]
+# __all__ = ["Queue"]
 
 
 class Queue(BrokerComponent):

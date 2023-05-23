@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from returns.maybe import Nothing
+from returns.maybe import Nothing, Some
 from returns.result import Result, Success
 
 from dino_seedwork_be.domain.Entity import BaseRawAttributes, Entity
@@ -38,7 +38,7 @@ class TestEntity:
                 "created_at": None,
                 "updated_at": None,
             },
-            new_id,
+            Some(new_id),
         ).unwrap()
 
         assert example_entity.created_at() is not Nothing

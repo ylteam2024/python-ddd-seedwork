@@ -19,5 +19,5 @@ def engine_factory(uri: str, pool_size: int = 20, max_overflow: int = 20):
     return engine
 
 
-def alchemy_session_factory(engine: AsyncEngine):
+def alchemy_session_factory(engine: AsyncEngine) -> AsyncSession:
     return sessionmaker(bind=engine, class_=AsyncSession)()

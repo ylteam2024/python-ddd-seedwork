@@ -6,7 +6,7 @@ from dino_seedwork_be.utils.functional import print_exception_with_traceback
 
 from .exceptions import DomainException
 
-__all__ = ["get_identity", "get_raw_identity"]
+# __all__ = ["get_identity", "get_raw_identity"]
 
 
 def get_identity(an_entity: Entity[RawAttributes, IdentityType]) -> Maybe[IdentityType]:

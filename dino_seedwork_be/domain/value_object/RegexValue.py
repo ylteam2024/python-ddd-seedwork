@@ -7,7 +7,7 @@ from returns.result import safe
 from dino_seedwork_be.domain.value_object.AbstractValueObject import \
     ValueObject
 
-__all__ = ["StringWithRegex"]
+# __all__ = ["StringWithRegex"]
 
 
 class StringWithRegex(ValueObject):

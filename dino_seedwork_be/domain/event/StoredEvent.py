@@ -9,7 +9,7 @@ from dino_seedwork_be.logic.assertion_concern import AssertionConcern
 
 from .EventSerializer import EventSerializer
 
-__all__ = ["StoredEvent"]
+# __all__ = ["StoredEvent"]
 
 
 class StoredEvent(AssertionConcern):

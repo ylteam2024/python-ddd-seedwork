@@ -5,7 +5,7 @@ from dino_seedwork_be.domain.value_object.AbstractValueObject import \
 from dino_seedwork_be.utils.image import (get_image_dimension,
                                           get_image_file_size)
 
-__all__ = ["File"]
+# __all__ = ["File"]
 
 
 class File(ValueObject):

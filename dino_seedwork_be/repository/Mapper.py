@@ -8,8 +8,6 @@ from dino_seedwork_be.domain.exceptions import DomainException
 RepositoryModel = TypeVar("RepositoryModel")
 AggregateRootModel = TypeVar("AggregateRootModel")
 
-__all__ = ["Mapper"]
-
 
 class Mapper(Generic[AggregateRootModel, RepositoryModel]):
     @abstractmethod

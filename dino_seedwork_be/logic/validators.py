@@ -2,7 +2,7 @@ from typing import Optional
 
 from validators.btc_address import re
 
-__all__ = ["not_empty", "test_regex"]
+# __all__ = ["not_empty", "test_regex"]
 
 
 def not_empty(a_value: str, a_message: Optional[str] = None):

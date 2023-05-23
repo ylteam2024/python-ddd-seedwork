@@ -11,7 +11,7 @@ from dino_seedwork_be.adapters.messaging.notification.PublishedNotificationTrack
 from dino_seedwork_be.adapters.messaging.notification.PublishedNotificationTrackerStore import \
     PublishedNotificationTrackerStore
 from dino_seedwork_be.implementation.adapter.storage.sql.alchemy.Repository import \
-    AlchemyRepository
+    StandardAlchemyRepository
 
 __all__ = [
     "SqlAlchemyBasePublishedNotifTracker",
@@ -25,7 +25,7 @@ class SqlAlchemyBasePublishedNotifTracker:
 
 
 class SqlAlchemyPublishedNotificationTrackerStore(
-    PublishedNotificationTrackerStore, AlchemyRepository
+    PublishedNotificationTrackerStore, StandardAlchemyRepository
 ):
     _db_model: Type[SqlAlchemyBasePublishedNotifTracker]
     _type_name: str

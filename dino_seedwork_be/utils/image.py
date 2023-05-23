@@ -3,8 +3,6 @@ import struct
 import zlib
 from typing import BinaryIO
 
-__all__ = ["get_image_dimension", "get_image_file_size"]
-
 
 def get_image_dimension(file_or_path, close=False):
     """

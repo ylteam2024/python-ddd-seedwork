@@ -23,7 +23,7 @@ from .exceptions import MessageException
 from .MessageListener import MessageListener
 from .Queue import Queue
 
-__all__ = ["MessageConsumer"]
+# __all__ = ["MessageConsumer"]
 
 
 class MessageConsumer:

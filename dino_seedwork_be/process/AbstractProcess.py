@@ -4,8 +4,6 @@ from enum import Enum
 
 from .ProcessId import ProcessId
 
-__all__ = ["ProcessCompletionType", "IProcess"]
-
 
 class ProcessCompletionType(Enum):
     NOT_COMPLETED = "NOT_COMPLETED"

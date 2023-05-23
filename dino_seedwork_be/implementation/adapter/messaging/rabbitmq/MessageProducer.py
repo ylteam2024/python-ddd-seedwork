@@ -18,7 +18,7 @@ from .exceptions import MessageException
 from .Exchange import Exchange
 from .MessageParameters import MessageParameters
 
-__all__ = ["MessageProducer"]
+# __all__ = ["MessageProducer"]
 
 
 class MessageProducer(AssertionConcern):

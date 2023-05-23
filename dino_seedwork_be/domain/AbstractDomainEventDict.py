@@ -4,7 +4,7 @@ from returns.maybe import Maybe, Nothing, Some
 
 from dino_seedwork_be.domain.DomainEvent import DomainEvent
 
-__all__ = ["AbstractDomainEventDict"]
+# __all__ = ["AbstractDomainEventDict"]
 
 
 class AbstractDomainEventDict:

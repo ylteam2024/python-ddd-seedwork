@@ -10,8 +10,6 @@ from dino_seedwork_be.utils.functional import return_v
 
 from .IRepository import EntityType, Repository
 
-__all__ = ["RepositoryUUID"]
-
 
 class RepositoryUUID(Repository[EntityType]):
     def get_next_id(self, simple: Optional[bool] = False) -> FutureResult[UUID, Any]:

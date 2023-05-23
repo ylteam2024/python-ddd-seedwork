@@ -10,7 +10,7 @@ from dino_seedwork_be.utils.functional import execute
 from .BrokerComponent import BrokerComponent
 from .ConnectionSettings import ConnectionSettings
 
-__all__ = ["Exchange"]
+# __all__ = ["Exchange"]
 
 
 class Exchange(BrokerComponent):

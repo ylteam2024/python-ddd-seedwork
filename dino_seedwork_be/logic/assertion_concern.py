@@ -13,8 +13,6 @@ from dino_seedwork_be.exceptions import (IllegalArgumentException,
                                          IllegalStateException, MainException)
 from dino_seedwork_be.utils.functional import return_v
 
-__all__ = ["AssertionErrorCode", "AssertionConcern"]
-
 
 class AssertionErrorCode(Enum):
     ARG_CANNOT_EQUAL = "CANNOT_EQUAL"
@@ -56,8 +54,8 @@ class AssertionConcern:
         exception: Maybe[Exception] = Nothing,
         loc: Maybe[List[str]] = Nothing,
         code: Maybe[str] = Nothing,
-        an_obj1: object,
-        an_obj2: object,
+        an_obj1: object = None,
+        an_obj2: object = None,
     ) -> Result:
         is_not_equal = an_obj1 != an_obj2
         return AssertionConcern.simple_handle_on_bool_val(

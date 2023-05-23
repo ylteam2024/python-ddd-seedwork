@@ -3,8 +3,6 @@ from typing import Generic, TypeVar
 
 InnerValue = TypeVar("InnerValue")
 
-__all__ = ["ThreadLocal"]
-
 
 class ThreadLocal(Generic[InnerValue]):
     _storage: threading.local

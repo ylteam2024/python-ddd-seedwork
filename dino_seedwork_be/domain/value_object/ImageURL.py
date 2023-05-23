@@ -5,7 +5,7 @@ from dino_seedwork_be.domain.value_object.AbstractValueObject import \
     ValueObject
 from dino_seedwork_be.utils.validator import is_url_image
 
-__all__ = ["ImageURL"]
+# __all__ = ["ImageURL"]
 
 
 class ImageURL(ValueObject):

@@ -6,8 +6,6 @@ from returns.result import Failure, Result, Success, safe
 from dino_seedwork_be.domain.value_object.AbstractIdentity import \
     AbstractIdentity
 
-__all__ = ["ProcessId"]
-
 
 class ProcessId(AbstractIdentity[str]):
     def __init__(self, id: str) -> None:

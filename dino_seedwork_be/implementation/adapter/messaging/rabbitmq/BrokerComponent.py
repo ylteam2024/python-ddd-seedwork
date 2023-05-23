@@ -23,7 +23,7 @@ LOG_FORMAT = (
 
 LOGGER = logging.getLogger(__name__)
 
-__all__ = ["BrokerComponent"]
+# __all__ = ["BrokerComponent"]
 
 
 class BrokerComponent(ABC):

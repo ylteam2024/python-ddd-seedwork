@@ -26,7 +26,7 @@ from dino_seedwork_be.utils.functional import return_v
 from . import (RabbitMQConnectionSettings, RabbitMQExchange,
                RabbitMQMessageParameters, RabbitMQMessageProducer)
 
-__all__ = ["RabbitMQPublisher"]
+# __all__ = ["RabbitMQPublisher"]
 
 
 class RabbitMQPublisher(NotificationPublisher, SuperDBSessionUser):

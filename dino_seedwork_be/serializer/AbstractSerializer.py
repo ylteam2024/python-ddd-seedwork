@@ -3,9 +3,6 @@ from typing import Any, Generic, TypeVar
 
 from returns.result import Result
 
-__all__ = ["AbstractSerializer"]
-
-
 SerializableType = TypeVar("SerializableType")
 
 

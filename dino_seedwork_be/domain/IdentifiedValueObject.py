@@ -7,7 +7,7 @@ from dino_seedwork_be.domain.value_object.AbstractValueObject import \
 
 from .IdentifiedDomainObject import IdentifiedDomainObject, IdentityType
 
-__all__ = ["IdentifiedValueObject"]
+# __all__ = ["IdentifiedValueObject"]
 
 
 class IdentifiedValueObject(ValueObject, IdentifiedDomainObject[IdentityType]):
