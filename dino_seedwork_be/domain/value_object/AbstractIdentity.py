@@ -19,6 +19,10 @@ class AbstractIdentity(ABC, ValueObject, Generic[IdRawType]):
 
     _id: IdRawType
 
+    def __init__(self, id: IdRawType) -> None:
+        super().__init__()
+        unwrap(self.set_id(id))
+
     def id(self) -> IdRawType:
         return self._id
 
@@ -32,9 +36,8 @@ class AbstractIdentity(ABC, ValueObject, Generic[IdRawType]):
     def __str__(self) -> str:
         return f"{get_class_name(self)} [id={str(id)}]"
 
-    def __init__(self, id: IdRawType) -> None:
-        super().__init__()
-        unwrap(self.set_id(id))
+    def __hash__(self) -> int:
+        return hash(self.get_raw())
 
     @abstractmethod
     def validate(self, an_id: IdRawType) -> Result[IdRawType, Any]:

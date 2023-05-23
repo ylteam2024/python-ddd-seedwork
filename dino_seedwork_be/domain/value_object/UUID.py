@@ -27,9 +27,6 @@ class UUID(AbstractIdentity[UUIDRaw]):
             case _:
                 return False
 
-    def __hash__(self) -> int:
-        return hash(self.get_raw())
-
     @safe
     def set_id(self, an_id: UUIDRaw | str):
         match an_id:

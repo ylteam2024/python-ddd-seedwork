@@ -1,6 +1,7 @@
 from typing import Any, List
 
-from dino_seedwork_be.repository.IRepository import IRepository
+from dino_seedwork_be.implementation.adapter.storage.sql.alchemy.Repository import \
+    StandardAlchemyRepository
 
 __all__ = [
     "alchemy_execute_query_on_repository",
@@ -9,7 +10,7 @@ __all__ = [
 ]
 
 
-def alchemy_execute_query_on_repository(repository: IRepository):
+def alchemy_execute_query_on_repository(repository: StandardAlchemyRepository):
     async def proxy(*args, **kwargs):
         return await repository.session().execute(*args, **kwargs)
 

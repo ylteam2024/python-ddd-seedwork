@@ -3,6 +3,7 @@ from .AbstractValueObject import *
 from .File import *
 from .FullName import *
 from .ImageURL import *
+from .NID import *
 from .RegexValue import *
 from .URL import *
 from .UUID import *

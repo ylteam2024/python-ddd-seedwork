@@ -1,4 +1,5 @@
 from .AlchemyQuerier import AlchemyQuerier as AlchemyQuerier
+from .BaseModel import UUIDBaseModel as UUIDBaseModel
 from .connection import alchemy_session_factory as alchemy_session_factory
 from .connection import engine_factory as engine_factory
 from .Repository import StandardAlchemyRepository as StandardAlchemyRepository
