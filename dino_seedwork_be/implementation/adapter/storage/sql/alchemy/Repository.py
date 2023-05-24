@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, Type, TypeVar
 from uuid import uuid4
 
 from returns.future import FutureResult, FutureSuccess, future_safe
@@ -17,7 +17,7 @@ from dino_seedwork_be.domain.value_object.AbstractIdentity import \
     AbstractIdentity
 from dino_seedwork_be.domain.value_object.UUID import UUID
 from dino_seedwork_be.repository.IRepository import EntityType, Repository
-from dino_seedwork_be.repository.Mapper import Mapper, RepositoryModel
+from dino_seedwork_be.repository.Mapper import Mapper
 
 from .BaseModel import UUIDBaseModel
 
@@ -33,13 +33,13 @@ class StandardAlchemyRepository(
     DBSessionUser[AsyncSession],
 ):
     model: AlchemyModel
-    mapper: Mapper[EntityType, AlchemyModel]
+    mapper: Type[Mapper[EntityType, AlchemyModel]]
 
     def get_next_id(self, _: bool = True) -> FutureResult[AbstractIdentity, Any]:
         return FutureSuccess(UUID(uuid4()))
 
     def get_by_id(self, id: AbstractIdentity) -> FutureResult[Maybe[EntityType], Any]:
-        stmt = select(RepositoryModel).where(self.model.id == id.get_raw())
+        stmt = select(self.model).where(self.model.id == id.get_raw())
         return (
             future_safe(self.session().execute)(stmt)
             .map(lambda result: result.scalars().first())

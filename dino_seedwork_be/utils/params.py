@@ -17,8 +17,8 @@ def cast_bool_from_str(value):
     return value
 
 
-def get_env(name, default=None, is_bool=False):
-    load_dotenv()
+def get_env(name, default=None, is_bool=False, env="local"):
+    load_dotenv(f".{env}.env")
     value = os.environ.get(name)
     if value is not None:
         if is_bool:

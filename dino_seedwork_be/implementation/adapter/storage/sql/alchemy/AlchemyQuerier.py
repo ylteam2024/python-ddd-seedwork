@@ -8,11 +8,12 @@ from sqlalchemy.util import EMPTY_DICT
 
 from dino_seedwork_be.adapters.persistance.sql.DBSessionUser import \
     DBSessionUser
-from dino_seedwork_be.adapters.rest.utils import (FilterElement, OrderParam,
-                                                  ParamOperators,
-                                                  ParamWithComparing)
 from dino_seedwork_be.application.query import BaseQuerier
 from dino_seedwork_be.exceptions import MainException
+from dino_seedwork_be.implementation.adapter.rest import (FilterElement,
+                                                          OrderParam,
+                                                          ParamOperators,
+                                                          ParamWithComparing)
 from dino_seedwork_be.utils.list import remove_none
 
 __all__ = ["AlchemyQuerier"]

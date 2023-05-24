@@ -6,7 +6,9 @@ from returns.maybe import Maybe, Nothing, Some
 from returns.result import Result, Success, safe
 from typing_extensions import Self
 
+from dino_seedwork_be.domain.exceptions import DomainException
 from dino_seedwork_be.utils.date import now_utc
+from dino_seedwork_be.utils.functional import unwrap
 
 from .IdentifiedDomainObject import IdentifiedDomainObject, IdentityType
 
@@ -55,29 +57,25 @@ class Entity(
         self._concurrency_version += 1
 
     def __eq__(self, __o) -> bool:
-        if __o is None:
-            return False
-        elif isinstance(__o, Entity):
-            return False
-        elif self == object:
-            return True
+        if isinstance(__o, Entity):
+            return self.identity() == __o.identity()
         else:
-            return self.identity() == cast(Entity, __o).identity()
+            return False
 
     @classmethod
-    @safe
+    @safe(exceptions=(DomainException,))
     def create(cls, raw_attributes: RawAttributes, id: Maybe[IdentityType]) -> Self:
         entity = cls(id)
         match raw_attributes["created_at"]:
-            case datetime.datetime(created_at):
-                entity.set_created_at(created_at).unwrap()
+            case datetime.datetime() as created_at:
+                unwrap(entity.set_created_at(created_at))
             case None:
-                entity.set_created_at(now_utc()).unwrap()
+                unwrap(entity.set_created_at(now_utc()))
 
         match raw_attributes["updated_at"]:
-            case datetime.datetime(updated_at):
-                entity.set_update_at(updated_at).unwrap()
-        entity.init_by_atributes(raw_attributes).unwrap()
+            case datetime.datetime() as updated_at:
+                unwrap(entity.set_update_at(updated_at))
+        unwrap(entity.init_by_atributes(raw_attributes))
         return entity
 
     @abstractmethod
