@@ -1,7 +1,11 @@
 from typing import List, TypedDict
 
-from dino_seedwork_be.adapters.rest import (Filter, ParamOperators,
-                                            ParamWithComparing)
+from dino_seedwork_be.implementation.adapter.rest import (Filter,
+                                                          ParamOperators,
+                                                          ParamWithComparing)
+
+# from dino_seedwork_be.rest import (Filter, ParamOperators,
+#                                             ParamWithComparing)
 
 
 class PlainFilter(TypedDict):

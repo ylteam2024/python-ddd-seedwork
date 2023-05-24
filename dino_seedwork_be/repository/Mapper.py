@@ -10,15 +10,16 @@ AggregateRootModel = TypeVar("AggregateRootModel")
 
 
 class Mapper(Generic[AggregateRootModel, RepositoryModel]):
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def to_aggregate(
-        cls, a_db_model: RepositoryModel
+        cls,
+        a_db_model: RepositoryModel,
     ) -> Result[AggregateRootModel, DomainException]:
         pass
 
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def to_db(
         cls, an_aggregate: AggregateRootModel
     ) -> Result[RepositoryModel, DomainException]:

@@ -28,15 +28,15 @@ class StringWithRegex(ValueObject):
         loc: Maybe[list[str]] = Nothing,
     ):
         match a_value:
-            case str():
+            case Some(str(v)):
                 self.assert_state_true(
-                    re.match(self._pattern, a_value) is not None,
+                    re.match(self._pattern, v) is not None,
                     Some(f"{self._error_message} {a_value}"),
                     code=exception_code,
                     loc=loc,
                 ).unwrap()
                 self._value = a_value
-            case None:
+            case Maybe.empty:
                 self._value = Nothing
 
     def set_pattern(self, a_regex: str):

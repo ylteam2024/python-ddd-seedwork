@@ -45,4 +45,4 @@ class TestAggregate:
         assert example_agg.created_at() is not Nothing
         assert example_agg.attribute_a() == 1
         assert example_agg.attribute_b() == "tuanpham"
-        assert example_agg.identity() == new_id
+        assert example_agg.identity().unwrap() == new_id

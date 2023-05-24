@@ -9,4 +9,6 @@ class TestFunctionUtility:
         def fn(param_1: str, param_2: int):
             return param_1 + str(param_2)
 
-        assert apply(fn, param_1="fefe", param_2=2) == fn(param_1="fefe", param_2=2)
+        assert apply(fn, param_1="fefe", param_2=2)(None) == fn(
+            param_1="fefe", param_2=2
+        )

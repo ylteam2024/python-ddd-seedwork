@@ -5,6 +5,7 @@ from dino_seedwork_be.adapters.messaging.notification.Notification import \
 from dino_seedwork_be.adapters.messaging.notification.NotificationSerializer import \
     NotificationSerializer
 from dino_seedwork_be.domain.DomainEvent import DomainEvent
+from dino_seedwork_be.utils.functional import unwrap
 
 
 class TestNotificationSerializer:
@@ -17,7 +18,7 @@ class TestNotificationSerializer:
         serializer = NotificationSerializer.instance()
 
         json = serializer.serialize(notification).unwrap()
-        restore_notif = serializer.deserialize(json).unwrap()
+        restore_notif = unwrap(serializer.deserialize(json))
         assert restore_notif.type_name() == notification.type_name()
         assert restore_notif.id() == notification.id()
         assert restore_notif.occurred_on() == notification.occurred_on()

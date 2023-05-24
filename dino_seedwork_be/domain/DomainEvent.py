@@ -136,5 +136,7 @@ class DomainEvent(AssertionConcern, JSONSerializable):
             .value_or(None),
             name=str(get_in(["name"], a_dict)),
             props=dict(get_in(["props"], a_dict, {})),
-            id=int(get_in(["id"], a_dict)),
+            id=Maybe.from_optional(get_in(["id"], a_dict))
+            .map(lambda v: int(v))
+            .value_or(None),
         )

@@ -1,8 +1,9 @@
 import json
 from typing import Any, List, TypedDict, TypeVar
 
-from dino_seedwork_be.adapters.rest import Filter
 from dino_seedwork_be.utils.dict import extract
+
+from ..utils import Filter
 
 FilterType = TypeVar("FilterType", bound=TypedDict)
 

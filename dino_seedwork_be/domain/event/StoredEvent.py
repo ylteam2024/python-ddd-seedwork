@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from returns.maybe import Maybe, Nothing, Some
 from returns.result import Result
@@ -27,8 +27,10 @@ class StoredEvent(AssertionConcern):
     ) -> None:
         self.set_body(body)
         match id:
-            case int():
-                self.set_id(id)
+            case Some(int(v)):
+                self.set_id(v)
+            case _:
+                self._id = Nothing
         self.set_occurred_on(occurred_on)
         self.set_type_name(type_name)
 

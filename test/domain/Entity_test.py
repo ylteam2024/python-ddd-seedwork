@@ -44,4 +44,4 @@ class TestEntity:
         assert example_entity.created_at() is not Nothing
         assert example_entity.attribute_a() == 1
         assert example_entity.attribute_b() == "tuanpham"
-        assert example_entity.identity() == new_id
+        assert example_entity.identity().unwrap() == new_id

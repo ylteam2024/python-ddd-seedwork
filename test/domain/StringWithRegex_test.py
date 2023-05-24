@@ -11,7 +11,7 @@ class TestStringWithRegex:
             "URL_NOT_IN_VALID_FORMAT",
         )
         url_regex.set_value(Some("http://google.com")).unwrap()
-        assert url_regex.value() == "http://google.com"
+        assert url_regex.value().unwrap() == "http://google.com"
 
         with pytest.raises(Exception):
             url_regex.set_value(Some("invalid_url_here")).unwrap()

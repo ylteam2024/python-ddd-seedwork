@@ -4,13 +4,6 @@ from dino_seedwork_be.utils.functional import for_each
 
 SessionType = TypeVar("SessionType")
 
-__all__ = [
-    "SessionUserAlreadyHaveSession",
-    "DBSessionUser",
-    "SuperDBSessionUser",
-    "SessionType",
-]
-
 
 class SessionUserAlreadyHaveSession(Exception):
     ...
@@ -46,7 +39,7 @@ class DBSessionUser(Generic[SessionType]):
 
 
 class SuperDBSessionUser(Generic[SessionType], DBSessionUser[SessionType]):
-    _sessionUsers: List[DBSessionUser] = []
+    _session_users: List[DBSessionUser] = []
     _session: SessionType
 
     def set_session(self, session: SessionType):
@@ -61,7 +54,7 @@ class SuperDBSessionUser(Generic[SessionType], DBSessionUser[SessionType]):
         return self._session
 
     def session_users(self) -> List[DBSessionUser]:
-        return self._sessionUsers
+        return self._session_users
 
     def set_session_users(self, session_users: List[DBSessionUser]):
-        self._sessionUsers = session_users
+        self._session_users = session_users

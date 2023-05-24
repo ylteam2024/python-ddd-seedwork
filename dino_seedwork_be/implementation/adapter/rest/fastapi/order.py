@@ -1,7 +1,7 @@
 import json
 from typing import Any, List
 
-from dino_seedwork_be.adapters.rest import to_param_orders
+from dino_seedwork_be.implementation.adapter.rest.utils import to_param_orders
 from dino_seedwork_be.utils.dict import extract
 
 __all__ = ["Orders"]

@@ -4,8 +4,9 @@ from fastapi import HTTPException, status
 from returns.future import FutureFailure
 
 from dino_seedwork_be.adapters.logger.SimpleLogger import SIMPLE_LOGGER
-from dino_seedwork_be.adapters.rest import error_detail_with_code
 from dino_seedwork_be.exceptions import MainException
+
+from ..utils import error_detail_with_code
 
 
 def safe_basic_handle_exception(exception):
