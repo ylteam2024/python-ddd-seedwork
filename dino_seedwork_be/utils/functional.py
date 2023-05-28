@@ -5,8 +5,9 @@ from typing import Any, Coroutine, List, Optional, ParamSpec, TypeVar
 
 from returns.converters import maybe_to_result
 from returns.curry import curry, partial
+from returns.functions import identity
 from returns.future import (Future, FutureFailure, FutureResult, FutureResultE,
-                            future_safe)
+                            FutureSuccess, future_safe)
 from returns.io import IOFailure, IOResult, IOSuccess
 from returns.iterables import Fold
 from returns.maybe import Maybe
@@ -55,14 +56,18 @@ def set_protected_attr(obj, field, value):
 InnerValueType = TypeVar("InnerValueType")
 
 
-def maybe_to_future(v: InnerValueType) -> Future[Result[InnerValueType, Any]]:
-    return flow(
-        v,
-        Maybe.from_optional,
-        maybe_to_result,
-        FutureResult.from_result,
-        Future.from_future_result,
-    )
+def maybe_to_future(exception: MainException):
+    def convert(v: Maybe[InnerValueType]) -> FutureResult[InnerValueType, Any]:
+        return flow(v, bind(FutureSuccess), lash(lambda _: FutureFailure(exception)))
+
+    return convert
+
+
+def maybe_to_result(exception: MainException):
+    def convert(v: Maybe[InnerValueType]) -> Result[InnerValueType, Any]:
+        return flow(v, bind(Success), lash(lambda _: Failure(exception)))
+
+    return convert
 
 
 def result_to_future(
@@ -247,21 +252,6 @@ def print_exception_with_traceback(exception: Exception):
     return traceback.print_tb(exception.__traceback__)
 
 
-def not_nothing_or_throw_future_failed(
-    exception: ExceptionType,
-) -> Callable[[Maybe[InnerValueType]], FutureResult[InnerValueType, ExceptionType]]:
-    def execute(
-        value: Maybe[InnerValueType],
-    ) -> FutureResult[InnerValueType, ExceptionType]:
-        return flow(
-            value,
-            lash(throw_future_failed(exception)),
-            bind(lambda v: FutureResult.from_value(v)),
-        )
-
-    return execute
-
-
 def unwrap_future_io_maybe(
     value: IOResult[Maybe[InnerValueType], Any]
 ) -> InnerValueType | None:
@@ -314,6 +304,17 @@ def tap_excute_future(
     return execute
 
 
+T1 = TypeVar("T1")
+E = TypeVar("E", bound=MainException)
+
+
+def tap_result(fn: Callable[[T], Result[T1, E]]) -> Callable[[T], Result[T, E]]:
+    def execute(input: T) -> Result[T, E]:
+        return fn(input).map(return_v(input))
+
+    return execute
+
+
 def tap_failure_execute_future(
     fn: Callable[[T], FutureResultE]
 ) -> Callable[[T], FutureResultE]:
@@ -339,6 +340,24 @@ def must_be_true(
 
 def result_to_future_callable(fn: Callable[..., Result]):
     return lambda *args, **kwargs: FutureResult.from_result(fn(*args, **kwargs))
+
+
+RE = TypeVar("RE", bound=MainException)
+
+
+def tap_result_from_future(
+    fn: Callable[[T], Result[T1, E]], err: Callable[[MainException], RE] = identity
+) -> Callable[[T], FutureResult[T, RE]]:
+    def execute(input: T) -> FutureResult[T, RE]:
+        match fn(input):
+            case Success():
+                return FutureSuccess(input)
+            case Failure(e):
+                return FutureFailure(err(e))
+            case _:
+                return FutureFailure(err(MainException(code="UNKNOW_RESULT")))
+
+    return execute
 
 
 def with_default_value(original: Optional[T], defaultValue: T) -> T:

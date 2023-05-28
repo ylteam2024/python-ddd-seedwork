@@ -1,21 +1,19 @@
 import datetime
 from abc import abstractmethod
-from typing import Generic, TypedDict, TypeVar, cast
+from typing import Generic, TypedDict, TypeVar
 
 from returns.maybe import Maybe, Nothing, Some
 from returns.result import Result, Success, safe
 from typing_extensions import Self
 
-from dino_seedwork_be.domain.exceptions import DomainException
-from dino_seedwork_be.utils.date import now_utc
 from dino_seedwork_be.utils.functional import unwrap
 
 from .IdentifiedDomainObject import IdentifiedDomainObject, IdentityType
 
 
 class BaseRawAttributes(TypedDict):
-    created_at: datetime.datetime | None
-    updated_at: datetime.datetime | None
+    created_at: Maybe[datetime.datetime]
+    updated_at: Maybe[datetime.datetime]
 
 
 RawAttributes = TypeVar("RawAttributes", bound=BaseRawAttributes)
@@ -56,25 +54,12 @@ class Entity(
     def increase_concurrency_version(self):
         self._concurrency_version += 1
 
-    def __eq__(self, __o) -> bool:
-        if isinstance(__o, Entity):
-            return self.identity() == __o.identity()
-        else:
-            return False
-
     @classmethod
-    @safe(exceptions=(DomainException,))
+    @safe
     def create(cls, raw_attributes: RawAttributes, id: Maybe[IdentityType]) -> Self:
         entity = cls(id)
-        match raw_attributes["created_at"]:
-            case datetime.datetime() as created_at:
-                unwrap(entity.set_created_at(created_at))
-            case None:
-                unwrap(entity.set_created_at(now_utc()))
-
-        match raw_attributes["updated_at"]:
-            case datetime.datetime() as updated_at:
-                unwrap(entity.set_update_at(updated_at))
+        entity._created_at = raw_attributes["created_at"]
+        entity._updated_at = raw_attributes["updated_at"]
         unwrap(entity.init_by_atributes(raw_attributes))
         return entity
 

@@ -3,4 +3,4 @@ def get_local_classname(instance):
 
 
 def get_class_name(instance):
-    return instance.__class__.__name__
+    return type(instance).__name__
