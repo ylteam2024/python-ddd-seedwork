@@ -117,4 +117,4 @@ class DomainEventPublisher:
         )
 
 
-# DomainEventPublisher.new_instance_for_publisher()
+# DomaiMaybenEventPublisher.new_instance_for_publisher()

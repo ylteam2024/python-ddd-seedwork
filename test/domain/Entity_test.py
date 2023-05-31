@@ -3,12 +3,12 @@ from uuid import uuid4
 from returns.maybe import Nothing, Some
 from returns.result import Result, Success
 
-from dino_seedwork_be.domain.Entity import BaseRawAttributes, Entity
+from dino_seedwork_be.domain.Entity import BaseOutsideParams, Entity
 from dino_seedwork_be.domain.value_object.UUID import UUID
 from dino_seedwork_be.utils.date import now_utc
 
 
-class ExampleEntityAttributes(BaseRawAttributes):
+class ExampleEntityAttributes(BaseOutsideParams):
     attribute_a: int
     attribute_b: str
 
@@ -23,9 +23,12 @@ class ExampleEntityUUID(Entity[ExampleEntityAttributes, UUID]):
     def attribute_b(self) -> str:
         return self._attribute_b
 
-    def init_by_atributes(self, raw_attributes: ExampleEntityAttributes) -> Result:
-        self._attribute_a = raw_attributes["attribute_a"]
-        self._attribute_b = raw_attributes["attribute_b"]
+    def from_outside_params(self, outside_params: ExampleEntityAttributes) -> Result:
+        self._attribute_a = outside_params["attribute_a"]
+        self._attribute_b = outside_params["attribute_b"]
+        return Success(None)
+
+    def init_with_params(self) -> Result:
         return Success(None)
 
 
@@ -39,14 +42,17 @@ class OtherExampleEntityUUID(Entity[ExampleEntityAttributes, UUID]):
     def attribute_b(self) -> str:
         return self._attribute_b
 
-    def init_by_atributes(self, raw_attributes: ExampleEntityAttributes) -> Result:
+    def from_outside_params(self, raw_attributes: ExampleEntityAttributes) -> Result:
         self._attribute_a = raw_attributes["attribute_a"]
         self._attribute_b = raw_attributes["attribute_b"]
         return Success(None)
 
+    def init_with_params(self) -> Result:
+        return Success(None)
+
 
 def create_new_entity(id: UUID):
-    example_entity = ExampleEntityUUID.create(
+    example_entity = ExampleEntityUUID.init(
         {
             "attribute_a": 1,
             "attribute_b": "tuanpham",
@@ -59,7 +65,7 @@ def create_new_entity(id: UUID):
 
 
 def create_new_other_entity(id: UUID):
-    example_entity = OtherExampleEntityUUID.create(
+    example_entity = OtherExampleEntityUUID.init(
         {
             "attribute_a": 1,
             "attribute_b": "tuanpham",

@@ -27,9 +27,6 @@ class AbstractIdentity(ABC, ValueObject, Generic[IdRawType]):
         return self._id
 
     def __eq__(self, __o: object) -> bool:
-        print(
-            f"class name {get_class_name(__o)}, {get_class_name(self)} {self.id()} {__o.id()}"
-        )
         match __o:
             case AbstractIdentity():
                 return (

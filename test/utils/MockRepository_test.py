@@ -2,25 +2,28 @@ from pytest import fixture
 from returns.maybe import Maybe, Nothing, Some
 from returns.result import Result, Success
 
-from dino_seedwork_be.domain.Entity import BaseRawAttributes, Entity
+from dino_seedwork_be.domain.Entity import BaseOutsideParams, Entity
 from dino_seedwork_be.domain.value_object.NID import NID
 from dino_seedwork_be.utils.functional import unwrap_future_result
 from dino_seedwork_be.utils.test.MockRepository import MockRepository
 
 
-class MockEntityAttr(BaseRawAttributes):
+class MockEntityAttr(BaseOutsideParams):
     ...
 
 
-class MockEntity(Entity[BaseRawAttributes, NID]):
-    def init_by_atributes(self, _: MockEntityAttr) -> Result:
+class MockEntity(Entity[BaseOutsideParams, NID]):
+    def from_outside_params(self, _: MockEntityAttr) -> Result:
+        return Success(None)
+
+    def init_with_params(self) -> Result:
         return Success(None)
 
 
 class TestedMockRepository(MockRepository[MockEntity]):
     def init_collection(self):
         self._collection = {
-            MockEntity.create(
+            MockEntity.init(
                 {"created_at": Nothing, "updated_at": Nothing}, Some(NID(i))
             ).unwrap()
             for i in range(1, 100)
@@ -46,7 +49,7 @@ class TestMockRepository:
                 assert False
 
     async def test_add(self, mock_repository: TestedMockRepository):
-        added_entity = MockEntity.create(
+        added_entity = MockEntity.init(
             {"created_at": Nothing, "updated_at": Nothing}, Some(NID(100))
         ).unwrap()
         await unwrap_future_result(mock_repository.add(added_entity))

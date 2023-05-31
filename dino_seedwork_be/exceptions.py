@@ -1,6 +1,7 @@
 import enum
 from typing import List, Optional
 
+from returns.functions import tap
 from returns.maybe import Maybe
 
 
@@ -23,11 +24,19 @@ class MainException(Exception):
         code: Optional[str] = None,
         message: Optional[str] = None,
         loc: Optional[List[str]] = None,
+        exception: Optional[Exception] = None,
     ):
         super().__init__(f"[{code}]: {message} at {loc}")
         self._code = code
         self._message = message
         self._loc = loc
+
+        def _clone_exception(exception: Exception):
+            self.__cause__ = exception.__cause__
+            self.__context__ = exception.__context__
+            self.args = exception.args
+
+        Maybe.from_optional(exception).map(tap(_clone_exception))
 
     def message(self) -> Maybe[str]:
         return Maybe.from_optional(self._message)

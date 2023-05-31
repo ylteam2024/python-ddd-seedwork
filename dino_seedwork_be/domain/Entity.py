@@ -1,29 +1,31 @@
 import datetime
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Generic, TypedDict, TypeVar
 
 from returns.maybe import Maybe, Nothing, Some
-from returns.result import Result, Success, safe
+from returns.result import Result, Success
 from typing_extensions import Self
 
+from dino_seedwork_be.fp.domain_safe import domain_safe
+from dino_seedwork_be.utils.date import now_utc
 from dino_seedwork_be.utils.functional import unwrap
 
 from .IdentifiedDomainObject import IdentifiedDomainObject, IdentityType
 
 
-class BaseRawAttributes(TypedDict):
+class BaseOutsideParams(TypedDict):
     created_at: Maybe[datetime.datetime]
     updated_at: Maybe[datetime.datetime]
 
 
-RawAttributes = TypeVar("RawAttributes", bound=BaseRawAttributes)
+OutsideParams = TypeVar("OutsideParams", bound=BaseOutsideParams)
 
 
 # __all__ = ["Entity", "BaseRawAttributes"]
 
 
 class Entity(
-    Generic[RawAttributes, IdentityType], IdentifiedDomainObject[IdentityType]
+    ABC, Generic[OutsideParams, IdentityType], IdentifiedDomainObject[IdentityType]
 ):
     _created_at: Maybe[datetime.datetime] = Nothing
     _updated_at: Maybe[datetime.datetime] = Nothing
@@ -55,14 +57,27 @@ class Entity(
         self._concurrency_version += 1
 
     @classmethod
-    @safe
-    def create(cls, raw_attributes: RawAttributes, id: Maybe[IdentityType]) -> Self:
+    @domain_safe
+    def init(cls, outside_params: OutsideParams, id: Maybe[IdentityType]) -> Self:
         entity = cls(id)
-        entity._created_at = raw_attributes["created_at"]
-        entity._updated_at = raw_attributes["updated_at"]
-        unwrap(entity.init_by_atributes(raw_attributes))
+        entity._created_at = outside_params["created_at"]
+        entity._updated_at = outside_params["updated_at"]
+        unwrap(entity.from_outside_params(outside_params))
+        return entity
+
+    @classmethod
+    @domain_safe
+    def factory(cls, id: Maybe[IdentityType], *args, **kwargs) -> Self:
+        entity = cls(id)
+        entity._created_at = Some(now_utc())
+        entity._updated_at = Nothing
+        entity.init_with_params(*args, **kwargs)
         return entity
 
     @abstractmethod
-    def init_by_atributes(self, raw_attributes: RawAttributes) -> Result:
+    def from_outside_params(self, outside_params: OutsideParams) -> Result:
+        pass
+
+    @abstractmethod
+    def init_with_params(self, *args, **kwargs) -> Result:
         pass

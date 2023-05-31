@@ -5,7 +5,7 @@ from .DomainEvent import DomainEvent, EmptyProps
 from .DomainEventPublisher import DomainEventPublisher
 from .DomainEventSubscriber import DomainEventSubscriber
 from .DomainService import DomainService
-from .Entity import BaseRawAttributes, Entity
+from .Entity import BaseOutsideParams, Entity
 from .event.EventSerializer import EventSerializer
 from .event.EventStore import EventStore
 from .event.EventStoreSubscriber import EventStoreSubscriber
@@ -50,7 +50,7 @@ __all__ = [
     "DomainEventPublisher",
     "DomainEventSubscriber",
     "DomainService",
-    "BaseRawAttributes",
+    "BaseOutsideParams",
     "Entity",
     "BusinessRuleValidationException",
     "DomainException",
