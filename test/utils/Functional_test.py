@@ -3,7 +3,9 @@ from returns.maybe import Nothing, Some
 from returns.result import Failure, Success
 
 from dino_seedwork_be.domain.exceptions import DomainException
-from dino_seedwork_be.fp import handle_on_maybe
+from dino_seedwork_be.exceptions import MainException
+from dino_seedwork_be.fp import (collect_result, collect_result_all,
+                                 handle_on_maybe)
 from dino_seedwork_be.utils.functional import apply, assert_false, assert_true
 
 
@@ -41,3 +43,47 @@ class TestFunctionUtility:
         result = handle_on_maybe(return_failure)(Nothing)
 
         assert result == Success(None)
+
+    def test_collect(self):
+        collect_success = collect_result(
+            [Success(1), Success(2), Success(3)], Success(())
+        )
+
+        match collect_success:
+            case Success((1, 2, 3)):
+                assert True
+            case _:
+                assert False
+
+        collect_failure = collect_result(
+            [Success(1), Failure(MainException(code="ERROR"))], Success(())
+        )
+
+        match collect_failure:
+            case Failure(_):
+                assert True
+            case _:
+                assert False
+
+        collect_all_success = collect_result_all(
+            [Success(1), Failure(MainException(code="ERROR"))], Success(())
+        )
+        match collect_all_success:
+            case Success((1,)):
+                assert True
+            case _:
+                assert False
+
+        collect_all_failure = collect_result_all(
+            [
+                Failure(MainException(code="ERROR_1")),
+                Failure(MainException(code="ERROR_2")),
+            ],
+            Failure(()),
+        )
+
+        match collect_all_failure:
+            case Failure():
+                assert True
+            case _:
+                assert False
