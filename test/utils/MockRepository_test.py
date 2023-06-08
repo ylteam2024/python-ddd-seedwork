@@ -16,7 +16,7 @@ class MockEntity(Entity[BaseOutsideParams, NID]):
     def from_outside_params(self, _: MockEntityAttr) -> Result:
         return Success(None)
 
-    def init_with_params(self) -> Result:
+    def create_with_params(self) -> Result:
         return Success(None)
 
 

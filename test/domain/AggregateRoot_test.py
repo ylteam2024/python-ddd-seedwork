@@ -29,7 +29,7 @@ class ExampleAggUUID(AggregateRoot[ExampleAggAttributes, UUID]):
         self._attribute_b = raw_attributes["attribute_b"]
         return Success(None)
 
-    def init_with_params(self) -> Result:
+    def create_with_params(self) -> Result:
         return Success(None)
 
 

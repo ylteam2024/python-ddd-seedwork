@@ -104,11 +104,11 @@ def unwrap(v):
         raise error.halted_container._inner_value
 
 
-def assert_false():
+def assert_false(_):
     assert False
 
 
-def assert_true():
+def assert_true(_):
     assert True
 
 

@@ -71,7 +71,7 @@ class Entity(
         entity = cls(id)
         entity._created_at = Some(now_utc())
         entity._updated_at = Nothing
-        entity.init_with_params(*args, **kwargs)
+        entity.create_with_params(*args, **kwargs)
         return entity
 
     @abstractmethod
@@ -79,5 +79,5 @@ class Entity(
         pass
 
     @abstractmethod
-    def init_with_params(self, *args, **kwargs) -> Result:
+    def create_with_params(self, *args, **kwargs) -> Result:
         pass
